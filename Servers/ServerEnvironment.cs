@@ -15,16 +15,21 @@ public record ServerEnvironment : StringEnum<ServerEnvironment>
     /// Sandbox
     /// </summary>
     public static readonly ServerEnvironment Environment2 = new("environment2");
+    /// <summary>
+    /// mock
+    /// </summary>
+    public static readonly ServerEnvironment Environment3 = new("environment3");
 
     private ServerEnvironment(string value) : base(value)
     {
     }
 
-    internal T Match<T>(Func<T> onProduction, Func<T> onEnvironment2) =>
+    internal T Match<T>(Func<T> onProduction, Func<T> onEnvironment2, Func<T> onEnvironment3) =>
         this switch
         {
             _ when this == Production => onProduction(),
             _ when this == Environment2 => onEnvironment2(),
+            _ when this == Environment3 => onEnvironment3(),
             _ => throw new ArgumentOutOfRangeException(nameof(ServerEnvironment),
                 this,
                 $"Unknown {nameof(ServerEnvironment)} value.")

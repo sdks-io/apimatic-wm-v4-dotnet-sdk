@@ -272,13 +272,14 @@ A credential you never set is skipped rather than throwing, and the request is s
 | --- | --- | --- |
 | `ServerEnvironment.Production` *(default)* | `production` | Production |
 | `ServerEnvironment.Environment2` | `environment2` | Sandbox |
+| `ServerEnvironment.Environment3` | `environment3` | mock |
 
 **2 server groups.** Base-URL templates and override points (`options.Server.…`):
 
-| Group | `Production` base URL | `Environment2` base URL | Override point |
-| --- | --- | --- | --- |
-| `Default` | `https://marketplace.walmart.com/seller` | `https://sandbox.marketplace.walmart.com/seller` | `options.Server.Default.Production.BaseUrl` (and the other environments) |
-| `Default1` | `https://marketplace.walmart.com/seller/v1` | `https://sandbox.marketplace.walmart.com/seller/v1` | `options.Server.Default1.Production.BaseUrl` (and the other environments) |
+| Group | `Production` base URL | `Environment2` base URL | `Environment3` base URL | Override point |
+| --- | --- | --- | --- | --- |
+| `Default` | `https://marketplace.walmart.com/seller` | `https://sandbox.marketplace.walmart.com/seller` | `https://walmart-apis-mock-server.onrender.com/seller` | `options.Server.Default.Production.BaseUrl` (and the other environments) |
+| `Default1` | `https://marketplace.walmart.com/seller/v1` | `https://sandbox.marketplace.walmart.com/seller/v1` | `https://walmart-apis-mock-server.onrender.com/seller/v1` | `options.Server.Default1.Production.BaseUrl` (and the other environments) |
 
 Retry/resilience is configurable via `options.Retry` (`RetryOptions`, backed by Polly).
 
