@@ -2,7 +2,7 @@
 
 # WfsInbound — operations
 
-Accessor: `client.WfsInbound` · Source: `Api/WfsInbound.cs` · 45 operations
+Accessor: `client.WfsInbound` · Source: `src/WalmartApIs/Api/WfsInbound.cs` · 45 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,735 +10,795 @@ Accessor: `client.WfsInbound` · Source: `Api/WfsInbound.cs` · 45 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelInboundPlan(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelInboundPlan(CancelInboundPlanRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<CancelInboundPlanError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelInboundPlanError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `CancelInboundPlanError` | `Errors/CancelInboundPlanError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `CancelInboundPlanRequest` | `src/WalmartApIs/Requests/WfsInbound/CancelInboundPlanRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `CancelInboundPlanError` | `src/WalmartApIs/Errors/CancelInboundPlanError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### CancelSelfShipAppointment
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelSelfShipAppointment(string inboundPlanId, string shipmentId, CancelSelfShipAppointmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelSelfShipAppointment(CancelSelfShipAppointmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<CancelSelfShipAppointmentError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelSelfShipAppointmentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelSelfShipAppointmentRequest` | `Models/CancelSelfShipAppointmentRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `CancelSelfShipAppointmentError` | `Errors/CancelSelfShipAppointmentError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `CancelSelfShipAppointmentOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/CancelSelfShipAppointmentOperationRequest.cs` |
+| `CancelSelfShipAppointmentRequest` | `src/WalmartApIs/Models/CancelSelfShipAppointmentRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `CancelSelfShipAppointmentError` | `src/WalmartApIs/Errors/CancelSelfShipAppointmentError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ConfirmDeliveryWindowOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmDeliveryWindowOptions(string inboundPlanId, string shipmentId, string deliveryWindowOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfirmDeliveryWindowOptions(ConfirmDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `DeliveryWindowOptionId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<ConfirmDeliveryWindowOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmDeliveryWindowOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `ConfirmDeliveryWindowOptionsError` | `Errors/ConfirmDeliveryWindowOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ConfirmDeliveryWindowOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/ConfirmDeliveryWindowOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `ConfirmDeliveryWindowOptionsError` | `src/WalmartApIs/Errors/ConfirmDeliveryWindowOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ConfirmPackingOption
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmPackingOption(string inboundPlanId, string packingOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfirmPackingOption(ConfirmPackingOptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `PackingOptionId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<ConfirmPackingOptionError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmPackingOptionError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `ConfirmPackingOptionError` | `Errors/ConfirmPackingOptionError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ConfirmPackingOptionRequest` | `src/WalmartApIs/Requests/WfsInbound/ConfirmPackingOptionRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `ConfirmPackingOptionError` | `src/WalmartApIs/Errors/ConfirmPackingOptionError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ConfirmPlacementOption
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmPlacementOption(string inboundPlanId, string placementOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfirmPlacementOption(ConfirmPlacementOptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `PlacementOptionId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<ConfirmPlacementOptionError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmPlacementOptionError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `ConfirmPlacementOptionError` | `Errors/ConfirmPlacementOptionError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ConfirmPlacementOptionRequest` | `src/WalmartApIs/Requests/WfsInbound/ConfirmPlacementOptionRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `ConfirmPlacementOptionError` | `src/WalmartApIs/Errors/ConfirmPlacementOptionError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ConfirmShipmentContentUpdatePreview
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmShipmentContentUpdatePreview(string inboundPlanId, string shipmentId, string contentUpdatePreviewId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfirmShipmentContentUpdatePreview(ConfirmShipmentContentUpdatePreviewRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `ContentUpdatePreviewId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<ConfirmShipmentContentUpdatePreviewError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmShipmentContentUpdatePreviewError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `ConfirmShipmentContentUpdatePreviewError` | `Errors/ConfirmShipmentContentUpdatePreviewError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ConfirmShipmentContentUpdatePreviewRequest` | `src/WalmartApIs/Requests/WfsInbound/ConfirmShipmentContentUpdatePreviewRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `ConfirmShipmentContentUpdatePreviewError` | `src/WalmartApIs/Errors/ConfirmShipmentContentUpdatePreviewError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ConfirmTransportationOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmTransportationOptions(string inboundPlanId, ConfirmTransportationOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfirmTransportationOptions(ConfirmTransportationOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<ConfirmTransportationOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmTransportationOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ConfirmTransportationOptionsRequest` | `Models/ConfirmTransportationOptionsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `ConfirmTransportationOptionsError` | `Errors/ConfirmTransportationOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ConfirmTransportationOptionsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/ConfirmTransportationOptionsOperationRequest.cs` |
+| `ConfirmTransportationOptionsRequest` | `src/WalmartApIs/Models/ConfirmTransportationOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `ConfirmTransportationOptionsError` | `src/WalmartApIs/Errors/ConfirmTransportationOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### CreateInboundPlan
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateInboundPlan(CreateInboundPlanRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateInboundPlan(CreateInboundPlanOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateInboundPlanResponse`
-- **Error**: `SdkException<CreateInboundPlanError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateInboundPlanError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateInboundPlanRequest` | `Models/CreateInboundPlanRequest.cs` |
-| `CreateInboundPlanResponse` | `Models/CreateInboundPlanResponse.cs` |
-| `CreateInboundPlanError` | `Errors/CreateInboundPlanError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `CreateInboundPlanOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/CreateInboundPlanOperationRequest.cs` |
+| `CreateInboundPlanRequest` | `src/WalmartApIs/Models/CreateInboundPlanRequest.cs` |
+| `CreateInboundPlanResponse` | `src/WalmartApIs/Models/CreateInboundPlanResponse.cs` |
+| `CreateInboundPlanError` | `src/WalmartApIs/Errors/CreateInboundPlanError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### CreateMarketplaceItemLabels
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateMarketplaceItemLabels(CreateMarketplaceItemLabelsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateMarketplaceItemLabels(CreateMarketplaceItemLabelsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateMarketplaceItemLabelsResponse`
-- **Error**: `SdkException<CreateMarketplaceItemLabelsError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateMarketplaceItemLabelsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateMarketplaceItemLabelsRequest` | `Models/CreateMarketplaceItemLabelsRequest.cs` |
-| `CreateMarketplaceItemLabelsResponse` | `Models/CreateMarketplaceItemLabelsResponse.cs` |
-| `CreateMarketplaceItemLabelsError` | `Errors/CreateMarketplaceItemLabelsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `CreateMarketplaceItemLabelsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/CreateMarketplaceItemLabelsOperationRequest.cs` |
+| `CreateMarketplaceItemLabelsRequest` | `src/WalmartApIs/Models/CreateMarketplaceItemLabelsRequest.cs` |
+| `CreateMarketplaceItemLabelsResponse` | `src/WalmartApIs/Models/CreateMarketplaceItemLabelsResponse.cs` |
+| `CreateMarketplaceItemLabelsError` | `src/WalmartApIs/Errors/CreateMarketplaceItemLabelsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GenerateDeliveryWindowOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GenerateDeliveryWindowOptions(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GenerateDeliveryWindowOptions(GenerateDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GenerateDeliveryWindowOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<GenerateDeliveryWindowOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GenerateDeliveryWindowOptionsError` | `Errors/GenerateDeliveryWindowOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GenerateDeliveryWindowOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/GenerateDeliveryWindowOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GenerateDeliveryWindowOptionsError` | `src/WalmartApIs/Errors/GenerateDeliveryWindowOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GeneratePackingOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GeneratePackingOptions(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GeneratePackingOptions(GeneratePackingOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GeneratePackingOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<GeneratePackingOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GeneratePackingOptionsError` | `Errors/GeneratePackingOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GeneratePackingOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/GeneratePackingOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GeneratePackingOptionsError` | `src/WalmartApIs/Errors/GeneratePackingOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GeneratePlacementOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GeneratePlacementOptions(string inboundPlanId, GeneratePlacementOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GeneratePlacementOptions(GeneratePlacementOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GeneratePlacementOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<GeneratePlacementOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GeneratePlacementOptionsRequest` | `Models/GeneratePlacementOptionsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GeneratePlacementOptionsError` | `Errors/GeneratePlacementOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GeneratePlacementOptionsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/GeneratePlacementOptionsOperationRequest.cs` |
+| `GeneratePlacementOptionsRequest` | `src/WalmartApIs/Models/GeneratePlacementOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GeneratePlacementOptionsError` | `src/WalmartApIs/Errors/GeneratePlacementOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GenerateSelfShipAppointmentSlots
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GenerateSelfShipAppointmentSlots(string inboundPlanId, string shipmentId, GenerateSelfShipAppointmentSlotsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GenerateSelfShipAppointmentSlots(GenerateSelfShipAppointmentSlotsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GenerateSelfShipAppointmentSlotsError>` — **Case A (typed)**
+- **Error**: `ApiException<GenerateSelfShipAppointmentSlotsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GenerateSelfShipAppointmentSlotsRequest` | `Models/GenerateSelfShipAppointmentSlotsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GenerateSelfShipAppointmentSlotsError` | `Errors/GenerateSelfShipAppointmentSlotsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GenerateSelfShipAppointmentSlotsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/GenerateSelfShipAppointmentSlotsOperationRequest.cs` |
+| `GenerateSelfShipAppointmentSlotsRequest` | `src/WalmartApIs/Models/GenerateSelfShipAppointmentSlotsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GenerateSelfShipAppointmentSlotsError` | `src/WalmartApIs/Errors/GenerateSelfShipAppointmentSlotsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GenerateShipmentContentUpdatePreviews
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GenerateShipmentContentUpdatePreviews(string inboundPlanId, string shipmentId, GenerateShipmentContentUpdatePreviewsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GenerateShipmentContentUpdatePreviews(GenerateShipmentContentUpdatePreviewsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GenerateShipmentContentUpdatePreviewsError>` — **Case A (typed)**
+- **Error**: `ApiException<GenerateShipmentContentUpdatePreviewsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GenerateShipmentContentUpdatePreviewsRequest` | `Models/GenerateShipmentContentUpdatePreviewsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GenerateShipmentContentUpdatePreviewsError` | `Errors/GenerateShipmentContentUpdatePreviewsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GenerateShipmentContentUpdatePreviewsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/GenerateShipmentContentUpdatePreviewsOperationRequest.cs` |
+| `GenerateShipmentContentUpdatePreviewsRequest` | `src/WalmartApIs/Models/GenerateShipmentContentUpdatePreviewsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GenerateShipmentContentUpdatePreviewsError` | `src/WalmartApIs/Errors/GenerateShipmentContentUpdatePreviewsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GenerateTransportationOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GenerateTransportationOptions(string inboundPlanId, GenerateTransportationOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GenerateTransportationOptions(GenerateTransportationOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<GenerateTransportationOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<GenerateTransportationOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GenerateTransportationOptionsRequest` | `Models/GenerateTransportationOptionsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `GenerateTransportationOptionsError` | `Errors/GenerateTransportationOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GenerateTransportationOptionsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/GenerateTransportationOptionsOperationRequest.cs` |
+| `GenerateTransportationOptionsRequest` | `src/WalmartApIs/Models/GenerateTransportationOptionsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `GenerateTransportationOptionsError` | `src/WalmartApIs/Errors/GenerateTransportationOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetDeliveryChallanDocument
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetDeliveryChallanDocument(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetDeliveryChallanDocument(GetDeliveryChallanDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
 - **Returns**: `GetDeliveryChallanDocumentResponse`
-- **Error**: `SdkException<GetDeliveryChallanDocumentError>` — **Case A (typed)**
+- **Error**: `ApiException<GetDeliveryChallanDocumentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetDeliveryChallanDocumentResponse` | `Models/GetDeliveryChallanDocumentResponse.cs` |
-| `GetDeliveryChallanDocumentError` | `Errors/GetDeliveryChallanDocumentError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetDeliveryChallanDocumentRequest` | `src/WalmartApIs/Requests/WfsInbound/GetDeliveryChallanDocumentRequest.cs` |
+| `GetDeliveryChallanDocumentResponse` | `src/WalmartApIs/Models/GetDeliveryChallanDocumentResponse.cs` |
+| `GetDeliveryChallanDocumentError` | `src/WalmartApIs/Errors/GetDeliveryChallanDocumentError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetInboundOperationStatus
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetInboundOperationStatus(string operationId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetInboundOperationStatus(GetInboundOperationStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `OperationId`
 - **Returns**: `CommonInboundOperationStatus`
-- **Error**: `SdkException<GetInboundOperationStatusError>` — **Case A (typed)**
+- **Error**: `ApiException<GetInboundOperationStatusError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CommonInboundOperationStatus` | `Models/CommonInboundOperationStatus.cs` |
-| `GetInboundOperationStatusError` | `Errors/GetInboundOperationStatusError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetInboundOperationStatusRequest` | `src/WalmartApIs/Requests/WfsInbound/GetInboundOperationStatusRequest.cs` |
+| `CommonInboundOperationStatus` | `src/WalmartApIs/Models/CommonInboundOperationStatus.cs` |
+| `GetInboundOperationStatusError` | `src/WalmartApIs/Errors/GetInboundOperationStatusError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetInboundPlan
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetInboundPlan(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetInboundPlan(GetInboundPlanRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
 - **Returns**: `InboundPlan`
-- **Error**: `SdkException<GetInboundPlanError>` — **Case A (typed)**
+- **Error**: `ApiException<GetInboundPlanError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `InboundPlan` | `Models/InboundPlan.cs` |
-| `GetInboundPlanError` | `Errors/GetInboundPlanError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetInboundPlanRequest` | `src/WalmartApIs/Requests/WfsInbound/GetInboundPlanRequest.cs` |
+| `InboundPlan` | `src/WalmartApIs/Models/InboundPlan.cs` |
+| `GetInboundPlanError` | `src/WalmartApIs/Errors/GetInboundPlanError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetSelfShipAppointmentSlots
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetSelfShipAppointmentSlots(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `GetSelfShipAppointmentSlots(GetSelfShipAppointmentSlotsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `GetSelfShipAppointmentSlotsResponse`
-- **Error**: `SdkException<GetSelfShipAppointmentSlotsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetSelfShipAppointmentSlotsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetSelfShipAppointmentSlotsResponse` | `Models/GetSelfShipAppointmentSlotsResponse.cs` |
-| `GetSelfShipAppointmentSlotsError` | `Errors/GetSelfShipAppointmentSlotsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetSelfShipAppointmentSlotsRequest` | `src/WalmartApIs/Requests/WfsInbound/GetSelfShipAppointmentSlotsRequest.cs` |
+| `GetSelfShipAppointmentSlotsResponse` | `src/WalmartApIs/Models/GetSelfShipAppointmentSlotsResponse.cs` |
+| `GetSelfShipAppointmentSlotsError` | `src/WalmartApIs/Errors/GetSelfShipAppointmentSlotsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetShipment
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetShipment(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetShipment(GetShipmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
 - **Returns**: `CommonShipment`
-- **Error**: `SdkException<GetShipmentError>` — **Case A (typed)**
+- **Error**: `ApiException<GetShipmentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CommonShipment` | `Models/CommonShipment.cs` |
-| `GetShipmentError` | `Errors/GetShipmentError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetShipmentRequest` | `src/WalmartApIs/Requests/WfsInbound/GetShipmentRequest.cs` |
+| `CommonShipment` | `src/WalmartApIs/Models/CommonShipment.cs` |
+| `GetShipmentError` | `src/WalmartApIs/Errors/GetShipmentError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### GetShipmentContentUpdatePreview
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetShipmentContentUpdatePreview(string inboundPlanId, string shipmentId, string contentUpdatePreviewId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetShipmentContentUpdatePreview(GetShipmentContentUpdatePreviewRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `ContentUpdatePreviewId`
 - **Returns**: `CommonContentUpdatePreview`
-- **Error**: `SdkException<GetShipmentContentUpdatePreviewError>` — **Case A (typed)**
+- **Error**: `ApiException<GetShipmentContentUpdatePreviewError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CommonContentUpdatePreview` | `Models/CommonContentUpdatePreview.cs` |
-| `GetShipmentContentUpdatePreviewError` | `Errors/GetShipmentContentUpdatePreviewError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `GetShipmentContentUpdatePreviewRequest` | `src/WalmartApIs/Requests/WfsInbound/GetShipmentContentUpdatePreviewRequest.cs` |
+| `CommonContentUpdatePreview` | `src/WalmartApIs/Models/CommonContentUpdatePreview.cs` |
+| `GetShipmentContentUpdatePreviewError` | `src/WalmartApIs/Errors/GetShipmentContentUpdatePreviewError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListDeliveryWindowOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListDeliveryWindowOptions(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListDeliveryWindowOptions(ListDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListDeliveryWindowOptionsResponse`
-- **Error**: `SdkException<ListDeliveryWindowOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListDeliveryWindowOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListDeliveryWindowOptionsResponse` | `Models/ListDeliveryWindowOptionsResponse.cs` |
-| `ListDeliveryWindowOptionsError` | `Errors/ListDeliveryWindowOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListDeliveryWindowOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListDeliveryWindowOptionsRequest.cs` |
+| `ListDeliveryWindowOptionsResponse` | `src/WalmartApIs/Models/ListDeliveryWindowOptionsResponse.cs` |
+| `ListDeliveryWindowOptionsError` | `src/WalmartApIs/Errors/ListDeliveryWindowOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListInboundPlanBoxes
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListInboundPlanBoxes(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListInboundPlanBoxes(ListInboundPlanBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanBoxesResponse`
-- **Error**: `SdkException<ListInboundPlanBoxesError>` — **Case A (typed)**
+- **Error**: `ApiException<ListInboundPlanBoxesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanBoxesResponse` | `Models/ListInboundPlanBoxesResponse.cs` |
-| `ListInboundPlanBoxesError` | `Errors/ListInboundPlanBoxesError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListInboundPlanBoxesRequest` | `src/WalmartApIs/Requests/WfsInbound/ListInboundPlanBoxesRequest.cs` |
+| `ListInboundPlanBoxesResponse` | `src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs` |
+| `ListInboundPlanBoxesError` | `src/WalmartApIs/Errors/ListInboundPlanBoxesError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListInboundPlanItems
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListInboundPlanItems(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListInboundPlanItems(ListInboundPlanItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanItemsResponse`
-- **Error**: `SdkException<ListInboundPlanItemsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListInboundPlanItemsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanItemsResponse` | `Models/ListInboundPlanItemsResponse.cs` |
-| `ListInboundPlanItemsError` | `Errors/ListInboundPlanItemsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListInboundPlanItemsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListInboundPlanItemsRequest.cs` |
+| `ListInboundPlanItemsResponse` | `src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs` |
+| `ListInboundPlanItemsError` | `src/WalmartApIs/Errors/ListInboundPlanItemsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListInboundPlanPallets
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListInboundPlanPallets(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListInboundPlanPallets(ListInboundPlanPalletsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanPalletsResponse`
-- **Error**: `SdkException<ListInboundPlanPalletsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListInboundPlanPalletsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanPalletsResponse` | `Models/ListInboundPlanPalletsResponse.cs` |
-| `ListInboundPlanPalletsError` | `Errors/ListInboundPlanPalletsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListInboundPlanPalletsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListInboundPlanPalletsRequest.cs` |
+| `ListInboundPlanPalletsResponse` | `src/WalmartApIs/Models/ListInboundPlanPalletsResponse.cs` |
+| `ListInboundPlanPalletsError` | `src/WalmartApIs/Errors/ListInboundPlanPalletsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListInboundPlans
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListInboundPlans(string? paginationToken, string? status, string? sortBy, string? sortOrder, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 4 params (`paginationToken` … `sortOrder`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`, `status` ← `status`, `sortBy` ← `sortBy`, `sortOrder` ← `sortOrder`
+- **Signature**: `ListInboundPlans(ListInboundPlansRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`, `status` ← `Status`, `sortBy` ← `SortBy`, `sortOrder` ← `SortOrder`
 - **Returns**: `ListInboundPlansResponse`
-- **Error**: `SdkException<ListInboundPlansError>` — **Case A (typed)**
+- **Error**: `ApiException<ListInboundPlansError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlansResponse` | `Models/ListInboundPlansResponse.cs` |
-| `ListInboundPlansError` | `Errors/ListInboundPlansError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListInboundPlansRequest` | `src/WalmartApIs/Requests/WfsInbound/ListInboundPlansRequest.cs` |
+| `ListInboundPlansResponse` | `src/WalmartApIs/Models/ListInboundPlansResponse.cs` |
+| `ListInboundPlansError` | `src/WalmartApIs/Errors/ListInboundPlansError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListItemComplianceDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListItemComplianceDetails(IReadOnlyList<string> mskus, string marketplaceId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `mskus` ← `mskus`, `marketplaceId` ← `marketplaceId`
+- **Signature**: `ListItemComplianceDetails(ListItemComplianceDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Mskus`, `MarketplaceId`
+- **Query params (wire ← C#)**: `mskus` ← `Mskus`, `marketplaceId` ← `MarketplaceId`
 - **Returns**: `ListItemComplianceDetailsResponse`
-- **Error**: `SdkException<ListItemComplianceDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListItemComplianceDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListItemComplianceDetailsResponse` | `Models/ListItemComplianceDetailsResponse.cs` |
-| `ListItemComplianceDetailsError` | `Errors/ListItemComplianceDetailsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListItemComplianceDetailsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListItemComplianceDetailsRequest.cs` |
+| `ListItemComplianceDetailsResponse` | `src/WalmartApIs/Models/ListItemComplianceDetailsResponse.cs` |
+| `ListItemComplianceDetailsError` | `src/WalmartApIs/Errors/ListItemComplianceDetailsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListPackingGroupBoxes
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListPackingGroupBoxes(string inboundPlanId, string packingGroupId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListPackingGroupBoxes(ListPackingGroupBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `PackingGroupId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanBoxesResponse`
-- **Error**: `SdkException<ListPackingGroupBoxesError>` — **Case A (typed)**
+- **Error**: `ApiException<ListPackingGroupBoxesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanBoxesResponse` | `Models/ListInboundPlanBoxesResponse.cs` |
-| `ListPackingGroupBoxesError` | `Errors/ListPackingGroupBoxesError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListPackingGroupBoxesRequest` | `src/WalmartApIs/Requests/WfsInbound/ListPackingGroupBoxesRequest.cs` |
+| `ListInboundPlanBoxesResponse` | `src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs` |
+| `ListPackingGroupBoxesError` | `src/WalmartApIs/Errors/ListPackingGroupBoxesError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListPackingGroupItems
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListPackingGroupItems(string inboundPlanId, string packingGroupId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListPackingGroupItems(ListPackingGroupItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `PackingGroupId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanItemsResponse`
-- **Error**: `SdkException<ListPackingGroupItemsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListPackingGroupItemsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanItemsResponse` | `Models/ListInboundPlanItemsResponse.cs` |
-| `ListPackingGroupItemsError` | `Errors/ListPackingGroupItemsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListPackingGroupItemsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListPackingGroupItemsRequest.cs` |
+| `ListInboundPlanItemsResponse` | `src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs` |
+| `ListPackingGroupItemsError` | `src/WalmartApIs/Errors/ListPackingGroupItemsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListPackingOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListPackingOptions(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListPackingOptions(ListPackingOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListPackingOptionsResponse`
-- **Error**: `SdkException<ListPackingOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListPackingOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListPackingOptionsResponse` | `Models/ListPackingOptionsResponse.cs` |
-| `ListPackingOptionsError` | `Errors/ListPackingOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListPackingOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListPackingOptionsRequest.cs` |
+| `ListPackingOptionsResponse` | `src/WalmartApIs/Models/ListPackingOptionsResponse.cs` |
+| `ListPackingOptionsError` | `src/WalmartApIs/Errors/ListPackingOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListPlacementOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListPlacementOptions(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListPlacementOptions(ListPlacementOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListPlacementOptionsResponse`
-- **Error**: `SdkException<ListPlacementOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListPlacementOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListPlacementOptionsResponse` | `Models/ListPlacementOptionsResponse.cs` |
-| `ListPlacementOptionsError` | `Errors/ListPlacementOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListPlacementOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListPlacementOptionsRequest.cs` |
+| `ListPlacementOptionsResponse` | `src/WalmartApIs/Models/ListPlacementOptionsResponse.cs` |
+| `ListPlacementOptionsError` | `src/WalmartApIs/Errors/ListPlacementOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListPrepDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListPrepDetails(string marketplaceId, IReadOnlyList<string> mskus, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceId` ← `marketplaceId`, `mskus` ← `mskus`
+- **Signature**: `ListPrepDetails(ListPrepDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `MarketplaceId`, `Mskus`
+- **Query params (wire ← C#)**: `marketplaceId` ← `MarketplaceId`, `mskus` ← `Mskus`
 - **Returns**: `ListPrepDetailsResponse`
-- **Error**: `SdkException<ListPrepDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListPrepDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListPrepDetailsResponse` | `Models/ListPrepDetailsResponse.cs` |
-| `ListPrepDetailsError` | `Errors/ListPrepDetailsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListPrepDetailsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListPrepDetailsRequest.cs` |
+| `ListPrepDetailsResponse` | `src/WalmartApIs/Models/ListPrepDetailsResponse.cs` |
+| `ListPrepDetailsError` | `src/WalmartApIs/Errors/ListPrepDetailsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListShipmentBoxes
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListShipmentBoxes(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListShipmentBoxes(ListShipmentBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanBoxesResponse`
-- **Error**: `SdkException<ListShipmentBoxesError>` — **Case A (typed)**
+- **Error**: `ApiException<ListShipmentBoxesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanBoxesResponse` | `Models/ListInboundPlanBoxesResponse.cs` |
-| `ListShipmentBoxesError` | `Errors/ListShipmentBoxesError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListShipmentBoxesRequest` | `src/WalmartApIs/Requests/WfsInbound/ListShipmentBoxesRequest.cs` |
+| `ListInboundPlanBoxesResponse` | `src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs` |
+| `ListShipmentBoxesError` | `src/WalmartApIs/Errors/ListShipmentBoxesError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListShipmentContentUpdatePreviews
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListShipmentContentUpdatePreviews(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListShipmentContentUpdatePreviews(ListShipmentContentUpdatePreviewsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListShipmentContentUpdatePreviewsResponse`
-- **Error**: `SdkException<ListShipmentContentUpdatePreviewsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListShipmentContentUpdatePreviewsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListShipmentContentUpdatePreviewsResponse` | `Models/ListShipmentContentUpdatePreviewsResponse.cs` |
-| `ListShipmentContentUpdatePreviewsError` | `Errors/ListShipmentContentUpdatePreviewsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListShipmentContentUpdatePreviewsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListShipmentContentUpdatePreviewsRequest.cs` |
+| `ListShipmentContentUpdatePreviewsResponse` | `src/WalmartApIs/Models/ListShipmentContentUpdatePreviewsResponse.cs` |
+| `ListShipmentContentUpdatePreviewsError` | `src/WalmartApIs/Errors/ListShipmentContentUpdatePreviewsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListShipmentItems
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListShipmentItems(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListShipmentItems(ListShipmentItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanItemsResponse`
-- **Error**: `SdkException<ListShipmentItemsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListShipmentItemsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanItemsResponse` | `Models/ListInboundPlanItemsResponse.cs` |
-| `ListShipmentItemsError` | `Errors/ListShipmentItemsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListShipmentItemsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListShipmentItemsRequest.cs` |
+| `ListInboundPlanItemsResponse` | `src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs` |
+| `ListShipmentItemsError` | `src/WalmartApIs/Errors/ListShipmentItemsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListShipmentPallets
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListShipmentPallets(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `pageSize` — nullable, no default → **must pass explicitly**
-  - `paginationToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`
+- **Signature**: `ListShipmentPallets(ListShipmentPalletsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`
 - **Returns**: `ListInboundPlanPalletsResponse`
-- **Error**: `SdkException<ListShipmentPalletsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListShipmentPalletsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListInboundPlanPalletsResponse` | `Models/ListInboundPlanPalletsResponse.cs` |
-| `ListShipmentPalletsError` | `Errors/ListShipmentPalletsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListShipmentPalletsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListShipmentPalletsRequest.cs` |
+| `ListInboundPlanPalletsResponse` | `src/WalmartApIs/Models/ListInboundPlanPalletsResponse.cs` |
+| `ListShipmentPalletsError` | `src/WalmartApIs/Errors/ListShipmentPalletsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ListTransportationOptions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListTransportationOptions(string inboundPlanId, int? pageSize, string? paginationToken, string? placementOptionId, string? shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 4 params (`pageSize` … `shipmentId`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `paginationToken` ← `paginationToken`, `placementOptionId` ← `placementOptionId`, `shipmentId` ← `shipmentId`
+- **Signature**: `ListTransportationOptions(ListTransportationOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `paginationToken` ← `PaginationToken`, `placementOptionId` ← `PlacementOptionId`, `shipmentId` ← `ShipmentId`
 - **Returns**: `ListTransportationOptionsResponse`
-- **Error**: `SdkException<ListTransportationOptionsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListTransportationOptionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListTransportationOptionsResponse` | `Models/ListTransportationOptionsResponse.cs` |
-| `ListTransportationOptionsError` | `Errors/ListTransportationOptionsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ListTransportationOptionsRequest` | `src/WalmartApIs/Requests/WfsInbound/ListTransportationOptionsRequest.cs` |
+| `ListTransportationOptionsResponse` | `src/WalmartApIs/Models/ListTransportationOptionsResponse.cs` |
+| `ListTransportationOptionsError` | `src/WalmartApIs/Errors/ListTransportationOptionsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### ScheduleSelfShipAppointment
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ScheduleSelfShipAppointment(string inboundPlanId, string shipmentId, string slotId, ScheduleSelfShipAppointmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ScheduleSelfShipAppointment(ScheduleSelfShipAppointmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `SlotId`, `Body`
 - **Returns**: `ScheduleSelfShipAppointmentResponse`
-- **Error**: `SdkException<ScheduleSelfShipAppointmentError>` — **Case A (typed)**
+- **Error**: `ApiException<ScheduleSelfShipAppointmentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ScheduleSelfShipAppointmentRequest` | `Models/ScheduleSelfShipAppointmentRequest.cs` |
-| `ScheduleSelfShipAppointmentResponse` | `Models/ScheduleSelfShipAppointmentResponse.cs` |
-| `ScheduleSelfShipAppointmentError` | `Errors/ScheduleSelfShipAppointmentError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `ScheduleSelfShipAppointmentOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/ScheduleSelfShipAppointmentOperationRequest.cs` |
+| `ScheduleSelfShipAppointmentRequest` | `src/WalmartApIs/Models/ScheduleSelfShipAppointmentRequest.cs` |
+| `ScheduleSelfShipAppointmentResponse` | `src/WalmartApIs/Models/ScheduleSelfShipAppointmentResponse.cs` |
+| `ScheduleSelfShipAppointmentError` | `src/WalmartApIs/Errors/ScheduleSelfShipAppointmentError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### SetPackingInformation
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `SetPackingInformation(string inboundPlanId, SetPackingInformationRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `SetPackingInformation(SetPackingInformationOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<SetPackingInformationError>` — **Case A (typed)**
+- **Error**: `ApiException<SetPackingInformationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SetPackingInformationRequest` | `Models/SetPackingInformationRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `SetPackingInformationError` | `Errors/SetPackingInformationError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `SetPackingInformationOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/SetPackingInformationOperationRequest.cs` |
+| `SetPackingInformationRequest` | `src/WalmartApIs/Models/SetPackingInformationRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `SetPackingInformationError` | `src/WalmartApIs/Errors/SetPackingInformationError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### SetPrepDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `SetPrepDetails(SetPrepDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `SetPrepDetails(SetPrepDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<SetPrepDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<SetPrepDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SetPrepDetailsRequest` | `Models/SetPrepDetailsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `SetPrepDetailsError` | `Errors/SetPrepDetailsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `SetPrepDetailsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/SetPrepDetailsOperationRequest.cs` |
+| `SetPrepDetailsRequest` | `src/WalmartApIs/Models/SetPrepDetailsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `SetPrepDetailsError` | `src/WalmartApIs/Errors/SetPrepDetailsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### UpdateInboundPlanName
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateInboundPlanName(string inboundPlanId, UpdateInboundPlanNameRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateInboundPlanName(UpdateInboundPlanNameOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `Body`
 - **Returns**: `void` (Task)
-- **Error**: `SdkException<UpdateInboundPlanNameError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateInboundPlanNameError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateInboundPlanNameRequest` | `Models/UpdateInboundPlanNameRequest.cs` |
-| `UpdateInboundPlanNameError` | `Errors/UpdateInboundPlanNameError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `UpdateInboundPlanNameOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/UpdateInboundPlanNameOperationRequest.cs` |
+| `UpdateInboundPlanNameRequest` | `src/WalmartApIs/Models/UpdateInboundPlanNameRequest.cs` |
+| `UpdateInboundPlanNameError` | `src/WalmartApIs/Errors/UpdateInboundPlanNameError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### UpdateItemComplianceDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateItemComplianceDetails(string marketplaceId, UpdateItemComplianceDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceId` ← `marketplaceId`
+- **Signature**: `UpdateItemComplianceDetails(UpdateItemComplianceDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `MarketplaceId`, `Body`
+- **Query params (wire ← C#)**: `marketplaceId` ← `MarketplaceId`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<UpdateItemComplianceDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateItemComplianceDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateItemComplianceDetailsRequest` | `Models/UpdateItemComplianceDetailsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `UpdateItemComplianceDetailsError` | `Errors/UpdateItemComplianceDetailsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `UpdateItemComplianceDetailsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/UpdateItemComplianceDetailsOperationRequest.cs` |
+| `UpdateItemComplianceDetailsRequest` | `src/WalmartApIs/Models/UpdateItemComplianceDetailsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `UpdateItemComplianceDetailsError` | `src/WalmartApIs/Errors/UpdateItemComplianceDetailsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### UpdateShipmentName
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateShipmentName(string inboundPlanId, string shipmentId, UpdateShipmentNameRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateShipmentName(UpdateShipmentNameOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `void` (Task)
-- **Error**: `SdkException<UpdateShipmentNameError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateShipmentNameError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateShipmentNameRequest` | `Models/UpdateShipmentNameRequest.cs` |
-| `UpdateShipmentNameError` | `Errors/UpdateShipmentNameError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `UpdateShipmentNameOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/UpdateShipmentNameOperationRequest.cs` |
+| `UpdateShipmentNameRequest` | `src/WalmartApIs/Models/UpdateShipmentNameRequest.cs` |
+| `UpdateShipmentNameError` | `src/WalmartApIs/Errors/UpdateShipmentNameError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### UpdateShipmentSourceAddress
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateShipmentSourceAddress(string inboundPlanId, string shipmentId, UpdateShipmentSourceAddressRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateShipmentSourceAddress(UpdateShipmentSourceAddressOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<UpdateShipmentSourceAddressError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateShipmentSourceAddressError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateShipmentSourceAddressRequest` | `Models/UpdateShipmentSourceAddressRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `UpdateShipmentSourceAddressError` | `Errors/UpdateShipmentSourceAddressError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `UpdateShipmentSourceAddressOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/UpdateShipmentSourceAddressOperationRequest.cs` |
+| `UpdateShipmentSourceAddressRequest` | `src/WalmartApIs/Models/UpdateShipmentSourceAddressRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `UpdateShipmentSourceAddressError` | `src/WalmartApIs/Errors/UpdateShipmentSourceAddressError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 
 ### UpdateShipmentTrackingDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateShipmentTrackingDetails(string inboundPlanId, string shipmentId, UpdateShipmentTrackingDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateShipmentTrackingDetails(UpdateShipmentTrackingDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `InboundPlanId`, `ShipmentId`, `Body`
 - **Returns**: `CancelInboundPlanResponse`
-- **Error**: `SdkException<UpdateShipmentTrackingDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateShipmentTrackingDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetCommonErrorList(out CommonErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateShipmentTrackingDetailsRequest` | `Models/UpdateShipmentTrackingDetailsRequest.cs` |
-| `CancelInboundPlanResponse` | `Models/CancelInboundPlanResponse.cs` |
-| `UpdateShipmentTrackingDetailsError` | `Errors/UpdateShipmentTrackingDetailsError.cs` |
-| `CommonErrorList` | `Models/CommonErrorList.cs` |
+| `UpdateShipmentTrackingDetailsOperationRequest` | `src/WalmartApIs/Requests/WfsInbound/UpdateShipmentTrackingDetailsOperationRequest.cs` |
+| `UpdateShipmentTrackingDetailsRequest` | `src/WalmartApIs/Models/UpdateShipmentTrackingDetailsRequest.cs` |
+| `CancelInboundPlanResponse` | `src/WalmartApIs/Models/CancelInboundPlanResponse.cs` |
+| `UpdateShipmentTrackingDetailsError` | `src/WalmartApIs/Errors/UpdateShipmentTrackingDetailsError.cs` |
+| `CommonErrorList` | `src/WalmartApIs/Models/CommonErrorList.cs` |
 

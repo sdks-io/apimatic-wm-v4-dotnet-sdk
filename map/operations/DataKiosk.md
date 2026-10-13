@@ -2,7 +2,7 @@
 
 # DataKiosk — operations
 
-Accessor: `client.DataKiosk` · Source: `Api/DataKiosk.cs` · 5 operations
+Accessor: `client.DataKiosk` · Source: `src/WalmartApIs/Api/DataKiosk.cs` · 5 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,79 +10,86 @@ Accessor: `client.DataKiosk` · Source: `Api/DataKiosk.cs` · 5 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelQuery(string queryId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelQuery(CancelQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `QueryId`
 - **Returns**: `CancelQueryResponse`
-- **Error**: `SdkException<CancelQueryError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelQueryError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelQueryResponse` | `Models/CancelQueryResponse.cs` |
-| `CancelQueryError` | `Errors/CancelQueryError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CancelQueryRequest` | `src/WalmartApIs/Requests/DataKiosk/CancelQueryRequest.cs` |
+| `CancelQueryResponse` | `src/WalmartApIs/Models/CancelQueryResponse.cs` |
+| `CancelQueryError` | `src/WalmartApIs/Errors/CancelQueryError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateQuery
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateQuery(CreateQuerySpecification body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateQuery(CreateQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateQueryResponse`
-- **Error**: `SdkException<CreateQueryError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateQueryError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateQuerySpecification` | `Models/CreateQuerySpecification.cs` |
-| `CreateQueryResponse` | `Models/CreateQueryResponse.cs` |
-| `CreateQueryError` | `Errors/CreateQueryError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateQueryRequest` | `src/WalmartApIs/Requests/DataKiosk/CreateQueryRequest.cs` |
+| `CreateQuerySpecification` | `src/WalmartApIs/Models/CreateQuerySpecification.cs` |
+| `CreateQueryResponse` | `src/WalmartApIs/Models/CreateQueryResponse.cs` |
+| `CreateQueryError` | `src/WalmartApIs/Errors/CreateQueryError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetDocument
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetDocument(string documentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetDocument(GetDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `DocumentId`
 - **Returns**: `Document`
-- **Error**: `SdkException<GetDocumentError>` — **Case A (typed)**
+- **Error**: `ApiException<GetDocumentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Document` | `Models/Document.cs` |
-| `GetDocumentError` | `Errors/GetDocumentError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetDocumentRequest` | `src/WalmartApIs/Requests/DataKiosk/GetDocumentRequest.cs` |
+| `Document` | `src/WalmartApIs/Models/Document.cs` |
+| `GetDocumentError` | `src/WalmartApIs/Errors/GetDocumentError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetQueries
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetQueries(IReadOnlyList<ProcessingStatus>? processingStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? paginationToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 4 params (`processingStatuses` … `paginationToken`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `processingStatuses` ← `processingStatuses`, `pageSize` ← `pageSize`, `createdSince` ← `createdSince`, `createdUntil` ← `createdUntil`, `paginationToken` ← `paginationToken`
+- **Signature**: `GetQueries(GetQueriesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `processingStatuses` ← `ProcessingStatuses`, `pageSize` ← `PageSize`, `createdSince` ← `CreatedSince`, `createdUntil` ← `CreatedUntil`, `paginationToken` ← `PaginationToken`
 - **Returns**: `GetQueriesResponse`
-- **Error**: `SdkException<GetQueriesError>` — **Case A (typed)**
+- **Error**: `ApiException<GetQueriesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ProcessingStatus` | `Models/Enums/ProcessingStatus.cs` |
-| `GetQueriesResponse` | `Models/GetQueriesResponse.cs` |
-| `GetQueriesError` | `Errors/GetQueriesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetQueriesRequest` | `src/WalmartApIs/Requests/DataKiosk/GetQueriesRequest.cs` |
+| `ProcessingStatus` | `src/WalmartApIs/Models/Enums/ProcessingStatus.cs` |
+| `GetQueriesResponse` | `src/WalmartApIs/Models/GetQueriesResponse.cs` |
+| `GetQueriesError` | `src/WalmartApIs/Errors/GetQueriesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetQuery
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetQuery(string queryId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetQuery(GetQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `QueryId`
 - **Returns**: `Query`
-- **Error**: `SdkException<GetQueryError>` — **Case A (typed)**
+- **Error**: `ApiException<GetQueryError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Query` | `Models/Query.cs` |
-| `GetQueryError` | `Errors/GetQueryError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetQueryRequest` | `src/WalmartApIs/Requests/DataKiosk/GetQueryRequest.cs` |
+| `Query` | `src/WalmartApIs/Models/Query.cs` |
+| `GetQueryError` | `src/WalmartApIs/Errors/GetQueryError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

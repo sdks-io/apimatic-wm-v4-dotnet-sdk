@@ -1,13 +1,15 @@
 # Reference
 
-> Source: [WalmartApIsClient](WalmartApIsClient.cs)
+Every operation below is shown in its throwing form. On an error status it throws `ApiException<TError>` — the status code, headers, content type and the operation's error type, `RawError` (the raw body) when the spec declares none — and where an operation offers an `…AsResult` sibling, that sibling returns `ApiResult<TResponse, TError>` instead. A request that produces no usable response surfaces as `SdkConnectionException` or `SdkTimeoutException`, a body that does not match the documented response type as `ResponseDeserializationException`, and a credential that cannot be applied as `AuthSchemeException`; all of them derive from `SdkException` and name the failed call. See [README → Error Handling](README.md#error-handling).
+
+> Source: [WalmartApIsClient](src/WalmartApIs/WalmartApIsClient.cs)
 
 ## Authorization
 
-> Source: [Authorization](Api/Authorization.cs)
+> Source: [Authorization](src/WalmartApIs/Api/Authorization.cs)
 
 <details>
-<summary><code>Task Authorize(ResponseType1 responseType, string clientId, string redirectUri, string scope, string state, string codeChallenge, CodeChallengeMethod codeChallengeMethod, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task Authorize(AuthorizeRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -46,7 +48,6 @@ unverified URI would be an open redirect.
 > enforces the request-side invariants it can and redirects valid requests to
 > IAM; the full guarantee lands when those upstream changes ship.
 
-
 </dd>
 </dl>
 
@@ -58,15 +59,18 @@ unverified URI would be an open redirect.
 ```csharp
 try
 {
-    await client.Authorization.Authorize(responseType,
-        clientId,
-        redirectUri,
-        scope,
-        state,
-        codeChallenge,
-        codeChallengeMethod);
+    await client.Authorization.Authorize(new AuthorizeRequest
+    {
+        ResponseType = ResponseType1.Code,
+        ClientId = "some example string",
+        RedirectUri = "https://example.com",
+        Scope = "some example string",
+        State = "some example string",
+        CodeChallenge = "some example string",
+        CodeChallengeMethod = CodeChallengeMethod.S256,
+    });
 }
-catch (SdkException<AuthorizeApiError> ex)
+catch (ApiException<AuthorizeApiError> ex)
 {
     if (ex.Error.TryGetAuthorizeError(out var error))
     {
@@ -78,20 +82,12 @@ catch (SdkException<AuthorizeApiError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>responseType</code> | <code>[ResponseType1](Models/Enums/ResponseType1.cs)</code> | Must be `code`. |
-| <code>clientId</code> | <code>string</code> | The registered client identifier. |
-| <code>redirectUri</code> | <code>string</code> | Callback URI; must exactly match a registered value. |
-| <code>scope</code> | <code>string</code> | Space-delimited scopes. Include `offline_access` to receive a refresh token. |
-| <code>state</code> | <code>string</code> | Opaque CSRF token; echoed back unchanged. |
-| <code>codeChallenge</code> | <code>string</code> | PKCE challenge — base64url(SHA-256(code_verifier)). |
-| <code>codeChallengeMethod</code> | <code>[CodeChallengeMethod](Models/Enums/CodeChallengeMethod.cs)</code> | Must be `S256`. |
+<code>[AuthorizeRequest](src/WalmartApIs/Requests/Authorization/AuthorizeRequest.cs)</code>
 
 </dd>
 </dl>
@@ -103,7 +99,7 @@ catch (SdkException<AuthorizeApiError> ex)
 
 **OnSuccess**: No content
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[AuthorizeApiError](Errors/AuthorizeApiError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[AuthorizeApiError](src/WalmartApIs/Errors/AuthorizeApiError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -114,7 +110,7 @@ catch (SdkException<AuthorizeApiError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;TokenResponse&gt; CreateToken(GrantType grantType, string? clientId, string? clientSecret, string? code, string? codeVerifier, string? refreshToken, string? redirectUri, string? scope, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;TokenResponse&gt; CreateToken(CreateTokenRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -155,7 +151,6 @@ TTL). A requested `scope` MUST NOT exceed the originally granted scope.
 
 **Implemented by `the Authorization API` as a stateless proxy to Walmart IAM .**
 
-
 </dd>
 </dl>
 
@@ -167,17 +162,13 @@ TTL). A requested `scope` MUST NOT exceed the originally granted scope.
 ```csharp
 try
 {
-    var response = await client.Authorization.CreateToken(grantType,
-        clientId,
-        clientSecret,
-        code,
-        codeVerifier,
-        refreshToken,
-        redirectUri,
-        scope);
+    var response = await client.Authorization.CreateToken(new CreateTokenRequest
+    {
+        GrantType = GrantType.ClientCredentials,
+    });
     // TODO: Handle 'response' of type TokenResponse
 }
-catch (SdkException<CreateTokenError> ex)
+catch (ApiException<CreateTokenError> ex)
 {
     if (ex.Error.TryGetOAuthError(out var error))
     {
@@ -189,21 +180,12 @@ catch (SdkException<CreateTokenError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>grantType</code> | <code>[GrantType](Models/Enums/GrantType.cs)</code> | - |
-| <code>clientId</code> | <code>string?</code> | - |
-| <code>clientSecret</code> | <code>string?</code> | - |
-| <code>code</code> | <code>string?</code> | - |
-| <code>codeVerifier</code> | <code>string?</code> | - |
-| <code>refreshToken</code> | <code>string?</code> | - |
-| <code>redirectUri</code> | <code>string?</code> | - |
-| <code>scope</code> | <code>string?</code> | - |
+<code>[CreateTokenRequest](src/WalmartApIs/Requests/Authorization/CreateTokenRequest.cs)</code>
 
 </dd>
 </dl>
@@ -213,9 +195,9 @@ catch (SdkException<CreateTokenError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[TokenResponse](Models/TokenResponse.cs)</code>
+**OnSuccess**: <code>[TokenResponse](src/WalmartApIs/Models/TokenResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateTokenError](Errors/CreateTokenError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateTokenError](src/WalmartApIs/Errors/CreateTokenError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -226,7 +208,7 @@ catch (SdkException<CreateTokenError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ClientRegistrationResponse&gt; RegisterClient(ClientRegistrationRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ClientRegistrationResponse&gt; RegisterClient(RegisterClientRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -247,7 +229,6 @@ Proxied to Walmart IAM's registration endpoint (/). RFC 7592
 registration management (read/update/delete via a
 `registration_access_token`) is not offered in this version.
 
-
 </dd>
 </dl>
 
@@ -259,10 +240,13 @@ registration management (read/update/delete via a
 ```csharp
 try
 {
-    var response = await client.Authorization.RegisterClient(body);
+    var response = await client.Authorization.RegisterClient(new RegisterClientRequest
+    {
+        Body = new ClientRegistrationRequest { RedirectUris = ["https://example.com"] },
+    });
     // TODO: Handle 'response' of type ClientRegistrationResponse
 }
-catch (SdkException<RegisterClientError> ex)
+catch (ApiException<RegisterClientError> ex)
 {
     if (ex.Error.TryGetRegistrationError(out var error))
     {
@@ -274,14 +258,12 @@ catch (SdkException<RegisterClientError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[ClientRegistrationRequest](Models/ClientRegistrationRequest.cs)</code> | - |
+<code>[RegisterClientRequest](src/WalmartApIs/Requests/Authorization/RegisterClientRequest.cs)</code>
 
 </dd>
 </dl>
@@ -291,9 +273,9 @@ catch (SdkException<RegisterClientError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ClientRegistrationResponse](Models/ClientRegistrationResponse.cs)</code>
+**OnSuccess**: <code>[ClientRegistrationResponse](src/WalmartApIs/Models/ClientRegistrationResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[RegisterClientError](Errors/RegisterClientError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[RegisterClientError](src/WalmartApIs/Errors/RegisterClientError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -305,10 +287,10 @@ catch (SdkException<RegisterClientError> ex)
 
 ## Catalog
 
-> Source: [Catalog](Api/Catalog.cs)
+> Source: [Catalog](src/WalmartApIs/Api/Catalog.cs)
 
 <details>
-<summary><code>Task&lt;Item&gt; GetCatalogItem(string walmartItemId, IReadOnlyList&lt;string&gt; marketplaceIds, IReadOnlyList&lt;IncludedDatum&gt;? includedData, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Item&gt; GetCatalogItem(GetCatalogItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -321,10 +303,14 @@ catch (SdkException<RegisterClientError> ex)
 ```csharp
 try
 {
-    var response = await client.Catalog.GetCatalogItem(walmartItemId, marketplaceIds, includedData);
+    var response = await client.Catalog.GetCatalogItem(new GetCatalogItemRequest
+    {
+        WalmartItemId = "00000000000000",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type Item
 }
-catch (SdkException<GetCatalogItemError> ex)
+catch (ApiException<GetCatalogItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -336,16 +322,12 @@ catch (SdkException<GetCatalogItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>walmartItemId</code> | <code>string</code> | Walmart Item ID (14-digit numeric identifier) |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | Walmart marketplace identifiers. Use WALMART_US for the US marketplace. |
-| <code>includedData</code> | <code>IReadOnlyList&lt;[IncludedDatum](Models/Enums/IncludedDatum.cs)&gt;?</code> | Data sections to include in the response |
+<code>[GetCatalogItemRequest](src/WalmartApIs/Requests/Catalog/GetCatalogItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -355,9 +337,9 @@ catch (SdkException<GetCatalogItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Item](Models/Item.cs)</code>
+**OnSuccess**: <code>[Item](src/WalmartApIs/Models/Item.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetCatalogItemError](Errors/GetCatalogItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetCatalogItemError](src/WalmartApIs/Errors/GetCatalogItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -368,7 +350,7 @@ catch (SdkException<GetCatalogItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ItemSearchResults&gt; SearchCatalogItems(IReadOnlyList&lt;string&gt; marketplaceIds, string? keywords, string? walmartItemIds, string? sellerSku, string? gtin, string? upc, IReadOnlyList&lt;IncludedDatum&gt;? includedData, string? pageToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ItemSearchResults&gt; SearchCatalogItems(SearchCatalogItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -381,7 +363,6 @@ catch (SdkException<GetCatalogItemError> ex)
 Search the Walmart Marketplace catalog using keywords, WalmartItemId,
 GTIN, UPC, or seller SKU. Returns matching catalog items.
 
-
 </dd>
 </dl>
 
@@ -393,17 +374,13 @@ GTIN, UPC, or seller SKU. Returns matching catalog items.
 ```csharp
 try
 {
-    var response = await client.Catalog.SearchCatalogItems(marketplaceIds,
-        keywords,
-        walmartItemIds,
-        sellerSku,
-        gtin,
-        upc,
-        includedData,
-        pageToken);
+    var response = await client.Catalog.SearchCatalogItems(new SearchCatalogItemsRequest
+    {
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type ItemSearchResults
 }
-catch (SdkException<SearchCatalogItemsError> ex)
+catch (ApiException<SearchCatalogItemsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -415,22 +392,12 @@ catch (SdkException<SearchCatalogItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | Walmart marketplace identifiers. Use WALMART_US for the US marketplace. |
-| <code>keywords</code> | <code>string?</code> | Keyword search terms |
-| <code>walmartItemIds</code> | <code>string?</code> | Comma-separated Walmart Item IDs (14-digit). Max 20. |
-| <code>sellerSku</code> | <code>string?</code> | Seller-defined SKU |
-| <code>gtin</code> | <code>string?</code> | Global Trade Item Number (14-digit) |
-| <code>upc</code> | <code>string?</code> | Universal Product Code (12-digit) |
-| <code>includedData</code> | <code>IReadOnlyList&lt;[IncludedDatum](Models/Enums/IncludedDatum.cs)&gt;?</code> | Data sections to include in the response |
-| <code>pageToken</code> | <code>string?</code> | Token for the next page of results, obtained from `pagination.nextToken` in a previous response.<br>**Known limitation:** Cursor-based pagination is not currently supported for keyword search. The PIQS search backend (`/v3/items/walmart/search`) does not return a `nextCursor` and does not honour this parameter. Results are capped at 40 items per call. Reserved for future use once PIQS exposes pagination support. |
-| <code>pageSize</code> | <code>int?</code> | Number of results per page (1–20).<br>**Known limitation:** The PIQS keyword search backend hard-caps results at 40 items per call regardless of this value.<br>**Default**: 10 |
+<code>[SearchCatalogItemsRequest](src/WalmartApIs/Requests/Catalog/SearchCatalogItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -440,9 +407,9 @@ catch (SdkException<SearchCatalogItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ItemSearchResults](Models/ItemSearchResults.cs)</code>
+**OnSuccess**: <code>[ItemSearchResults](src/WalmartApIs/Models/ItemSearchResults.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SearchCatalogItemsError](Errors/SearchCatalogItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SearchCatalogItemsError](src/WalmartApIs/Errors/SearchCatalogItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -454,10 +421,10 @@ catch (SdkException<SearchCatalogItemsError> ex)
 
 ## DataKiosk
 
-> Source: [DataKiosk](Api/DataKiosk.cs)
+> Source: [DataKiosk](src/WalmartApIs/Api/DataKiosk.cs)
 
 <details>
-<summary><code>Task&lt;CancelQueryResponse&gt; CancelQuery(string queryId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelQueryResponse&gt; CancelQuery(CancelQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -470,10 +437,10 @@ catch (SdkException<SearchCatalogItemsError> ex)
 ```csharp
 try
 {
-    var response = await client.DataKiosk.CancelQuery(queryId);
+    var response = await client.DataKiosk.CancelQuery(new CancelQueryRequest { QueryId = "some example string" });
     // TODO: Handle 'response' of type CancelQueryResponse
 }
-catch (SdkException<CancelQueryError> ex)
+catch (ApiException<CancelQueryError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -485,14 +452,12 @@ catch (SdkException<CancelQueryError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>queryId</code> | <code>string</code> | - |
+<code>[CancelQueryRequest](src/WalmartApIs/Requests/DataKiosk/CancelQueryRequest.cs)</code>
 
 </dd>
 </dl>
@@ -502,9 +467,9 @@ catch (SdkException<CancelQueryError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelQueryResponse](Models/CancelQueryResponse.cs)</code>
+**OnSuccess**: <code>[CancelQueryResponse](src/WalmartApIs/Models/CancelQueryResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelQueryError](Errors/CancelQueryError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelQueryError](src/WalmartApIs/Errors/CancelQueryError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -515,7 +480,7 @@ catch (SdkException<CancelQueryError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateQueryResponse&gt; CreateQuery(CreateQuerySpecification body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateQueryResponse&gt; CreateQuery(CreateQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -528,7 +493,6 @@ catch (SdkException<CancelQueryError> ex)
 Submits a structured query for async processing.
 Query language TBD pending ADR (GraphQL vs REST hybrid — Pod 4).
 
-
 </dd>
 </dl>
 
@@ -540,10 +504,13 @@ Query language TBD pending ADR (GraphQL vs REST hybrid — Pod 4).
 ```csharp
 try
 {
-    var response = await client.DataKiosk.CreateQuery(body);
+    var response = await client.DataKiosk.CreateQuery(new CreateQueryRequest
+    {
+        Body = new CreateQuerySpecification { Query = "some example string" },
+    });
     // TODO: Handle 'response' of type CreateQueryResponse
 }
-catch (SdkException<CreateQueryError> ex)
+catch (ApiException<CreateQueryError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -555,14 +522,12 @@ catch (SdkException<CreateQueryError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateQuerySpecification](Models/CreateQuerySpecification.cs)</code> | - |
+<code>[CreateQueryRequest](src/WalmartApIs/Requests/DataKiosk/CreateQueryRequest.cs)</code>
 
 </dd>
 </dl>
@@ -572,9 +537,9 @@ catch (SdkException<CreateQueryError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateQueryResponse](Models/CreateQueryResponse.cs)</code>
+**OnSuccess**: <code>[CreateQueryResponse](src/WalmartApIs/Models/CreateQueryResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateQueryError](Errors/CreateQueryError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateQueryError](src/WalmartApIs/Errors/CreateQueryError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -585,7 +550,7 @@ catch (SdkException<CreateQueryError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Document&gt; GetDocument(string documentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Document&gt; GetDocument(GetDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -598,7 +563,6 @@ catch (SdkException<CreateQueryError> ex)
 Returns a pre-signed URL for downloading query result data.
 Do not log the pre-signed URL.
 
-
 </dd>
 </dl>
 
@@ -610,10 +574,10 @@ Do not log the pre-signed URL.
 ```csharp
 try
 {
-    var response = await client.DataKiosk.GetDocument(documentId);
+    var response = await client.DataKiosk.GetDocument(new GetDocumentRequest { DocumentId = "some example string" });
     // TODO: Handle 'response' of type Document
 }
-catch (SdkException<GetDocumentError> ex)
+catch (ApiException<GetDocumentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -625,14 +589,12 @@ catch (SdkException<GetDocumentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>documentId</code> | <code>string</code> | - |
+<code>[GetDocumentRequest](src/WalmartApIs/Requests/DataKiosk/GetDocumentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -642,9 +604,9 @@ catch (SdkException<GetDocumentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Document](Models/Document.cs)</code>
+**OnSuccess**: <code>[Document](src/WalmartApIs/Models/Document.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetDocumentError](Errors/GetDocumentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetDocumentError](src/WalmartApIs/Errors/GetDocumentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -655,7 +617,7 @@ catch (SdkException<GetDocumentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetQueriesResponse&gt; GetQueries(IReadOnlyList&lt;ProcessingStatus&gt;? processingStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? paginationToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetQueriesResponse&gt; GetQueries(GetQueriesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -668,7 +630,6 @@ catch (SdkException<GetDocumentError> ex)
 Returns a paginated list of Data Kiosk queries submitted by the seller,
 optionally filtered by processing status and creation date range.
 
-
 </dd>
 </dl>
 
@@ -680,10 +641,10 @@ optionally filtered by processing status and creation date range.
 ```csharp
 try
 {
-    var response = await client.DataKiosk.GetQueries(processingStatuses, createdSince, createdUntil, paginationToken);
+    var response = await client.DataKiosk.GetQueries(new GetQueriesRequest());
     // TODO: Handle 'response' of type GetQueriesResponse
 }
-catch (SdkException<GetQueriesError> ex)
+catch (ApiException<GetQueriesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -695,18 +656,12 @@ catch (SdkException<GetQueriesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>processingStatuses</code> | <code>IReadOnlyList&lt;[ProcessingStatus](Models/Enums/ProcessingStatus.cs)&gt;?</code> | - |
-| <code>createdSince</code> | <code>DateTimeOffset?</code> | - |
-| <code>createdUntil</code> | <code>DateTimeOffset?</code> | - |
-| <code>paginationToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[GetQueriesRequest](src/WalmartApIs/Requests/DataKiosk/GetQueriesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -716,9 +671,9 @@ catch (SdkException<GetQueriesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetQueriesResponse](Models/GetQueriesResponse.cs)</code>
+**OnSuccess**: <code>[GetQueriesResponse](src/WalmartApIs/Models/GetQueriesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetQueriesError](Errors/GetQueriesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetQueriesError](src/WalmartApIs/Errors/GetQueriesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -729,7 +684,7 @@ catch (SdkException<GetQueriesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Query&gt; GetQuery(string queryId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Query&gt; GetQuery(GetQueryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -742,10 +697,10 @@ catch (SdkException<GetQueriesError> ex)
 ```csharp
 try
 {
-    var response = await client.DataKiosk.GetQuery(queryId);
+    var response = await client.DataKiosk.GetQuery(new GetQueryRequest { QueryId = "some example string" });
     // TODO: Handle 'response' of type Query
 }
-catch (SdkException<GetQueryError> ex)
+catch (ApiException<GetQueryError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -757,14 +712,12 @@ catch (SdkException<GetQueryError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>queryId</code> | <code>string</code> | - |
+<code>[GetQueryRequest](src/WalmartApIs/Requests/DataKiosk/GetQueryRequest.cs)</code>
 
 </dd>
 </dl>
@@ -774,9 +727,9 @@ catch (SdkException<GetQueryError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Query](Models/Query.cs)</code>
+**OnSuccess**: <code>[Query](src/WalmartApIs/Models/Query.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetQueryError](Errors/GetQueryError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetQueryError](src/WalmartApIs/Errors/GetQueryError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -788,10 +741,10 @@ catch (SdkException<GetQueryError> ex)
 
 ## Disputes
 
-> Source: [Disputes](Api/Disputes.cs)
+> Source: [Disputes](src/WalmartApIs/Api/Disputes.cs)
 
 <details>
-<summary><code>Task&lt;DisputeEligibilityResponse&gt; CheckDisputeEligibility(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;DisputeEligibilityResponse&gt; CheckDisputeEligibility(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -804,7 +757,6 @@ catch (SdkException<GetQueryError> ex)
 Returns whether the authenticated seller is eligible to raise a payment
 dispute and, if not, the reason for ineligibility. Delegates to
 GMPPaymentsPlatform (Phase 5).
-
 
 </dd>
 </dl>
@@ -820,7 +772,7 @@ try
     var response = await client.Disputes.CheckDisputeEligibility();
     // TODO: Handle 'response' of type DisputeEligibilityResponse
 }
-catch (SdkException<CheckDisputeEligibilityError> ex)
+catch (ApiException<CheckDisputeEligibilityError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -837,9 +789,9 @@ catch (SdkException<CheckDisputeEligibilityError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[DisputeEligibilityResponse](Models/DisputeEligibilityResponse.cs)</code>
+**OnSuccess**: <code>[DisputeEligibilityResponse](src/WalmartApIs/Models/DisputeEligibilityResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CheckDisputeEligibilityError](Errors/CheckDisputeEligibilityError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CheckDisputeEligibilityError](src/WalmartApIs/Errors/CheckDisputeEligibilityError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -851,10 +803,10 @@ catch (SdkException<CheckDisputeEligibilityError> ex)
 
 ## Feeds
 
-> Source: [Feeds](Api/Feeds.cs)
+> Source: [Feeds](src/WalmartApIs/Api/Feeds.cs)
 
 <details>
-<summary><code>Task&lt;CancelFeedResponse&gt; CancelFeed(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelFeedResponse&gt; CancelFeed(CancelFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -870,7 +822,6 @@ feedId if it is still queued or in progress. Mirrors Amazon SP-API
 generate a client against the final contract now. A feed that has
 already reached DONE or ERROR cannot be cancelled.
 
-
 </dd>
 </dl>
 
@@ -882,10 +833,10 @@ already reached DONE or ERROR cannot be cancelled.
 ```csharp
 try
 {
-    var response = await client.Feeds.CancelFeed(feedId);
+    var response = await client.Feeds.CancelFeed(new CancelFeedRequest { FeedId = "some example string" });
     // TODO: Handle 'response' of type CancelFeedResponse
 }
-catch (SdkException<CancelFeedError> ex)
+catch (ApiException<CancelFeedError> ex)
 {
     if (ex.Error.TryGetErrorList1(out var error))
     {
@@ -897,14 +848,12 @@ catch (SdkException<CancelFeedError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>feedId</code> | <code>string</code> | - |
+<code>[CancelFeedRequest](src/WalmartApIs/Requests/Feeds/CancelFeedRequest.cs)</code>
 
 </dd>
 </dl>
@@ -914,9 +863,9 @@ catch (SdkException<CancelFeedError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelFeedResponse](Models/CancelFeedResponse.cs)</code>
+**OnSuccess**: <code>[CancelFeedResponse](src/WalmartApIs/Models/CancelFeedResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelFeedError](Errors/CancelFeedError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelFeedError](src/WalmartApIs/Errors/CancelFeedError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -927,7 +876,7 @@ catch (SdkException<CancelFeedError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateFeedResponse&gt; CreateFeed(FeedType feedType, string? marketplaceId, BinaryContent file, ContentType? contentType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateFeedResponse&gt; CreateFeed(CreateFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -941,7 +890,6 @@ Upload a feed file and submit it for asynchronous processing in a single call.
 The server handles document storage internally. Use the returned feedId to poll
 processing status via GET /feeds/v4/feeds/{feedId}.
 
-
 </dd>
 </dl>
 
@@ -953,10 +901,14 @@ processing status via GET /feeds/v4/feeds/{feedId}.
 ```csharp
 try
 {
-    var response = await client.Feeds.CreateFeed(feedType, marketplaceId, file, contentType);
+    var response = await client.Feeds.CreateFeed(new CreateFeedRequest
+    {
+        FeedType = FeedType.ListingsFeed,
+        File = Array.Empty<byte>(),
+    });
     // TODO: Handle 'response' of type CreateFeedResponse
 }
-catch (SdkException<CreateFeedError> ex)
+catch (ApiException<CreateFeedError> ex)
 {
     if (ex.Error.TryGetErrorList1(out var error))
     {
@@ -968,17 +920,12 @@ catch (SdkException<CreateFeedError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>feedType</code> | <code>[FeedType](Models/Enums/FeedType.cs)</code> | The type of feed being submitted |
-| <code>marketplaceId</code> | <code>string?</code> | Marketplace identifier (opaque token). If omitted, the service applies WALMART_US. |
-| <code>file</code> | <code>BinaryContent</code> | - |
-| <code>contentType</code> | <code>[ContentType?](Models/Enums/ContentType.cs)</code> | - |
+<code>[CreateFeedRequest](src/WalmartApIs/Requests/Feeds/CreateFeedRequest.cs)</code>
 
 </dd>
 </dl>
@@ -988,9 +935,9 @@ catch (SdkException<CreateFeedError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateFeedResponse](Models/CreateFeedResponse.cs)</code>
+**OnSuccess**: <code>[CreateFeedResponse](src/WalmartApIs/Models/CreateFeedResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateFeedError](Errors/CreateFeedError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateFeedError](src/WalmartApIs/Errors/CreateFeedError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1001,7 +948,7 @@ catch (SdkException<CreateFeedError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Feed&gt; GetFeed(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Feed&gt; GetFeed(GetFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1014,10 +961,10 @@ catch (SdkException<CreateFeedError> ex)
 ```csharp
 try
 {
-    var response = await client.Feeds.GetFeed(feedId);
+    var response = await client.Feeds.GetFeed(new GetFeedRequest { FeedId = "some example string" });
     // TODO: Handle 'response' of type Feed
 }
-catch (SdkException<GetFeedError> ex)
+catch (ApiException<GetFeedError> ex)
 {
     if (ex.Error.TryGetErrorList1(out var error))
     {
@@ -1029,14 +976,12 @@ catch (SdkException<GetFeedError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>feedId</code> | <code>string</code> | - |
+<code>[GetFeedRequest](src/WalmartApIs/Requests/Feeds/GetFeedRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1046,9 +991,9 @@ catch (SdkException<GetFeedError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Feed](Models/Feed.cs)</code>
+**OnSuccess**: <code>[Feed](src/WalmartApIs/Models/Feed.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFeedError](Errors/GetFeedError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFeedError](src/WalmartApIs/Errors/GetFeedError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1059,7 +1004,7 @@ catch (SdkException<GetFeedError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;BinaryContent&gt; GetFeedDocument(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;BinaryContent&gt; GetFeedDocument(GetFeedDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1077,7 +1022,6 @@ to enable download progress tracking.
 An IDOR check is performed before the download — the authenticated
 seller must own the feed referenced by feedId.
 
-
 </dd>
 </dl>
 
@@ -1089,10 +1033,10 @@ seller must own the feed referenced by feedId.
 ```csharp
 try
 {
-    var response = await client.Feeds.GetFeedDocument(feedId);
+    var response = await client.Feeds.GetFeedDocument(new GetFeedDocumentRequest { FeedId = "some example string" });
     // TODO: Handle 'response' of type BinaryContent
 }
-catch (SdkException<GetFeedDocumentError> ex)
+catch (ApiException<GetFeedDocumentError> ex)
 {
     if (ex.Error.TryGetErrorList1(out var error))
     {
@@ -1104,14 +1048,12 @@ catch (SdkException<GetFeedDocumentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>feedId</code> | <code>string</code> | - |
+<code>[GetFeedDocumentRequest](src/WalmartApIs/Requests/Feeds/GetFeedDocumentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1123,7 +1065,7 @@ catch (SdkException<GetFeedDocumentError> ex)
 
 **OnSuccess**: <code>BinaryContent</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFeedDocumentError](Errors/GetFeedDocumentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFeedDocumentError](src/WalmartApIs/Errors/GetFeedDocumentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1134,7 +1076,7 @@ catch (SdkException<GetFeedDocumentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFeedsResponse&gt; GetFeeds(IReadOnlyList&lt;FeedType&gt;? feedTypes, IReadOnlyList&lt;FeedStatus&gt;? feedStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFeedsResponse&gt; GetFeeds(GetFeedsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1147,10 +1089,10 @@ catch (SdkException<GetFeedDocumentError> ex)
 ```csharp
 try
 {
-    var response = await client.Feeds.GetFeeds(feedTypes, feedStatuses, createdSince, createdUntil, nextToken);
+    var response = await client.Feeds.GetFeeds(new GetFeedsRequest());
     // TODO: Handle 'response' of type GetFeedsResponse
 }
-catch (SdkException<GetFeedsError> ex)
+catch (ApiException<GetFeedsError> ex)
 {
     if (ex.Error.TryGetErrorList1(out var error))
     {
@@ -1162,19 +1104,12 @@ catch (SdkException<GetFeedsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>feedTypes</code> | <code>IReadOnlyList&lt;[FeedType](Models/Enums/FeedType.cs)&gt;?</code> | Feed type filter |
-| <code>feedStatuses</code> | <code>IReadOnlyList&lt;[FeedStatus](Models/Enums/FeedStatus.cs)&gt;?</code> | - |
-| <code>createdSince</code> | <code>DateTimeOffset?</code> | - |
-| <code>createdUntil</code> | <code>DateTimeOffset?</code> | - |
-| <code>nextToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[GetFeedsRequest](src/WalmartApIs/Requests/Feeds/GetFeedsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1184,9 +1119,9 @@ catch (SdkException<GetFeedsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFeedsResponse](Models/GetFeedsResponse.cs)</code>
+**OnSuccess**: <code>[GetFeedsResponse](src/WalmartApIs/Models/GetFeedsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFeedsError](Errors/GetFeedsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFeedsError](src/WalmartApIs/Errors/GetFeedsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1198,10 +1133,10 @@ catch (SdkException<GetFeedsError> ex)
 
 ## FinalPayout
 
-> Source: [FinalPayout](Api/FinalPayout.cs)
+> Source: [FinalPayout](src/WalmartApIs/Api/FinalPayout.cs)
 
 <details>
-<summary><code>Task&lt;FinalPayoutCaseStatusResponse&gt; GetFinalPayoutCaseStatus(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;FinalPayoutCaseStatusResponse&gt; GetFinalPayoutCaseStatus(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1214,7 +1149,6 @@ catch (SdkException<GetFeedsError> ex)
 Returns the current state, case ID, and payable amount for the authenticated
 seller's final payout case (used when a seller account is being offboarded).
 Delegates to GMPPaymentsPlatform (Phase 5).
-
 
 </dd>
 </dl>
@@ -1230,7 +1164,7 @@ try
     var response = await client.FinalPayout.GetFinalPayoutCaseStatus();
     // TODO: Handle 'response' of type FinalPayoutCaseStatusResponse
 }
-catch (SdkException<GetFinalPayoutCaseStatusError> ex)
+catch (ApiException<GetFinalPayoutCaseStatusError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1247,9 +1181,9 @@ catch (SdkException<GetFinalPayoutCaseStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[FinalPayoutCaseStatusResponse](Models/FinalPayoutCaseStatusResponse.cs)</code>
+**OnSuccess**: <code>[FinalPayoutCaseStatusResponse](src/WalmartApIs/Models/FinalPayoutCaseStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFinalPayoutCaseStatusError](Errors/GetFinalPayoutCaseStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFinalPayoutCaseStatusError](src/WalmartApIs/Errors/GetFinalPayoutCaseStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1260,7 +1194,7 @@ catch (SdkException<GetFinalPayoutCaseStatusError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;FinalPayoutCaseStatusResponse&gt; UpdateFinalPayoutCaseStatus(DisbursementsV4FinalPayoutCaseUpdateStatusRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;FinalPayoutCaseStatusResponse&gt; UpdateFinalPayoutCaseStatus(UpdateFinalPayoutCaseStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1274,7 +1208,6 @@ Transitions the authenticated seller's final payout case to Resolved or
 Closed, optionally including resolution notes. Requires disbursements:write
 scope. Delegates to GMPPaymentsPlatform (Phase 5).
 
-
 </dd>
 </dl>
 
@@ -1286,10 +1219,13 @@ scope. Delegates to GMPPaymentsPlatform (Phase 5).
 ```csharp
 try
 {
-    var response = await client.FinalPayout.UpdateFinalPayoutCaseStatus(body);
+    var response = await client.FinalPayout.UpdateFinalPayoutCaseStatus(new UpdateFinalPayoutCaseStatusRequest
+    {
+        Body = new DisbursementsV4FinalPayoutCaseUpdateStatusRequest { Status = Status3.Resolved },
+    });
     // TODO: Handle 'response' of type FinalPayoutCaseStatusResponse
 }
-catch (SdkException<UpdateFinalPayoutCaseStatusError> ex)
+catch (ApiException<UpdateFinalPayoutCaseStatusError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1301,14 +1237,12 @@ catch (SdkException<UpdateFinalPayoutCaseStatusError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[DisbursementsV4FinalPayoutCaseUpdateStatusRequest](Models/DisbursementsV4FinalPayoutCaseUpdateStatusRequest.cs)</code> | - |
+<code>[UpdateFinalPayoutCaseStatusRequest](src/WalmartApIs/Requests/FinalPayout/UpdateFinalPayoutCaseStatusRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1318,9 +1252,9 @@ catch (SdkException<UpdateFinalPayoutCaseStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[FinalPayoutCaseStatusResponse](Models/FinalPayoutCaseStatusResponse.cs)</code>
+**OnSuccess**: <code>[FinalPayoutCaseStatusResponse](src/WalmartApIs/Models/FinalPayoutCaseStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateFinalPayoutCaseStatusError](Errors/UpdateFinalPayoutCaseStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateFinalPayoutCaseStatusError](src/WalmartApIs/Errors/UpdateFinalPayoutCaseStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1332,10 +1266,10 @@ catch (SdkException<UpdateFinalPayoutCaseStatusError> ex)
 
 ## Finances
 
-> Source: [Finances](Api/Finances.cs)
+> Source: [Finances](src/WalmartApIs/Api/Finances.cs)
 
 <details>
-<summary><code>Task&lt;object&gt; ListFinancialEventGroups(int? maxResultsPerPage, DateTimeOffset? financialEventGroupStartedBefore, DateTimeOffset? financialEventGroupStartedAfter, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; ListFinancialEventGroups(ListFinancialEventGroupsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1351,7 +1285,6 @@ Returns financial event groups for the seller.
 FinancialEventGroup (requires eventGroupId keying, date-range filter,
 and cursor pagination). Returns empty response pending Phase 5.
 
-
 </dd>
 </dl>
 
@@ -1363,13 +1296,10 @@ and cursor pagination). Returns empty response pending Phase 5.
 ```csharp
 try
 {
-    var response = await client.Finances.ListFinancialEventGroups(maxResultsPerPage,
-        financialEventGroupStartedBefore,
-        financialEventGroupStartedAfter,
-        nextToken);
+    var response = await client.Finances.ListFinancialEventGroups(new ListFinancialEventGroupsRequest());
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<ListFinancialEventGroupsError> ex)
+catch (ApiException<ListFinancialEventGroupsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1381,17 +1311,12 @@ catch (SdkException<ListFinancialEventGroupsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>maxResultsPerPage</code> | <code>int?</code> | The maximum number of results per page. |
-| <code>financialEventGroupStartedBefore</code> | <code>DateTimeOffset?</code> | Financial event groups that opened before this date/time (ISO 8601). |
-| <code>financialEventGroupStartedAfter</code> | <code>DateTimeOffset?</code> | Financial event groups that opened after this date/time (ISO 8601). |
-| <code>nextToken</code> | <code>string?</code> | Cursor token for the next page of results. |
+<code>[ListFinancialEventGroupsRequest](src/WalmartApIs/Requests/Finances/ListFinancialEventGroupsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1403,7 +1328,7 @@ catch (SdkException<ListFinancialEventGroupsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListFinancialEventGroupsError](Errors/ListFinancialEventGroupsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListFinancialEventGroupsError](src/WalmartApIs/Errors/ListFinancialEventGroupsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1414,7 +1339,7 @@ catch (SdkException<ListFinancialEventGroupsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; ListFinancialEvents(int? maxResultsPerPage, DateTimeOffset? postedAfter, DateTimeOffset? postedBefore, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; ListFinancialEvents(ListFinancialEventsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1432,7 +1357,6 @@ Returns transaction records for the seller keyed by partnerId.
 **Unsupported parameters:** PostedAfter, PostedBefore, and NextToken are not
 supported by the upstream. Supplying any of these parameters returns 400 Bad Request.
 
-
 </dd>
 </dl>
 
@@ -1444,10 +1368,10 @@ supported by the upstream. Supplying any of these parameters returns 400 Bad Req
 ```csharp
 try
 {
-    var response = await client.Finances.ListFinancialEvents(maxResultsPerPage, postedAfter, postedBefore, nextToken);
+    var response = await client.Finances.ListFinancialEvents(new ListFinancialEventsRequest());
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<ListFinancialEventsError> ex)
+catch (ApiException<ListFinancialEventsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1459,17 +1383,12 @@ catch (SdkException<ListFinancialEventsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>maxResultsPerPage</code> | <code>int?</code> | Ignored — GMP returns all results in a single page. |
-| <code>postedAfter</code> | <code>DateTimeOffset?</code> | Not supported — returns 400 Bad Request if supplied. |
-| <code>postedBefore</code> | <code>DateTimeOffset?</code> | Not supported — returns 400 Bad Request if supplied. |
-| <code>nextToken</code> | <code>string?</code> | Not supported — returns 400 Bad Request if supplied. |
+<code>[ListFinancialEventsRequest](src/WalmartApIs/Requests/Finances/ListFinancialEventsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1481,7 +1400,7 @@ catch (SdkException<ListFinancialEventsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListFinancialEventsError](Errors/ListFinancialEventsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListFinancialEventsError](src/WalmartApIs/Errors/ListFinancialEventsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1492,7 +1411,7 @@ catch (SdkException<ListFinancialEventsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; ListFinancialEventsByGroupId(string eventGroupId, int? maxResultsPerPage, DateTimeOffset? postedAfter, DateTimeOffset? postedBefore, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; ListFinancialEventsByGroupId(ListFinancialEventsByGroupIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1507,7 +1426,6 @@ Returns financial events for a specific financial event group.
 **Status: stub** — no upstream maps eventGroupId to a financial event
 set. Returns empty response pending Phase 5.
 
-
 </dd>
 </dl>
 
@@ -1519,14 +1437,13 @@ set. Returns empty response pending Phase 5.
 ```csharp
 try
 {
-    var response = await client.Finances.ListFinancialEventsByGroupId(eventGroupId,
-        maxResultsPerPage,
-        postedAfter,
-        postedBefore,
-        nextToken);
+    var response = await client.Finances.ListFinancialEventsByGroupId(new ListFinancialEventsByGroupIdRequest
+    {
+        EventGroupId = "some example string",
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<ListFinancialEventsByGroupIdError> ex)
+catch (ApiException<ListFinancialEventsByGroupIdError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1538,18 +1455,12 @@ catch (SdkException<ListFinancialEventsByGroupIdError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>eventGroupId</code> | <code>string</code> | The identifier of the financial event group. |
-| <code>maxResultsPerPage</code> | <code>int?</code> | The maximum number of results to return per page. |
-| <code>postedAfter</code> | <code>DateTimeOffset?</code> | Financial events posted after (or on) this date (ISO 8601). |
-| <code>postedBefore</code> | <code>DateTimeOffset?</code> | Financial events posted before (but not on) this date (ISO 8601). |
-| <code>nextToken</code> | <code>string?</code> | Cursor token for the next page of results. |
+<code>[ListFinancialEventsByGroupIdRequest](src/WalmartApIs/Requests/Finances/ListFinancialEventsByGroupIdRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1561,7 +1472,7 @@ catch (SdkException<ListFinancialEventsByGroupIdError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListFinancialEventsByGroupIdError](Errors/ListFinancialEventsByGroupIdError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListFinancialEventsByGroupIdError](src/WalmartApIs/Errors/ListFinancialEventsByGroupIdError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1572,7 +1483,7 @@ catch (SdkException<ListFinancialEventsByGroupIdError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; ListFinancialEventsByOrderId(string orderId, int? maxResultsPerPage, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; ListFinancialEventsByOrderId(ListFinancialEventsByOrderIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1587,7 +1498,6 @@ Returns financial events for a specific order via GMP commission endpoint.
 **Best-effort implementation** — returns commission charges only;
 refunds, fees, and adjustments are absent. IDOR ownership gate enforced.
 
-
 </dd>
 </dl>
 
@@ -1599,10 +1509,13 @@ refunds, fees, and adjustments are absent. IDOR ownership gate enforced.
 ```csharp
 try
 {
-    var response = await client.Finances.ListFinancialEventsByOrderId(orderId, maxResultsPerPage, nextToken);
+    var response = await client.Finances.ListFinancialEventsByOrderId(new ListFinancialEventsByOrderIdRequest
+    {
+        OrderId = "some example string",
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<ListFinancialEventsByOrderIdError> ex)
+catch (ApiException<ListFinancialEventsByOrderIdError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1614,16 +1527,12 @@ catch (SdkException<ListFinancialEventsByOrderIdError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>orderId</code> | <code>string</code> | Walmart order number — must be numeric (1–50 digits). |
-| <code>maxResultsPerPage</code> | <code>int?</code> | Ignored — GMP returns all commission entries in one page. |
-| <code>nextToken</code> | <code>string?</code> | Not supported — returns 400 Bad Request if supplied. |
+<code>[ListFinancialEventsByOrderIdRequest](src/WalmartApIs/Requests/Finances/ListFinancialEventsByOrderIdRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1635,7 +1544,7 @@ catch (SdkException<ListFinancialEventsByOrderIdError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListFinancialEventsByOrderIdError](Errors/ListFinancialEventsByOrderIdError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListFinancialEventsByOrderIdError](src/WalmartApIs/Errors/ListFinancialEventsByOrderIdError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1647,10 +1556,10 @@ catch (SdkException<ListFinancialEventsByOrderIdError> ex)
 
 ## FulfillmentOutbound
 
-> Source: [FulfillmentOutbound](Api/FulfillmentOutbound.cs)
+> Source: [FulfillmentOutbound](src/WalmartApIs/Api/FulfillmentOutbound.cs)
 
 <details>
-<summary><code>Task&lt;CancelFulfillmentOrderResponse&gt; CancelFulfillmentOrder(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelFulfillmentOrderResponse&gt; CancelFulfillmentOrder(CancelFulfillmentOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1663,10 +1572,13 @@ catch (SdkException<ListFinancialEventsByOrderIdError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.CancelFulfillmentOrder(sellerFulfillmentOrderId);
+    var response = await client.FulfillmentOutbound.CancelFulfillmentOrder(new CancelFulfillmentOrderRequest
+    {
+        SellerFulfillmentOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelFulfillmentOrderResponse
 }
-catch (SdkException<CancelFulfillmentOrderError> ex)
+catch (ApiException<CancelFulfillmentOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1678,14 +1590,12 @@ catch (SdkException<CancelFulfillmentOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerFulfillmentOrderId</code> | <code>string</code> | - |
+<code>[CancelFulfillmentOrderRequest](src/WalmartApIs/Requests/FulfillmentOutbound/CancelFulfillmentOrderRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1695,9 +1605,9 @@ catch (SdkException<CancelFulfillmentOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelFulfillmentOrderResponse](Models/CancelFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[CancelFulfillmentOrderResponse](src/WalmartApIs/Models/CancelFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelFulfillmentOrderError](Errors/CancelFulfillmentOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelFulfillmentOrderError](src/WalmartApIs/Errors/CancelFulfillmentOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1708,7 +1618,7 @@ catch (SdkException<CancelFulfillmentOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateFulfillmentOrderResponse&gt; CreateFulfillmentOrder(CreateFulfillmentOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateFulfillmentOrderResponse&gt; CreateFulfillmentOrder(CreateFulfillmentOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1721,10 +1631,36 @@ catch (SdkException<CancelFulfillmentOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.CreateFulfillmentOrder(body);
+    var response = await client.FulfillmentOutbound.CreateFulfillmentOrder(new CreateFulfillmentOrderOperationRequest
+    {
+        Body = new CreateFulfillmentOrderRequest
+        {
+            SellerFulfillmentOrderId = "some example string",
+            DisplayableOrderId = "some example string",
+            DisplayableOrderDate = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+            ShippingSpeedCategory = ShippingSpeedCategory.Standard,
+            DestinationAddress = new Address
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            Items = [
+                new CreateFulfillmentOrderItem
+                {
+                    SellerSku = "some example string",
+                    SellerFulfillmentOrderItemId = "some example string",
+                    Quantity = 1,
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type CreateFulfillmentOrderResponse
 }
-catch (SdkException<CreateFulfillmentOrderError> ex)
+catch (ApiException<CreateFulfillmentOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1736,14 +1672,12 @@ catch (SdkException<CreateFulfillmentOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateFulfillmentOrderRequest](Models/CreateFulfillmentOrderRequest.cs)</code> | - |
+<code>[CreateFulfillmentOrderOperationRequest](src/WalmartApIs/Requests/FulfillmentOutbound/CreateFulfillmentOrderOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1753,9 +1687,9 @@ catch (SdkException<CreateFulfillmentOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateFulfillmentOrderResponse](Models/CreateFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[CreateFulfillmentOrderResponse](src/WalmartApIs/Models/CreateFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateFulfillmentOrderError](Errors/CreateFulfillmentOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateFulfillmentOrderError](src/WalmartApIs/Errors/CreateFulfillmentOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1766,7 +1700,7 @@ catch (SdkException<CreateFulfillmentOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetFulfillmentOrder(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetFulfillmentOrder(GetFulfillmentOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1779,10 +1713,13 @@ catch (SdkException<CreateFulfillmentOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.GetFulfillmentOrder(sellerFulfillmentOrderId);
+    var response = await client.FulfillmentOutbound.GetFulfillmentOrder(new GetFulfillmentOrderRequest
+    {
+        SellerFulfillmentOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderResponse
 }
-catch (SdkException<GetFulfillmentOrderError> ex)
+catch (ApiException<GetFulfillmentOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1794,14 +1731,12 @@ catch (SdkException<GetFulfillmentOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerFulfillmentOrderId</code> | <code>string</code> | - |
+<code>[GetFulfillmentOrderRequest](src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentOrderRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1811,9 +1746,9 @@ catch (SdkException<GetFulfillmentOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderResponse](Models/GetFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderResponse](src/WalmartApIs/Models/GetFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFulfillmentOrderError](Errors/GetFulfillmentOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFulfillmentOrderError](src/WalmartApIs/Errors/GetFulfillmentOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1824,7 +1759,7 @@ catch (SdkException<GetFulfillmentOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; GetFulfillmentOrderShipments(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; GetFulfillmentOrderShipments(GetFulfillmentOrderShipmentsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1837,10 +1772,13 @@ catch (SdkException<GetFulfillmentOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.GetFulfillmentOrderShipments(sellerFulfillmentOrderId);
+    var response = await client.FulfillmentOutbound.GetFulfillmentOrderShipments(new GetFulfillmentOrderShipmentsRequest
+    {
+        SellerFulfillmentOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderShipmentsResponse
 }
-catch (SdkException<GetFulfillmentOrderShipmentsError> ex)
+catch (ApiException<GetFulfillmentOrderShipmentsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1852,14 +1790,12 @@ catch (SdkException<GetFulfillmentOrderShipmentsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerFulfillmentOrderId</code> | <code>string</code> | - |
+<code>[GetFulfillmentOrderShipmentsRequest](src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentOrderShipmentsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1869,9 +1805,9 @@ catch (SdkException<GetFulfillmentOrderShipmentsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFulfillmentOrderShipmentsError](Errors/GetFulfillmentOrderShipmentsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFulfillmentOrderShipmentsError](src/WalmartApIs/Errors/GetFulfillmentOrderShipmentsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1882,7 +1818,7 @@ catch (SdkException<GetFulfillmentOrderShipmentsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentPreviewResponse&gt; GetFulfillmentPreview(GetFulfillmentPreviewRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentPreviewResponse&gt; GetFulfillmentPreview(GetFulfillmentPreviewOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1895,7 +1831,6 @@ catch (SdkException<GetFulfillmentOrderShipmentsError> ex)
 Returns estimated delivery dates, shipping costs, and available ship nodes
 for a prospective fulfillment order. Use before creating the order.
 
-
 </dd>
 </dl>
 
@@ -1907,10 +1842,32 @@ for a prospective fulfillment order. Use before creating the order.
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.GetFulfillmentPreview(body);
+    var response = await client.FulfillmentOutbound.GetFulfillmentPreview(new GetFulfillmentPreviewOperationRequest
+    {
+        Body = new GetFulfillmentPreviewRequest
+        {
+            Address = new Address
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            Items = [
+                new GetFulfillmentPreviewItem
+                {
+                    SellerSku = "some example string",
+                    Quantity = 1,
+                    SellerFulfillmentOrderItemId = "some example string",
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type GetFulfillmentPreviewResponse
 }
-catch (SdkException<GetFulfillmentPreviewError> ex)
+catch (ApiException<GetFulfillmentPreviewError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1922,14 +1879,12 @@ catch (SdkException<GetFulfillmentPreviewError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetFulfillmentPreviewRequest](Models/GetFulfillmentPreviewRequest.cs)</code> | - |
+<code>[GetFulfillmentPreviewOperationRequest](src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentPreviewOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1939,9 +1894,9 @@ catch (SdkException<GetFulfillmentPreviewError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentPreviewResponse](Models/GetFulfillmentPreviewResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentPreviewResponse](src/WalmartApIs/Models/GetFulfillmentPreviewResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFulfillmentPreviewError](Errors/GetFulfillmentPreviewError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFulfillmentPreviewError](src/WalmartApIs/Errors/GetFulfillmentPreviewError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -1952,7 +1907,7 @@ catch (SdkException<GetFulfillmentPreviewError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListAllFulfillmentOrdersResponse&gt; ListAllFulfillmentOrders(DateTimeOffset? queryStartDate, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListAllFulfillmentOrdersResponse&gt; ListAllFulfillmentOrders(ListAllFulfillmentOrdersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -1965,10 +1920,10 @@ catch (SdkException<GetFulfillmentPreviewError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.ListAllFulfillmentOrders(queryStartDate, nextToken);
+    var response = await client.FulfillmentOutbound.ListAllFulfillmentOrders(new ListAllFulfillmentOrdersRequest());
     // TODO: Handle 'response' of type ListAllFulfillmentOrdersResponse
 }
-catch (SdkException<ListAllFulfillmentOrdersError> ex)
+catch (ApiException<ListAllFulfillmentOrdersError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -1980,15 +1935,12 @@ catch (SdkException<ListAllFulfillmentOrdersError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>queryStartDate</code> | <code>DateTimeOffset?</code> | - |
-| <code>nextToken</code> | <code>string?</code> | - |
+<code>[ListAllFulfillmentOrdersRequest](src/WalmartApIs/Requests/FulfillmentOutbound/ListAllFulfillmentOrdersRequest.cs)</code>
 
 </dd>
 </dl>
@@ -1998,9 +1950,9 @@ catch (SdkException<ListAllFulfillmentOrdersError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListAllFulfillmentOrdersResponse](Models/ListAllFulfillmentOrdersResponse.cs)</code>
+**OnSuccess**: <code>[ListAllFulfillmentOrdersResponse](src/WalmartApIs/Models/ListAllFulfillmentOrdersResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListAllFulfillmentOrdersError](Errors/ListAllFulfillmentOrdersError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListAllFulfillmentOrdersError](src/WalmartApIs/Errors/ListAllFulfillmentOrdersError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2011,7 +1963,7 @@ catch (SdkException<ListAllFulfillmentOrdersError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;UpdateFulfillmentOrderResponse&gt; UpdateFulfillmentOrder(string sellerFulfillmentOrderId, UpdateFulfillmentOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;UpdateFulfillmentOrderResponse&gt; UpdateFulfillmentOrder(UpdateFulfillmentOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2024,10 +1976,14 @@ catch (SdkException<ListAllFulfillmentOrdersError> ex)
 ```csharp
 try
 {
-    var response = await client.FulfillmentOutbound.UpdateFulfillmentOrder(sellerFulfillmentOrderId, body);
+    var response = await client.FulfillmentOutbound.UpdateFulfillmentOrder(new UpdateFulfillmentOrderOperationRequest
+    {
+        SellerFulfillmentOrderId = "some example string",
+        Body = new UpdateFulfillmentOrderRequest(),
+    });
     // TODO: Handle 'response' of type UpdateFulfillmentOrderResponse
 }
-catch (SdkException<UpdateFulfillmentOrderError> ex)
+catch (ApiException<UpdateFulfillmentOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2039,15 +1995,12 @@ catch (SdkException<UpdateFulfillmentOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerFulfillmentOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[UpdateFulfillmentOrderRequest](Models/UpdateFulfillmentOrderRequest.cs)</code> | - |
+<code>[UpdateFulfillmentOrderOperationRequest](src/WalmartApIs/Requests/FulfillmentOutbound/UpdateFulfillmentOrderOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2057,9 +2010,9 @@ catch (SdkException<UpdateFulfillmentOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UpdateFulfillmentOrderResponse](Models/UpdateFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[UpdateFulfillmentOrderResponse](src/WalmartApIs/Models/UpdateFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateFulfillmentOrderError](Errors/UpdateFulfillmentOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateFulfillmentOrderError](src/WalmartApIs/Errors/UpdateFulfillmentOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2071,10 +2024,10 @@ catch (SdkException<UpdateFulfillmentOrderError> ex)
 
 ## Inventory
 
-> Source: [Inventory](Api/Inventory.cs)
+> Source: [Inventory](src/WalmartApIs/Api/Inventory.cs)
 
 <details>
-<summary><code>Task&lt;BulkUpdateInventoryResponse&gt; BulkUpdateInventory(BulkUpdateInventoryRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;BulkUpdateInventoryResponse&gt; BulkUpdateInventory(BulkUpdateInventoryOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2097,10 +2050,16 @@ Bulk inventory update. Max 500 items per request.
 ```csharp
 try
 {
-    var response = await client.Inventory.BulkUpdateInventory(body);
+    var response = await client.Inventory.BulkUpdateInventory(new BulkUpdateInventoryOperationRequest
+    {
+        Body = new BulkUpdateInventoryRequest
+        {
+            Items = [new BulkInventoryItem { SellerSku = "some example string", Quantity = 1 }],
+        },
+    });
     // TODO: Handle 'response' of type BulkUpdateInventoryResponse
 }
-catch (SdkException<BulkUpdateInventoryError> ex)
+catch (ApiException<BulkUpdateInventoryError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2112,14 +2071,12 @@ catch (SdkException<BulkUpdateInventoryError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[BulkUpdateInventoryRequest](Models/BulkUpdateInventoryRequest.cs)</code> | - |
+<code>[BulkUpdateInventoryOperationRequest](src/WalmartApIs/Requests/Inventory/BulkUpdateInventoryOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2129,9 +2086,9 @@ catch (SdkException<BulkUpdateInventoryError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BulkUpdateInventoryResponse](Models/BulkUpdateInventoryResponse.cs)</code>
+**OnSuccess**: <code>[BulkUpdateInventoryResponse](src/WalmartApIs/Models/BulkUpdateInventoryResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[BulkUpdateInventoryError](Errors/BulkUpdateInventoryError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[BulkUpdateInventoryError](src/WalmartApIs/Errors/BulkUpdateInventoryError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2142,7 +2099,7 @@ catch (SdkException<BulkUpdateInventoryError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;InventorySummary&gt; GetInventoryForSku(string sku, string? shipNode, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;InventorySummary&gt; GetInventoryForSku(GetInventoryForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2155,10 +2112,13 @@ catch (SdkException<BulkUpdateInventoryError> ex)
 ```csharp
 try
 {
-    var response = await client.Inventory.GetInventoryForSku(sku, shipNode);
+    var response = await client.Inventory.GetInventoryForSku(new GetInventoryForSkuRequest
+    {
+        Sku = "some example string",
+    });
     // TODO: Handle 'response' of type InventorySummary
 }
-catch (SdkException<GetInventoryForSkuError> ex)
+catch (ApiException<GetInventoryForSkuError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2170,15 +2130,12 @@ catch (SdkException<GetInventoryForSkuError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sku</code> | <code>string</code> | - |
-| <code>shipNode</code> | <code>string?</code> | Walmart Ship Node ID (for multi-node sellers) |
+<code>[GetInventoryForSkuRequest](src/WalmartApIs/Requests/Inventory/GetInventoryForSkuRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2188,9 +2145,9 @@ catch (SdkException<GetInventoryForSkuError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[InventorySummary](Models/InventorySummary.cs)</code>
+**OnSuccess**: <code>[InventorySummary](src/WalmartApIs/Models/InventorySummary.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetInventoryForSkuError](Errors/GetInventoryForSkuError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetInventoryForSkuError](src/WalmartApIs/Errors/GetInventoryForSkuError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2201,7 +2158,7 @@ catch (SdkException<GetInventoryForSkuError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetInventorySummariesResponse&gt; GetInventorySummaries(string? skus, string? shipNode, string? nextToken, int? pageSize = 100, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetInventorySummariesResponse&gt; GetInventorySummaries(GetInventorySummariesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2214,10 +2171,10 @@ catch (SdkException<GetInventoryForSkuError> ex)
 ```csharp
 try
 {
-    var response = await client.Inventory.GetInventorySummaries(skus, shipNode, nextToken);
+    var response = await client.Inventory.GetInventorySummaries(new GetInventorySummariesRequest());
     // TODO: Handle 'response' of type GetInventorySummariesResponse
 }
-catch (SdkException<GetInventorySummariesError> ex)
+catch (ApiException<GetInventorySummariesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2229,17 +2186,12 @@ catch (SdkException<GetInventorySummariesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>skus</code> | <code>string?</code> | Comma-separated seller SKUs (max 50) |
-| <code>shipNode</code> | <code>string?</code> | Walmart Ship Node ID (for multi-node sellers) |
-| <code>nextToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 100 |
+<code>[GetInventorySummariesRequest](src/WalmartApIs/Requests/Inventory/GetInventorySummariesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2249,9 +2201,9 @@ catch (SdkException<GetInventorySummariesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetInventorySummariesResponse](Models/GetInventorySummariesResponse.cs)</code>
+**OnSuccess**: <code>[GetInventorySummariesResponse](src/WalmartApIs/Models/GetInventorySummariesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetInventorySummariesError](Errors/GetInventorySummariesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetInventorySummariesError](src/WalmartApIs/Errors/GetInventorySummariesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2262,7 +2214,7 @@ catch (SdkException<GetInventorySummariesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;UpdateInventoryResponse&gt; UpdateInventoryForSku(string sku, UpdateInventoryRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;UpdateInventoryResponse&gt; UpdateInventoryForSku(UpdateInventoryForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2275,10 +2227,14 @@ catch (SdkException<GetInventorySummariesError> ex)
 ```csharp
 try
 {
-    var response = await client.Inventory.UpdateInventoryForSku(sku, body);
+    var response = await client.Inventory.UpdateInventoryForSku(new UpdateInventoryForSkuRequest
+    {
+        Sku = "some example string",
+        Body = new UpdateInventoryRequest { Quantity = 1 },
+    });
     // TODO: Handle 'response' of type UpdateInventoryResponse
 }
-catch (SdkException<UpdateInventoryForSkuError> ex)
+catch (ApiException<UpdateInventoryForSkuError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2290,15 +2246,12 @@ catch (SdkException<UpdateInventoryForSkuError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sku</code> | <code>string</code> | - |
-| <code>body</code> | <code>[UpdateInventoryRequest](Models/UpdateInventoryRequest.cs)</code> | - |
+<code>[UpdateInventoryForSkuRequest](src/WalmartApIs/Requests/Inventory/UpdateInventoryForSkuRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2308,9 +2261,9 @@ catch (SdkException<UpdateInventoryForSkuError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UpdateInventoryResponse](Models/UpdateInventoryResponse.cs)</code>
+**OnSuccess**: <code>[UpdateInventoryResponse](src/WalmartApIs/Models/UpdateInventoryResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateInventoryForSkuError](Errors/UpdateInventoryForSkuError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateInventoryForSkuError](src/WalmartApIs/Errors/UpdateInventoryForSkuError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2322,10 +2275,10 @@ catch (SdkException<UpdateInventoryForSkuError> ex)
 
 ## ListingsItems
 
-> Source: [ListingsItems](Api/ListingsItems.cs)
+> Source: [ListingsItems](src/WalmartApIs/Api/ListingsItems.cs)
 
 <details>
-<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; DeleteListingsItem(string sellerId, string sku, IReadOnlyList&lt;string&gt; marketplaceIds, string? issueLocale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; DeleteListingsItem(DeleteListingsItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2338,10 +2291,15 @@ catch (SdkException<UpdateInventoryForSkuError> ex)
 ```csharp
 try
 {
-    var response = await client.ListingsItems.DeleteListingsItem(sellerId, sku, marketplaceIds);
+    var response = await client.ListingsItems.DeleteListingsItem(new DeleteListingsItemRequest
+    {
+        SellerId = "some example string",
+        Sku = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type ListingsItemSubmissionResponse
 }
-catch (SdkException<DeleteListingsItemError> ex)
+catch (ApiException<DeleteListingsItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2353,17 +2311,12 @@ catch (SdkException<DeleteListingsItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerId</code> | <code>string</code> | Seller identifier |
-| <code>sku</code> | <code>string</code> | Seller SKU identifying the listing |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>issueLocale</code> | <code>string?</code> | **Default**: "en_US" |
+<code>[DeleteListingsItemRequest](src/WalmartApIs/Requests/ListingsItems/DeleteListingsItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2373,9 +2326,9 @@ catch (SdkException<DeleteListingsItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListingsItemSubmissionResponse](Models/ListingsItemSubmissionResponse.cs)</code>
+**OnSuccess**: <code>[ListingsItemSubmissionResponse](src/WalmartApIs/Models/ListingsItemSubmissionResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DeleteListingsItemError](Errors/DeleteListingsItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DeleteListingsItemError](src/WalmartApIs/Errors/DeleteListingsItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2386,7 +2339,7 @@ catch (SdkException<DeleteListingsItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Item1&gt; GetListingsItem(string sellerId, string sku, IReadOnlyList&lt;string&gt; marketplaceIds, IReadOnlyList&lt;IncludedDatum1&gt;? includedData, string? issueLocale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Item1&gt; GetListingsItem(GetListingsItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2399,10 +2352,15 @@ catch (SdkException<DeleteListingsItemError> ex)
 ```csharp
 try
 {
-    var response = await client.ListingsItems.GetListingsItem(sellerId, sku, marketplaceIds, includedData);
+    var response = await client.ListingsItems.GetListingsItem(new GetListingsItemRequest
+    {
+        SellerId = "some example string",
+        Sku = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type Item1
 }
-catch (SdkException<GetListingsItemError> ex)
+catch (ApiException<GetListingsItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2414,18 +2372,12 @@ catch (SdkException<GetListingsItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerId</code> | <code>string</code> | Seller identifier |
-| <code>sku</code> | <code>string</code> | Seller SKU identifying the listing |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>includedData</code> | <code>IReadOnlyList&lt;[IncludedDatum1](Models/Enums/IncludedDatum1.cs)&gt;?</code> | - |
-| <code>issueLocale</code> | <code>string?</code> | Locale for issue messages (e.g. en_US)<br>**Default**: "en_US" |
+<code>[GetListingsItemRequest](src/WalmartApIs/Requests/ListingsItems/GetListingsItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2435,9 +2387,9 @@ catch (SdkException<GetListingsItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Item1](Models/Item1.cs)</code>
+**OnSuccess**: <code>[Item1](src/WalmartApIs/Models/Item1.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetListingsItemError](Errors/GetListingsItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetListingsItemError](src/WalmartApIs/Errors/GetListingsItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2448,7 +2400,7 @@ catch (SdkException<GetListingsItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; PatchListingsItem(string sellerId, string sku, IReadOnlyList&lt;string&gt; marketplaceIds, ListingsItemPatchRequest body, string? issueLocale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; PatchListingsItem(PatchListingsItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2461,10 +2413,20 @@ catch (SdkException<GetListingsItemError> ex)
 ```csharp
 try
 {
-    var response = await client.ListingsItems.PatchListingsItem(sellerId, sku, marketplaceIds, body);
+    var response = await client.ListingsItems.PatchListingsItem(new PatchListingsItemRequest
+    {
+        SellerId = "some example string",
+        Sku = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = new ListingsItemPatchRequest
+        {
+            ProductType = "some example string",
+            Patches = [new PatchOperation { Op = Op.Add, Path = "some example string" }],
+        },
+    });
     // TODO: Handle 'response' of type ListingsItemSubmissionResponse
 }
-catch (SdkException<PatchListingsItemError> ex)
+catch (ApiException<PatchListingsItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2476,18 +2438,12 @@ catch (SdkException<PatchListingsItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerId</code> | <code>string</code> | Seller identifier |
-| <code>sku</code> | <code>string</code> | Seller SKU identifying the listing |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>body</code> | <code>[ListingsItemPatchRequest](Models/ListingsItemPatchRequest.cs)</code> | - |
-| <code>issueLocale</code> | <code>string?</code> | **Default**: "en_US" |
+<code>[PatchListingsItemRequest](src/WalmartApIs/Requests/ListingsItems/PatchListingsItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2497,9 +2453,9 @@ catch (SdkException<PatchListingsItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListingsItemSubmissionResponse](Models/ListingsItemSubmissionResponse.cs)</code>
+**OnSuccess**: <code>[ListingsItemSubmissionResponse](src/WalmartApIs/Models/ListingsItemSubmissionResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[PatchListingsItemError](Errors/PatchListingsItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[PatchListingsItemError](src/WalmartApIs/Errors/PatchListingsItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2510,7 +2466,7 @@ catch (SdkException<PatchListingsItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; PutListingsItem(string sellerId, string sku, IReadOnlyList&lt;string&gt; marketplaceIds, ListingsItemPutRequest body, string? issueLocale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListingsItemSubmissionResponse&gt; PutListingsItem(PutListingsItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2523,10 +2479,16 @@ catch (SdkException<PatchListingsItemError> ex)
 ```csharp
 try
 {
-    var response = await client.ListingsItems.PutListingsItem(sellerId, sku, marketplaceIds, body);
+    var response = await client.ListingsItems.PutListingsItem(new PutListingsItemRequest
+    {
+        SellerId = "some example string",
+        Sku = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = new ListingsItemPutRequest { ProductType = "some example string", Attributes = attributes },
+    });
     // TODO: Handle 'response' of type ListingsItemSubmissionResponse
 }
-catch (SdkException<PutListingsItemError> ex)
+catch (ApiException<PutListingsItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2538,18 +2500,12 @@ catch (SdkException<PutListingsItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerId</code> | <code>string</code> | Seller identifier |
-| <code>sku</code> | <code>string</code> | Seller SKU identifying the listing |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>body</code> | <code>[ListingsItemPutRequest](Models/ListingsItemPutRequest.cs)</code> | - |
-| <code>issueLocale</code> | <code>string?</code> | **Default**: "en_US" |
+<code>[PutListingsItemRequest](src/WalmartApIs/Requests/ListingsItems/PutListingsItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2559,9 +2515,9 @@ catch (SdkException<PutListingsItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListingsItemSubmissionResponse](Models/ListingsItemSubmissionResponse.cs)</code>
+**OnSuccess**: <code>[ListingsItemSubmissionResponse](src/WalmartApIs/Models/ListingsItemSubmissionResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[PutListingsItemError](Errors/PutListingsItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[PutListingsItemError](src/WalmartApIs/Errors/PutListingsItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2572,7 +2528,7 @@ catch (SdkException<PutListingsItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ItemSearchResults1&gt; SearchListingsItems(string sellerId, IReadOnlyList&lt;string&gt; marketplaceIds, IReadOnlyList&lt;IncludedDatum1&gt;? includedData, string? pageToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ItemSearchResults1&gt; SearchListingsItems(SearchListingsItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2586,7 +2542,6 @@ Returns a paginated list of the seller's listings items. Mirrors Amazon
 SP-API `searchListingsItems` so an existing SP-API client can call the
 seller-level collection endpoint (no SKU in the path) against v4.
 
-
 </dd>
 </dl>
 
@@ -2598,10 +2553,14 @@ seller-level collection endpoint (no SKU in the path) against v4.
 ```csharp
 try
 {
-    var response = await client.ListingsItems.SearchListingsItems(sellerId, marketplaceIds, includedData, pageToken);
+    var response = await client.ListingsItems.SearchListingsItems(new SearchListingsItemsRequest
+    {
+        SellerId = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type ItemSearchResults1
 }
-catch (SdkException<SearchListingsItemsError> ex)
+catch (ApiException<SearchListingsItemsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2613,18 +2572,12 @@ catch (SdkException<SearchListingsItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerId</code> | <code>string</code> | Seller identifier |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>includedData</code> | <code>IReadOnlyList&lt;[IncludedDatum1](Models/Enums/IncludedDatum1.cs)&gt;?</code> | - |
-| <code>pageToken</code> | <code>string?</code> | Opaque cursor returned by a previous call for the next page |
-| <code>pageSize</code> | <code>int?</code> | Maximum number of results per page<br>**Default**: 10 |
+<code>[SearchListingsItemsRequest](src/WalmartApIs/Requests/ListingsItems/SearchListingsItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2634,9 +2587,9 @@ catch (SdkException<SearchListingsItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ItemSearchResults1](Models/ItemSearchResults1.cs)</code>
+**OnSuccess**: <code>[ItemSearchResults1](src/WalmartApIs/Models/ItemSearchResults1.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SearchListingsItemsError](Errors/SearchListingsItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SearchListingsItemsError](src/WalmartApIs/Errors/SearchListingsItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2648,10 +2601,10 @@ catch (SdkException<SearchListingsItemsError> ex)
 
 ## ListingsRestrictions
 
-> Source: [ListingsRestrictions](Api/ListingsRestrictions.cs)
+> Source: [ListingsRestrictions](src/WalmartApIs/Api/ListingsRestrictions.cs)
 
 <details>
-<summary><code>Task&lt;RestrictionList&gt; GetListingsRestrictions(string asin, ConditionType1 conditionType, string sellerId, IReadOnlyList&lt;string&gt; marketplaceIds, string? reasonLocale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;RestrictionList&gt; GetListingsRestrictions(GetListingsRestrictionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2665,7 +2618,6 @@ Returns restrictions on listing an item for a given ASIN and seller.
 A successful response does not guarantee the seller can list — check
 the restrictions array.
 
-
 </dd>
 </dl>
 
@@ -2677,13 +2629,16 @@ the restrictions array.
 ```csharp
 try
 {
-    var response = await client.ListingsRestrictions.GetListingsRestrictions(asin,
-        conditionType,
-        sellerId,
-        marketplaceIds);
+    var response = await client.ListingsRestrictions.GetListingsRestrictions(new GetListingsRestrictionsRequest
+    {
+        Asin = "some example string",
+        ConditionType = ConditionType1.NewNew,
+        SellerId = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type RestrictionList
 }
-catch (SdkException<GetListingsRestrictionsError> ex)
+catch (ApiException<GetListingsRestrictionsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2695,18 +2650,12 @@ catch (SdkException<GetListingsRestrictionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>asin</code> | <code>string</code> | Walmart Item ID (maps to ASIN in Walmart Seller API) |
-| <code>conditionType</code> | <code>[ConditionType1](Models/Enums/ConditionType1.cs)</code> | - |
-| <code>sellerId</code> | <code>string</code> | - |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>reasonLocale</code> | <code>string?</code> | Locale for localized restriction reason messages<br>**Default**: "en_US" |
+<code>[GetListingsRestrictionsRequest](src/WalmartApIs/Requests/ListingsRestrictions/GetListingsRestrictionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2716,9 +2665,9 @@ catch (SdkException<GetListingsRestrictionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[RestrictionList](Models/RestrictionList.cs)</code>
+**OnSuccess**: <code>[RestrictionList](src/WalmartApIs/Models/RestrictionList.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetListingsRestrictionsError](Errors/GetListingsRestrictionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetListingsRestrictionsError](src/WalmartApIs/Errors/GetListingsRestrictionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2730,10 +2679,10 @@ catch (SdkException<GetListingsRestrictionsError> ex)
 
 ## MerchantFulfillment
 
-> Source: [MerchantFulfillment](Api/MerchantFulfillment.cs)
+> Source: [MerchantFulfillment](src/WalmartApIs/Api/MerchantFulfillment.cs)
 
 <details>
-<summary><code>Task&lt;CancelShipmentResponse&gt; CancelShipment(string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelShipmentResponse&gt; CancelShipment(CancelShipmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2746,10 +2695,13 @@ catch (SdkException<GetListingsRestrictionsError> ex)
 ```csharp
 try
 {
-    var response = await client.MerchantFulfillment.CancelShipment(shipmentId);
+    var response = await client.MerchantFulfillment.CancelShipment(new CancelShipmentRequest
+    {
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelShipmentResponse
 }
-catch (SdkException<CancelShipmentError> ex)
+catch (ApiException<CancelShipmentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2761,14 +2713,12 @@ catch (SdkException<CancelShipmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>shipmentId</code> | <code>string</code> | - |
+<code>[CancelShipmentRequest](src/WalmartApIs/Requests/MerchantFulfillment/CancelShipmentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2778,9 +2728,9 @@ catch (SdkException<CancelShipmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelShipmentResponse](Models/CancelShipmentResponse.cs)</code>
+**OnSuccess**: <code>[CancelShipmentResponse](src/WalmartApIs/Models/CancelShipmentResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelShipmentError](Errors/CancelShipmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelShipmentError](src/WalmartApIs/Errors/CancelShipmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2791,7 +2741,7 @@ catch (SdkException<CancelShipmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateShipmentResponse&gt; CreateShipment(CreateShipmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateShipmentResponse&gt; CreateShipment(CreateShipmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2804,7 +2754,6 @@ catch (SdkException<CancelShipmentError> ex)
 Creates a shipment for an order, purchases a shipping label from the
 selected carrier, and returns the label for printing.
 
-
 </dd>
 </dl>
 
@@ -2816,10 +2765,48 @@ selected carrier, and returns the label for printing.
 ```csharp
 try
 {
-    var response = await client.MerchantFulfillment.CreateShipment(body);
+    var response = await client.MerchantFulfillment.CreateShipment(new CreateShipmentOperationRequest
+    {
+        Body = new CreateShipmentRequest
+        {
+            ShipmentRequestDetails = new ShipmentRequestDetails
+            {
+                PurchaseOrderId = "some example string",
+                ShipFromAddress = new Address1
+                {
+                    Name = "some example string",
+                    AddressLine1 = "some example string",
+                    City = "some example string",
+                    StateOrRegion = "some example string",
+                    PostalCode = "some example string",
+                    CountryCode = "some example string",
+                },
+                ShipToAddress = new Address1
+                {
+                    Name = "some example string",
+                    AddressLine1 = "some example string",
+                    City = "some example string",
+                    StateOrRegion = "some example string",
+                    PostalCode = "some example string",
+                    CountryCode = "some example string",
+                },
+                PackageDimensions = new PackageDimensions
+                {
+                    Length = 1.5d,
+                    Width = 1.5d,
+                    Height = 1.5d,
+                    Unit = Unit.Inches,
+                },
+                Weight = new Weight { Value = 1.5d, Unit = Unit1.Oz },
+                ShipDate = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+                ShippingServiceOptions = new ShippingServiceOptions(),
+            },
+            ShippingServiceId = "some example string",
+        },
+    });
     // TODO: Handle 'response' of type CreateShipmentResponse
 }
-catch (SdkException<CreateShipmentError> ex)
+catch (ApiException<CreateShipmentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2831,14 +2818,12 @@ catch (SdkException<CreateShipmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateShipmentRequest](Models/CreateShipmentRequest.cs)</code> | - |
+<code>[CreateShipmentOperationRequest](src/WalmartApIs/Requests/MerchantFulfillment/CreateShipmentOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2848,9 +2833,9 @@ catch (SdkException<CreateShipmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateShipmentResponse](Models/CreateShipmentResponse.cs)</code>
+**OnSuccess**: <code>[CreateShipmentResponse](src/WalmartApIs/Models/CreateShipmentResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateShipmentError](Errors/CreateShipmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateShipmentError](src/WalmartApIs/Errors/CreateShipmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2861,7 +2846,7 @@ catch (SdkException<CreateShipmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetEligibleShippingServicesResponse&gt; GetEligibleShippingServices(GetEligibleShippingServicesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetEligibleShippingServicesResponse&gt; GetEligibleShippingServices(GetEligibleShippingServicesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2874,7 +2859,6 @@ catch (SdkException<CreateShipmentError> ex)
 Returns available carriers and rates for a shipment based on package
 dimensions, weight, and destination address.
 
-
 </dd>
 </dl>
 
@@ -2886,10 +2870,48 @@ dimensions, weight, and destination address.
 ```csharp
 try
 {
-    var response = await client.MerchantFulfillment.GetEligibleShippingServices(body);
+    var response = await client.MerchantFulfillment.GetEligibleShippingServices(
+        new GetEligibleShippingServicesOperationRequest
+        {
+            Body = new GetEligibleShippingServicesRequest
+            {
+                ShipmentRequestDetails = new ShipmentRequestDetails
+                {
+                    PurchaseOrderId = "some example string",
+                    ShipFromAddress = new Address1
+                    {
+                        Name = "some example string",
+                        AddressLine1 = "some example string",
+                        City = "some example string",
+                        StateOrRegion = "some example string",
+                        PostalCode = "some example string",
+                        CountryCode = "some example string",
+                    },
+                    ShipToAddress = new Address1
+                    {
+                        Name = "some example string",
+                        AddressLine1 = "some example string",
+                        City = "some example string",
+                        StateOrRegion = "some example string",
+                        PostalCode = "some example string",
+                        CountryCode = "some example string",
+                    },
+                    PackageDimensions = new PackageDimensions
+                    {
+                        Length = 1.5d,
+                        Width = 1.5d,
+                        Height = 1.5d,
+                        Unit = Unit.Inches,
+                    },
+                    Weight = new Weight { Value = 1.5d, Unit = Unit1.Oz },
+                    ShipDate = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+                    ShippingServiceOptions = new ShippingServiceOptions(),
+                },
+            },
+        });
     // TODO: Handle 'response' of type GetEligibleShippingServicesResponse
 }
-catch (SdkException<GetEligibleShippingServicesError> ex)
+catch (ApiException<GetEligibleShippingServicesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2901,14 +2923,12 @@ catch (SdkException<GetEligibleShippingServicesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetEligibleShippingServicesRequest](Models/GetEligibleShippingServicesRequest.cs)</code> | - |
+<code>[GetEligibleShippingServicesOperationRequest](src/WalmartApIs/Requests/MerchantFulfillment/GetEligibleShippingServicesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2918,9 +2938,9 @@ catch (SdkException<GetEligibleShippingServicesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetEligibleShippingServicesResponse](Models/GetEligibleShippingServicesResponse.cs)</code>
+**OnSuccess**: <code>[GetEligibleShippingServicesResponse](src/WalmartApIs/Models/GetEligibleShippingServicesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetEligibleShippingServicesError](Errors/GetEligibleShippingServicesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetEligibleShippingServicesError](src/WalmartApIs/Errors/GetEligibleShippingServicesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -2931,7 +2951,7 @@ catch (SdkException<GetEligibleShippingServicesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Label&gt; GetLabel(string shipmentId, Format? format, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Label&gt; GetLabel(GetLabelRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -2944,7 +2964,6 @@ catch (SdkException<GetEligibleShippingServicesError> ex)
 Returns the purchased shipping label for a shipment in the requested
 file format for printing.
 
-
 </dd>
 </dl>
 
@@ -2956,10 +2975,13 @@ file format for printing.
 ```csharp
 try
 {
-    var response = await client.MerchantFulfillment.GetLabel(shipmentId, format);
+    var response = await client.MerchantFulfillment.GetLabel(new GetLabelRequest
+    {
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type Label
 }
-catch (SdkException<GetLabelError> ex)
+catch (ApiException<GetLabelError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -2971,15 +2993,12 @@ catch (SdkException<GetLabelError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>shipmentId</code> | <code>string</code> | - |
-| <code>format</code> | <code>[Format?](Models/Enums/Format.cs)</code> | - |
+<code>[GetLabelRequest](src/WalmartApIs/Requests/MerchantFulfillment/GetLabelRequest.cs)</code>
 
 </dd>
 </dl>
@@ -2989,9 +3008,9 @@ catch (SdkException<GetLabelError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Label](Models/Label.cs)</code>
+**OnSuccess**: <code>[Label](src/WalmartApIs/Models/Label.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetLabelError](Errors/GetLabelError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetLabelError](src/WalmartApIs/Errors/GetLabelError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3002,7 +3021,7 @@ catch (SdkException<GetLabelError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetShipmentResponse&gt; GetShipment2(string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetShipmentResponse&gt; GetShipment2(GetShipment2Request request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3015,10 +3034,13 @@ catch (SdkException<GetLabelError> ex)
 ```csharp
 try
 {
-    var response = await client.MerchantFulfillment.GetShipment2(shipmentId);
+    var response = await client.MerchantFulfillment.GetShipment2(new GetShipment2Request
+    {
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type GetShipmentResponse
 }
-catch (SdkException<GetShipment2Error> ex)
+catch (ApiException<GetShipment2Error> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3030,14 +3052,12 @@ catch (SdkException<GetShipment2Error> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>shipmentId</code> | <code>string</code> | - |
+<code>[GetShipment2Request](src/WalmartApIs/Requests/MerchantFulfillment/GetShipment2Request.cs)</code>
 
 </dd>
 </dl>
@@ -3047,9 +3067,9 @@ catch (SdkException<GetShipment2Error> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetShipmentResponse](Models/GetShipmentResponse.cs)</code>
+**OnSuccess**: <code>[GetShipmentResponse](src/WalmartApIs/Models/GetShipmentResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetShipment2Error](Errors/GetShipment2Error.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetShipment2Error](src/WalmartApIs/Errors/GetShipment2Error.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3061,10 +3081,10 @@ catch (SdkException<GetShipment2Error> ex)
 
 ## Orders
 
-> Source: [Orders](Api/Orders.cs)
+> Source: [Orders](src/WalmartApIs/Api/Orders.cs)
 
 <details>
-<summary><code>Task&lt;AcknowledgeOrderResponse&gt; AcknowledgeOrder(string purchaseOrderId, AcknowledgeOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;AcknowledgeOrderResponse&gt; AcknowledgeOrder(AcknowledgeOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3077,10 +3097,17 @@ catch (SdkException<GetShipment2Error> ex)
 ```csharp
 try
 {
-    var response = await client.Orders.AcknowledgeOrder(purchaseOrderId, body);
+    var response = await client.Orders.AcknowledgeOrder(new AcknowledgeOrderOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new AcknowledgeOrderRequest
+        {
+            OrderLines = [new AcknowledgeOrderLine { LineNumber = "some example string" }],
+        },
+    });
     // TODO: Handle 'response' of type AcknowledgeOrderResponse
 }
-catch (SdkException<AcknowledgeOrderError> ex)
+catch (ApiException<AcknowledgeOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3092,15 +3119,12 @@ catch (SdkException<AcknowledgeOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[AcknowledgeOrderRequest](Models/AcknowledgeOrderRequest.cs)</code> | - |
+<code>[AcknowledgeOrderOperationRequest](src/WalmartApIs/Requests/Orders/AcknowledgeOrderOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3110,9 +3134,9 @@ catch (SdkException<AcknowledgeOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AcknowledgeOrderResponse](Models/AcknowledgeOrderResponse.cs)</code>
+**OnSuccess**: <code>[AcknowledgeOrderResponse](src/WalmartApIs/Models/AcknowledgeOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[AcknowledgeOrderError](Errors/AcknowledgeOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[AcknowledgeOrderError](src/WalmartApIs/Errors/AcknowledgeOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3123,7 +3147,7 @@ catch (SdkException<AcknowledgeOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelOrderLinesResponse&gt; CancelOrderLines(string purchaseOrderId, CancelOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelOrderLinesResponse&gt; CancelOrderLines(CancelOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3136,10 +3160,23 @@ catch (SdkException<AcknowledgeOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.Orders.CancelOrderLines(purchaseOrderId, body);
+    var response = await client.Orders.CancelOrderLines(new CancelOrderLinesOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new CancelOrderLinesRequest
+        {
+            OrderLines = [
+                new CancelOrderLine
+                {
+                    LineNumber = "some example string",
+                    CancellationReason = CancellationReason.CustomerRequested,
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type CancelOrderLinesResponse
 }
-catch (SdkException<CancelOrderLinesError> ex)
+catch (ApiException<CancelOrderLinesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3151,15 +3188,12 @@ catch (SdkException<CancelOrderLinesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[CancelOrderLinesRequest](Models/CancelOrderLinesRequest.cs)</code> | - |
+<code>[CancelOrderLinesOperationRequest](src/WalmartApIs/Requests/Orders/CancelOrderLinesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3169,9 +3203,9 @@ catch (SdkException<CancelOrderLinesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelOrderLinesResponse](Models/CancelOrderLinesResponse.cs)</code>
+**OnSuccess**: <code>[CancelOrderLinesResponse](src/WalmartApIs/Models/CancelOrderLinesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelOrderLinesError](Errors/CancelOrderLinesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelOrderLinesError](src/WalmartApIs/Errors/CancelOrderLinesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3182,7 +3216,7 @@ catch (SdkException<CancelOrderLinesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;DeliverOrderLinesResponse&gt; DeliverOrderLines(string purchaseOrderId, DeliverOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;DeliverOrderLinesResponse&gt; DeliverOrderLines(DeliverOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3201,7 +3235,6 @@ terminal state and carries different downstream semantics
 
 Walmart parity from gmp-orders-mono `deliverOrder`.
 
-
 </dd>
 </dl>
 
@@ -3213,10 +3246,17 @@ Walmart parity from gmp-orders-mono `deliverOrder`.
 ```csharp
 try
 {
-    var response = await client.Orders.DeliverOrderLines(purchaseOrderId, body);
+    var response = await client.Orders.DeliverOrderLines(new DeliverOrderLinesOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new DeliverOrderLinesRequest
+        {
+            OrderLines = [new DeliverOrderLine { LineNumber = "some example string" }],
+        },
+    });
     // TODO: Handle 'response' of type DeliverOrderLinesResponse
 }
-catch (SdkException<DeliverOrderLinesError> ex)
+catch (ApiException<DeliverOrderLinesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3228,15 +3268,12 @@ catch (SdkException<DeliverOrderLinesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[DeliverOrderLinesRequest](Models/DeliverOrderLinesRequest.cs)</code> | - |
+<code>[DeliverOrderLinesOperationRequest](src/WalmartApIs/Requests/Orders/DeliverOrderLinesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3246,9 +3283,9 @@ catch (SdkException<DeliverOrderLinesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[DeliverOrderLinesResponse](Models/DeliverOrderLinesResponse.cs)</code>
+**OnSuccess**: <code>[DeliverOrderLinesResponse](src/WalmartApIs/Models/DeliverOrderLinesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DeliverOrderLinesError](Errors/DeliverOrderLinesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DeliverOrderLinesError](src/WalmartApIs/Errors/DeliverOrderLinesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3259,7 +3296,7 @@ catch (SdkException<DeliverOrderLinesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOrderResponse&gt; GetOrder(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOrderResponse&gt; GetOrder(GetOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3272,10 +3309,10 @@ catch (SdkException<DeliverOrderLinesError> ex)
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrder(purchaseOrderId);
+    var response = await client.Orders.GetOrder(new GetOrderRequest { PurchaseOrderId = "some example string" });
     // TODO: Handle 'response' of type GetOrderResponse
 }
-catch (SdkException<GetOrderError> ex)
+catch (ApiException<GetOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3287,14 +3324,12 @@ catch (SdkException<GetOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | Walmart Purchase Order ID |
+<code>[GetOrderRequest](src/WalmartApIs/Requests/Orders/GetOrderRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3304,9 +3339,9 @@ catch (SdkException<GetOrderError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOrderResponse](Models/GetOrderResponse.cs)</code>
+**OnSuccess**: <code>[GetOrderResponse](src/WalmartApIs/Models/GetOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderError](Errors/GetOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderError](src/WalmartApIs/Errors/GetOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3317,7 +3352,7 @@ catch (SdkException<GetOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOrderAddressResponse&gt; GetOrderAddress(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOrderAddressResponse&gt; GetOrderAddress(GetOrderAddressRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3332,7 +3367,6 @@ Mirrors Amazon SP-API `getOrderAddress`. PII-restricted endpoint:
 handlers are marked `@RestrictedData` server-side and the
 response body must NOT be logged.
 
-
 </dd>
 </dl>
 
@@ -3344,10 +3378,13 @@ response body must NOT be logged.
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrderAddress(purchaseOrderId);
+    var response = await client.Orders.GetOrderAddress(new GetOrderAddressRequest
+    {
+        PurchaseOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetOrderAddressResponse
 }
-catch (SdkException<GetOrderAddressError> ex)
+catch (ApiException<GetOrderAddressError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3359,14 +3396,12 @@ catch (SdkException<GetOrderAddressError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
+<code>[GetOrderAddressRequest](src/WalmartApIs/Requests/Orders/GetOrderAddressRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3376,9 +3411,9 @@ catch (SdkException<GetOrderAddressError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOrderAddressResponse](Models/GetOrderAddressResponse.cs)</code>
+**OnSuccess**: <code>[GetOrderAddressResponse](src/WalmartApIs/Models/GetOrderAddressResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderAddressError](Errors/GetOrderAddressError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderAddressError](src/WalmartApIs/Errors/GetOrderAddressError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3389,7 +3424,7 @@ catch (SdkException<GetOrderAddressError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOrderBuyerInfoResponse&gt; GetOrderBuyerInfo(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOrderBuyerInfoResponse&gt; GetOrderBuyerInfo(GetOrderBuyerInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3405,7 +3440,6 @@ anonymized phone (last 4 digits only). Mirrors Amazon SP-API
 marked `@RestrictedData` server-side and request/response
 bodies must NOT be logged.
 
-
 </dd>
 </dl>
 
@@ -3417,10 +3451,13 @@ bodies must NOT be logged.
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrderBuyerInfo(purchaseOrderId);
+    var response = await client.Orders.GetOrderBuyerInfo(new GetOrderBuyerInfoRequest
+    {
+        PurchaseOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetOrderBuyerInfoResponse
 }
-catch (SdkException<GetOrderBuyerInfoError> ex)
+catch (ApiException<GetOrderBuyerInfoError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3432,14 +3469,12 @@ catch (SdkException<GetOrderBuyerInfoError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
+<code>[GetOrderBuyerInfoRequest](src/WalmartApIs/Requests/Orders/GetOrderBuyerInfoRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3449,9 +3484,9 @@ catch (SdkException<GetOrderBuyerInfoError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOrderBuyerInfoResponse](Models/GetOrderBuyerInfoResponse.cs)</code>
+**OnSuccess**: <code>[GetOrderBuyerInfoResponse](src/WalmartApIs/Models/GetOrderBuyerInfoResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderBuyerInfoError](Errors/GetOrderBuyerInfoError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderBuyerInfoError](src/WalmartApIs/Errors/GetOrderBuyerInfoError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3462,7 +3497,7 @@ catch (SdkException<GetOrderBuyerInfoError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; GetOrderItems(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; GetOrderItems(GetOrderItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3476,7 +3511,6 @@ Returns the SKU / quantity / item-price projection of a single
 purchase order. Mirrors Amazon SP-API `getOrderItems`. Not
 PII-restricted: only product, quantity, and price are returned.
 
-
 </dd>
 </dl>
 
@@ -3488,10 +3522,13 @@ PII-restricted: only product, quantity, and price are returned.
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrderItems(purchaseOrderId);
+    var response = await client.Orders.GetOrderItems(new GetOrderItemsRequest
+    {
+        PurchaseOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderShipmentsResponse
 }
-catch (SdkException<GetOrderItemsError> ex)
+catch (ApiException<GetOrderItemsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3503,14 +3540,12 @@ catch (SdkException<GetOrderItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
+<code>[GetOrderItemsRequest](src/WalmartApIs/Requests/Orders/GetOrderItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3520,9 +3555,9 @@ catch (SdkException<GetOrderItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderItemsError](Errors/GetOrderItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderItemsError](src/WalmartApIs/Errors/GetOrderItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3533,7 +3568,7 @@ catch (SdkException<GetOrderItemsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOrderRegulatedInfoResponse&gt; GetOrderRegulatedInfo(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOrderRegulatedInfoResponse&gt; GetOrderRegulatedInfo(GetOrderRegulatedInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3558,7 +3593,6 @@ follow-up to this PR), every order returns the safe default
 The endpoint shape and contract are stable; only the projected
 values will become richer once OMS exposes the fields.
 
-
 </dd>
 </dl>
 
@@ -3570,10 +3604,13 @@ values will become richer once OMS exposes the fields.
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrderRegulatedInfo(purchaseOrderId);
+    var response = await client.Orders.GetOrderRegulatedInfo(new GetOrderRegulatedInfoRequest
+    {
+        PurchaseOrderId = "some example string",
+    });
     // TODO: Handle 'response' of type GetOrderRegulatedInfoResponse
 }
-catch (SdkException<GetOrderRegulatedInfoError> ex)
+catch (ApiException<GetOrderRegulatedInfoError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3585,14 +3622,12 @@ catch (SdkException<GetOrderRegulatedInfoError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | Walmart Purchase Order ID |
+<code>[GetOrderRegulatedInfoRequest](src/WalmartApIs/Requests/Orders/GetOrderRegulatedInfoRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3602,9 +3637,9 @@ catch (SdkException<GetOrderRegulatedInfoError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOrderRegulatedInfoResponse](Models/GetOrderRegulatedInfoResponse.cs)</code>
+**OnSuccess**: <code>[GetOrderRegulatedInfoResponse](src/WalmartApIs/Models/GetOrderRegulatedInfoResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderRegulatedInfoError](Errors/GetOrderRegulatedInfoError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderRegulatedInfoError](src/WalmartApIs/Errors/GetOrderRegulatedInfoError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3615,7 +3650,7 @@ catch (SdkException<GetOrderRegulatedInfoError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetOrders(DateTimeOffset? createdAfter, DateTimeOffset? createdBefore, DateTimeOffset? lastUpdatedAfter, IReadOnlyList&lt;OrderStatus&gt;? orderStatuses, IReadOnlyList&lt;FulfillmentType&gt;? fulfillmentTypes, string? nextToken, int? pageSize = 100, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetOrders(GetOrdersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3651,7 +3686,6 @@ behaviour changes when Phase 2 ships. Until then, omit them or
 handle the documented 400 gracefully. The `tools/loadgen-orders.sh --contract`
 smoke sweep exercises the rejection contract on every run.
 
-
 </dd>
 </dl>
 
@@ -3663,15 +3697,10 @@ smoke sweep exercises the rejection contract on every run.
 ```csharp
 try
 {
-    var response = await client.Orders.GetOrders(createdAfter,
-        createdBefore,
-        lastUpdatedAfter,
-        orderStatuses,
-        fulfillmentTypes,
-        nextToken);
+    var response = await client.Orders.GetOrders(new GetOrdersRequest());
     // TODO: Handle 'response' of type GetFulfillmentOrderResponse
 }
-catch (SdkException<GetOrdersError> ex)
+catch (ApiException<GetOrdersError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3683,20 +3712,12 @@ catch (SdkException<GetOrdersError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>createdAfter</code> | <code>DateTimeOffset?</code> | Filter orders created after this date-time (ISO 8601).<br><br>**the roadmap — not yet supported.** Sending this parameter today<br>returns `400 FILTER_NOT_SUPPORTED`; the Orders service does not<br>accept date-range filters at the order level. Tracked by<br>.<br>Retained in the contract so SDKs generated today stay<br>forward-compatible. |
-| <code>createdBefore</code> | <code>DateTimeOffset?</code> | Filter orders created before this date-time (ISO 8601).<br><br>**the roadmap — not yet supported.** See `createdAfter` for the<br>rationale and the tracking ticket. |
-| <code>lastUpdatedAfter</code> | <code>DateTimeOffset?</code> | Filter orders updated after this date-time (ISO 8601).<br><br>**the roadmap — not yet supported.** Sending this parameter today<br>returns `400 FILTER_NOT_SUPPORTED`; the Orders service has no<br>order-level update-date index. Tracked by<br>. |
-| <code>orderStatuses</code> | <code>IReadOnlyList&lt;[OrderStatus](Models/Enums/OrderStatus.cs)&gt;?</code> | Filter by order status.<br><br>**the roadmap limitation:** the Orders service accepts AT MOST ONE<br>status per call. Passing multiple values today returns `400<br>FILTER_NOT_SUPPORTED`; pass a single value or omit to match all.<br>Multi-status fan-out tracked by<br>. |
-| <code>fulfillmentTypes</code> | <code>IReadOnlyList&lt;[FulfillmentType](Models/Enums/FulfillmentType.cs)&gt;?</code> | Filter by fulfillment type.<br><br>**the roadmap — not yet supported.** Sending this parameter today<br>returns `400 FILTER_NOT_SUPPORTED`; the underlying service accepts one<br>shipNodeType per call and multi-type fan-out is Phase 2. Tracked<br>by . |
-| <code>nextToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 100 |
+<code>[GetOrdersRequest](src/WalmartApIs/Requests/Orders/GetOrdersRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3706,9 +3727,9 @@ catch (SdkException<GetOrdersError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderResponse](Models/GetFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderResponse](src/WalmartApIs/Models/GetFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrdersError](Errors/GetOrdersError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrdersError](src/WalmartApIs/Errors/GetOrdersError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3719,7 +3740,7 @@ catch (SdkException<GetOrdersError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;RefundOrderLinesResponse&gt; RefundOrderLines(string purchaseOrderId, RefundOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;RefundOrderLinesResponse&gt; RefundOrderLines(RefundOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3736,7 +3757,6 @@ contract, simplified for the v4 surface: a flat `orderLines[]` with
 per-line refund amount + reason instead of the legacy three-level
 nesting (`orderLines → refunds → refundCharges`).
 
-
 </dd>
 </dl>
 
@@ -3748,10 +3768,24 @@ nesting (`orderLines → refunds → refundCharges`).
 ```csharp
 try
 {
-    var response = await client.Orders.RefundOrderLines(purchaseOrderId, body);
+    var response = await client.Orders.RefundOrderLines(new RefundOrderLinesOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new RefundOrderLinesRequest
+        {
+            OrderLines = [
+                new RefundOrderLine
+                {
+                    LineNumber = "some example string",
+                    RefundAmount = new Money(),
+                    RefundType = RefundType.Return,
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type RefundOrderLinesResponse
 }
-catch (SdkException<RefundOrderLinesError> ex)
+catch (ApiException<RefundOrderLinesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3763,15 +3797,12 @@ catch (SdkException<RefundOrderLinesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[RefundOrderLinesRequest](Models/RefundOrderLinesRequest.cs)</code> | - |
+<code>[RefundOrderLinesOperationRequest](src/WalmartApIs/Requests/Orders/RefundOrderLinesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3781,9 +3812,9 @@ catch (SdkException<RefundOrderLinesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[RefundOrderLinesResponse](Models/RefundOrderLinesResponse.cs)</code>
+**OnSuccess**: <code>[RefundOrderLinesResponse](src/WalmartApIs/Models/RefundOrderLinesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[RefundOrderLinesError](Errors/RefundOrderLinesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[RefundOrderLinesError](src/WalmartApIs/Errors/RefundOrderLinesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3794,7 +3825,7 @@ catch (SdkException<RefundOrderLinesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ShipOrderLinesResponse&gt; ShipOrderLines(string purchaseOrderId, ShipOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ShipOrderLinesResponse&gt; ShipOrderLines(ShipOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3807,10 +3838,28 @@ catch (SdkException<RefundOrderLinesError> ex)
 ```csharp
 try
 {
-    var response = await client.Orders.ShipOrderLines(purchaseOrderId, body);
+    var response = await client.Orders.ShipOrderLines(new ShipOrderLinesOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new ShipOrderLinesRequest
+        {
+            OrderLines = [
+                new ShipOrderLine
+                {
+                    LineNumber = "some example string",
+                    TrackingInfo = new TrackingInfo
+                    {
+                        Carrier = CarrierName.Ups,
+                        TrackingNumber = "some example string",
+                        ShippedDate = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+                    },
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type ShipOrderLinesResponse
 }
-catch (SdkException<ShipOrderLinesError> ex)
+catch (ApiException<ShipOrderLinesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3822,15 +3871,12 @@ catch (SdkException<ShipOrderLinesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[ShipOrderLinesRequest](Models/ShipOrderLinesRequest.cs)</code> | - |
+<code>[ShipOrderLinesOperationRequest](src/WalmartApIs/Requests/Orders/ShipOrderLinesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3840,9 +3886,9 @@ catch (SdkException<ShipOrderLinesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ShipOrderLinesResponse](Models/ShipOrderLinesResponse.cs)</code>
+**OnSuccess**: <code>[ShipOrderLinesResponse](src/WalmartApIs/Models/ShipOrderLinesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ShipOrderLinesError](Errors/ShipOrderLinesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ShipOrderLinesError](src/WalmartApIs/Errors/ShipOrderLinesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3853,7 +3899,7 @@ catch (SdkException<ShipOrderLinesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;MultiPackageShipResponse&gt; ShipOrderMultiPackage(string purchaseOrderId, MultiPackageShipRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;MultiPackageShipResponse&gt; ShipOrderMultiPackage(ShipOrderMultiPackageRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3871,7 +3917,6 @@ lines it covers. Maps onto FMS's existing `shipments[]` envelope
 `packages[]` to the top level rather than nesting it under each
 line so the request stays self-evidently package-oriented.
 
-
 </dd>
 </dl>
 
@@ -3883,10 +3928,28 @@ line so the request stays self-evidently package-oriented.
 ```csharp
 try
 {
-    var response = await client.Orders.ShipOrderMultiPackage(purchaseOrderId, body);
+    var response = await client.Orders.ShipOrderMultiPackage(new ShipOrderMultiPackageRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new MultiPackageShipRequest
+        {
+            Packages = [
+                new ShipPackage
+                {
+                    TrackingInfo = new TrackingInfo
+                    {
+                        Carrier = CarrierName.Ups,
+                        TrackingNumber = "some example string",
+                        ShippedDate = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+                    },
+                    Lines = [new ShipPackageLine { LineNumber = "some example string" }],
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type MultiPackageShipResponse
 }
-catch (SdkException<ShipOrderMultiPackageError> ex)
+catch (ApiException<ShipOrderMultiPackageError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3898,15 +3961,12 @@ catch (SdkException<ShipOrderMultiPackageError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[MultiPackageShipRequest](Models/MultiPackageShipRequest.cs)</code> | - |
+<code>[ShipOrderMultiPackageRequest](src/WalmartApIs/Requests/Orders/ShipOrderMultiPackageRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3916,9 +3976,9 @@ catch (SdkException<ShipOrderMultiPackageError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[MultiPackageShipResponse](Models/MultiPackageShipResponse.cs)</code>
+**OnSuccess**: <code>[MultiPackageShipResponse](src/WalmartApIs/Models/MultiPackageShipResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ShipOrderMultiPackageError](Errors/ShipOrderMultiPackageError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ShipOrderMultiPackageError](src/WalmartApIs/Errors/ShipOrderMultiPackageError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -3929,7 +3989,7 @@ catch (SdkException<ShipOrderMultiPackageError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;UpdateShipmentStatusResponse&gt; UpdateShipmentStatus(string purchaseOrderId, UpdateShipmentStatusRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;UpdateShipmentStatusResponse&gt; UpdateShipmentStatus(UpdateShipmentStatusOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -3946,7 +4006,6 @@ it carries proof-of-delivery semantics this endpoint does not.
 
 Amazon SP-API Orders v0 `updateShipmentStatus` parity.
 
-
 </dd>
 </dl>
 
@@ -3958,10 +4017,18 @@ Amazon SP-API Orders v0 `updateShipmentStatus` parity.
 ```csharp
 try
 {
-    var response = await client.Orders.UpdateShipmentStatus(purchaseOrderId, body);
+    var response = await client.Orders.UpdateShipmentStatus(new UpdateShipmentStatusOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new UpdateShipmentStatusRequest
+        {
+            ShipmentStatus = ShipmentStatus1.ReadyForPickup,
+            OrderLines = [new UpdateShipmentStatusLine { LineNumber = "some example string" }],
+        },
+    });
     // TODO: Handle 'response' of type UpdateShipmentStatusResponse
 }
-catch (SdkException<UpdateShipmentStatusError> ex)
+catch (ApiException<UpdateShipmentStatusError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -3973,15 +4040,12 @@ catch (SdkException<UpdateShipmentStatusError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | - |
-| <code>body</code> | <code>[UpdateShipmentStatusRequest](Models/UpdateShipmentStatusRequest.cs)</code> | - |
+<code>[UpdateShipmentStatusOperationRequest](src/WalmartApIs/Requests/Orders/UpdateShipmentStatusOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -3991,9 +4055,9 @@ catch (SdkException<UpdateShipmentStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UpdateShipmentStatusResponse](Models/UpdateShipmentStatusResponse.cs)</code>
+**OnSuccess**: <code>[UpdateShipmentStatusResponse](src/WalmartApIs/Models/UpdateShipmentStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateShipmentStatusError](Errors/UpdateShipmentStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateShipmentStatusError](src/WalmartApIs/Errors/UpdateShipmentStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4004,7 +4068,7 @@ catch (SdkException<UpdateShipmentStatusError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;UpdateVerificationStatusResponse&gt; UpdateVerificationStatus(string purchaseOrderId, UpdateVerificationStatusRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;UpdateVerificationStatusResponse&gt; UpdateVerificationStatus(UpdateVerificationStatusOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4024,7 +4088,6 @@ return-processing.
 Gated by the CCM-managed `orders.features.regulatedInfoEnabled`
 kill-switch (live-refreshable, parity with the cancel kill-switch).
 
-
 </dd>
 </dl>
 
@@ -4036,10 +4099,14 @@ kill-switch (live-refreshable, parity with the cancel kill-switch).
 ```csharp
 try
 {
-    var response = await client.Orders.UpdateVerificationStatus(purchaseOrderId, body);
+    var response = await client.Orders.UpdateVerificationStatus(new UpdateVerificationStatusOperationRequest
+    {
+        PurchaseOrderId = "some example string",
+        Body = new UpdateVerificationStatusRequest { VerificationStatus = VerificationStatus.Approved },
+    });
     // TODO: Handle 'response' of type UpdateVerificationStatusResponse
 }
-catch (SdkException<UpdateVerificationStatusError> ex)
+catch (ApiException<UpdateVerificationStatusError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4051,15 +4118,12 @@ catch (SdkException<UpdateVerificationStatusError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>purchaseOrderId</code> | <code>string</code> | Walmart Purchase Order ID |
-| <code>body</code> | <code>[UpdateVerificationStatusRequest](Models/UpdateVerificationStatusRequest.cs)</code> | - |
+<code>[UpdateVerificationStatusOperationRequest](src/WalmartApIs/Requests/Orders/UpdateVerificationStatusOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4069,9 +4133,9 @@ catch (SdkException<UpdateVerificationStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UpdateVerificationStatusResponse](Models/UpdateVerificationStatusResponse.cs)</code>
+**OnSuccess**: <code>[UpdateVerificationStatusResponse](src/WalmartApIs/Models/UpdateVerificationStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateVerificationStatusError](Errors/UpdateVerificationStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateVerificationStatusError](src/WalmartApIs/Errors/UpdateVerificationStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4083,10 +4147,10 @@ catch (SdkException<UpdateVerificationStatusError> ex)
 
 ## Payouts
 
-> Source: [Payouts](Api/Payouts.cs)
+> Source: [Payouts](src/WalmartApIs/Api/Payouts.cs)
 
 <details>
-<summary><code>Task&lt;PayoutStatusResponse&gt; ConfigureAutoPayout(DisbursementsV4PaymentAutoPayoutRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;PayoutStatusResponse&gt; ConfigureAutoPayout(ConfigureAutoPayoutRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4101,7 +4165,6 @@ When enabled, payouts are triggered automatically on the standard settlement
 cadence. Returns updated payout status. Requires disbursements:write scope.
 Delegates to GMPPaymentsPlatform (Phase 5).
 
-
 </dd>
 </dl>
 
@@ -4113,10 +4176,13 @@ Delegates to GMPPaymentsPlatform (Phase 5).
 ```csharp
 try
 {
-    var response = await client.Payouts.ConfigureAutoPayout(body);
+    var response = await client.Payouts.ConfigureAutoPayout(new ConfigureAutoPayoutRequest
+    {
+        Body = new DisbursementsV4PaymentAutoPayoutRequest { Enabled = true },
+    });
     // TODO: Handle 'response' of type PayoutStatusResponse
 }
-catch (SdkException<ConfigureAutoPayoutError> ex)
+catch (ApiException<ConfigureAutoPayoutError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4128,14 +4194,12 @@ catch (SdkException<ConfigureAutoPayoutError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[DisbursementsV4PaymentAutoPayoutRequest](Models/DisbursementsV4PaymentAutoPayoutRequest.cs)</code> | - |
+<code>[ConfigureAutoPayoutRequest](src/WalmartApIs/Requests/Payouts/ConfigureAutoPayoutRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4145,9 +4209,9 @@ catch (SdkException<ConfigureAutoPayoutError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PayoutStatusResponse](Models/PayoutStatusResponse.cs)</code>
+**OnSuccess**: <code>[PayoutStatusResponse](src/WalmartApIs/Models/PayoutStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfigureAutoPayoutError](Errors/ConfigureAutoPayoutError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfigureAutoPayoutError](src/WalmartApIs/Errors/ConfigureAutoPayoutError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4158,7 +4222,7 @@ catch (SdkException<ConfigureAutoPayoutError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;AnnualStatementOptsResponse&gt; GetAnnualStatementOpts(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;AnnualStatementOptsResponse&gt; GetAnnualStatementOpts(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4171,7 +4235,6 @@ catch (SdkException<ConfigureAutoPayoutError> ex)
 Returns whether the authenticated seller is opted in to annual statement
 generation and the current statement year. Delegates to GMPPaymentsPlatform
 GET /annualStatementOpts/{partnerId}.
-
 
 </dd>
 </dl>
@@ -4187,7 +4250,7 @@ try
     var response = await client.Payouts.GetAnnualStatementOpts();
     // TODO: Handle 'response' of type AnnualStatementOptsResponse
 }
-catch (SdkException<GetAnnualStatementOptsError> ex)
+catch (ApiException<GetAnnualStatementOptsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4204,9 +4267,9 @@ catch (SdkException<GetAnnualStatementOptsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AnnualStatementOptsResponse](Models/AnnualStatementOptsResponse.cs)</code>
+**OnSuccess**: <code>[AnnualStatementOptsResponse](src/WalmartApIs/Models/AnnualStatementOptsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetAnnualStatementOptsError](Errors/GetAnnualStatementOptsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetAnnualStatementOptsError](src/WalmartApIs/Errors/GetAnnualStatementOptsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4217,7 +4280,7 @@ catch (SdkException<GetAnnualStatementOptsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;FasterPayoutEligibilityResponse&gt; GetFasterPayoutEligibility(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;FasterPayoutEligibilityResponse&gt; GetFasterPayoutEligibility(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4230,7 +4293,6 @@ catch (SdkException<GetAnnualStatementOptsError> ex)
 Returns whether the authenticated seller is eligible for an on-demand
 faster payout, along with the approved amount and any ineligibility reason.
 Delegates to GMPPaymentsPlatform GET /fasterPayout/eligibility/{partnerId}.
-
 
 </dd>
 </dl>
@@ -4246,7 +4308,7 @@ try
     var response = await client.Payouts.GetFasterPayoutEligibility();
     // TODO: Handle 'response' of type FasterPayoutEligibilityResponse
 }
-catch (SdkException<GetFasterPayoutEligibilityError> ex)
+catch (ApiException<GetFasterPayoutEligibilityError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4263,9 +4325,9 @@ catch (SdkException<GetFasterPayoutEligibilityError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[FasterPayoutEligibilityResponse](Models/FasterPayoutEligibilityResponse.cs)</code>
+**OnSuccess**: <code>[FasterPayoutEligibilityResponse](src/WalmartApIs/Models/FasterPayoutEligibilityResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFasterPayoutEligibilityError](Errors/GetFasterPayoutEligibilityError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFasterPayoutEligibilityError](src/WalmartApIs/Errors/GetFasterPayoutEligibilityError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4276,7 +4338,7 @@ catch (SdkException<GetFasterPayoutEligibilityError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;PayoutStatusResponse&gt; GetPaymentStatus(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;PayoutStatusResponse&gt; GetPaymentStatus(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4289,7 +4351,6 @@ catch (SdkException<GetFasterPayoutEligibilityError> ex)
 Returns the current payout status for the authenticated seller, including
 scheduled payout date, amount, and lifecycle state (Pending, Processing,
 Completed, Failed, OnHold). Delegates to GMPPaymentsPlatform (Phase 5).
-
 
 </dd>
 </dl>
@@ -4305,7 +4366,7 @@ try
     var response = await client.Payouts.GetPaymentStatus();
     // TODO: Handle 'response' of type PayoutStatusResponse
 }
-catch (SdkException<GetPaymentStatusError> ex)
+catch (ApiException<GetPaymentStatusError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4322,9 +4383,9 @@ catch (SdkException<GetPaymentStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PayoutStatusResponse](Models/PayoutStatusResponse.cs)</code>
+**OnSuccess**: <code>[PayoutStatusResponse](src/WalmartApIs/Models/PayoutStatusResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetPaymentStatusError](Errors/GetPaymentStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetPaymentStatusError](src/WalmartApIs/Errors/GetPaymentStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4335,7 +4396,7 @@ catch (SdkException<GetPaymentStatusError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;InitiatePayoutResponse&gt; InitiateFasterPayout(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;InitiatePayoutResponse&gt; InitiateFasterPayout(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4349,7 +4410,6 @@ Triggers an immediate on-demand payout for the authenticated seller,
 bypassing the standard settlement schedule. Returns the payout ID and
 initial status. Requires disbursements:write scope.
 Delegates to GMPPaymentsPlatform (Phase 5).
-
 
 </dd>
 </dl>
@@ -4365,7 +4425,7 @@ try
     var response = await client.Payouts.InitiateFasterPayout();
     // TODO: Handle 'response' of type InitiatePayoutResponse
 }
-catch (SdkException<InitiateFasterPayoutError> ex)
+catch (ApiException<InitiateFasterPayoutError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4382,9 +4442,9 @@ catch (SdkException<InitiateFasterPayoutError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[InitiatePayoutResponse](Models/InitiatePayoutResponse.cs)</code>
+**OnSuccess**: <code>[InitiatePayoutResponse](src/WalmartApIs/Models/InitiatePayoutResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[InitiateFasterPayoutError](Errors/InitiateFasterPayoutError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[InitiateFasterPayoutError](src/WalmartApIs/Errors/InitiateFasterPayoutError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4396,10 +4456,10 @@ catch (SdkException<InitiateFasterPayoutError> ex)
 
 ## ProductTypeDefinitions
 
-> Source: [ProductTypeDefinitions](Api/ProductTypeDefinitions.cs)
+> Source: [ProductTypeDefinitions](src/WalmartApIs/Api/ProductTypeDefinitions.cs)
 
 <details>
-<summary><code>Task&lt;ProductTypeDefinition&gt; GetDefinitionsProductType(string productType, string? sellerId, string? locale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ProductTypeDefinition&gt; GetDefinitionsProductType(GetDefinitionsProductTypeRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4422,10 +4482,13 @@ catch (SdkException<InitiateFasterPayoutError> ex)
 ```csharp
 try
 {
-    var response = await client.ProductTypeDefinitions.GetDefinitionsProductType(productType, sellerId);
+    var response = await client.ProductTypeDefinitions.GetDefinitionsProductType(new GetDefinitionsProductTypeRequest
+    {
+        ProductType = "some example string",
+    });
     // TODO: Handle 'response' of type ProductTypeDefinition
 }
-catch (SdkException<GetDefinitionsProductTypeError> ex)
+catch (ApiException<GetDefinitionsProductTypeError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4437,16 +4500,12 @@ catch (SdkException<GetDefinitionsProductTypeError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>productType</code> | <code>string</code> | - |
-| <code>sellerId</code> | <code>string?</code> | - |
-| <code>locale</code> | <code>string?</code> | **Default**: "en_US" |
+<code>[GetDefinitionsProductTypeRequest](src/WalmartApIs/Requests/ProductTypeDefinitions/GetDefinitionsProductTypeRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4456,9 +4515,9 @@ catch (SdkException<GetDefinitionsProductTypeError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductTypeDefinition](Models/ProductTypeDefinition.cs)</code>
+**OnSuccess**: <code>[ProductTypeDefinition](src/WalmartApIs/Models/ProductTypeDefinition.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetDefinitionsProductTypeError](Errors/GetDefinitionsProductTypeError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetDefinitionsProductTypeError](src/WalmartApIs/Errors/GetDefinitionsProductTypeError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4469,7 +4528,7 @@ catch (SdkException<GetDefinitionsProductTypeError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ProductTypeList&gt; SearchDefinitionsProductTypes(string? keywords, string? itemName, string? locale = "en_US", RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ProductTypeList&gt; SearchDefinitionsProductTypes(SearchDefinitionsProductTypesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4492,10 +4551,11 @@ catch (SdkException<GetDefinitionsProductTypeError> ex)
 ```csharp
 try
 {
-    var response = await client.ProductTypeDefinitions.SearchDefinitionsProductTypes(keywords, itemName);
+    var response = await client.ProductTypeDefinitions.SearchDefinitionsProductTypes(
+        new SearchDefinitionsProductTypesRequest());
     // TODO: Handle 'response' of type ProductTypeList
 }
-catch (SdkException<SearchDefinitionsProductTypesError> ex)
+catch (ApiException<SearchDefinitionsProductTypesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4507,16 +4567,12 @@ catch (SdkException<SearchDefinitionsProductTypesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>keywords</code> | <code>string?</code> | - |
-| <code>itemName</code> | <code>string?</code> | - |
-| <code>locale</code> | <code>string?</code> | **Default**: "en_US" |
+<code>[SearchDefinitionsProductTypesRequest](src/WalmartApIs/Requests/ProductTypeDefinitions/SearchDefinitionsProductTypesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4526,9 +4582,9 @@ catch (SdkException<SearchDefinitionsProductTypesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductTypeList](Models/ProductTypeList.cs)</code>
+**OnSuccess**: <code>[ProductTypeList](src/WalmartApIs/Models/ProductTypeList.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SearchDefinitionsProductTypesError](Errors/SearchDefinitionsProductTypesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SearchDefinitionsProductTypesError](src/WalmartApIs/Errors/SearchDefinitionsProductTypesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4540,10 +4596,10 @@ catch (SdkException<SearchDefinitionsProductTypesError> ex)
 
 ## Reconciliation
 
-> Source: [Reconciliation](Api/Reconciliation.cs)
+> Source: [Reconciliation](src/WalmartApIs/Api/Reconciliation.cs)
 
 <details>
-<summary><code>Task&lt;ReportAvailabilityResponse&gt; CheckDownloadReportByPeriod(string partnerId, DateTimeOffset date, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ReportAvailabilityResponse&gt; CheckDownloadReportByPeriod(CheckDownloadReportByPeriodRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4558,7 +4614,6 @@ for a given partner and date. Delegates to mp-payment-reporting
 GET /v3/report/reconreport/reconReportAvailability.
 Note: the upstream date param is named `date` (not `reportDate`).
 
-
 </dd>
 </dl>
 
@@ -4570,10 +4625,14 @@ Note: the upstream date param is named `date` (not `reportDate`).
 ```csharp
 try
 {
-    var response = await client.Reconciliation.CheckDownloadReportByPeriod(partnerId, date);
+    var response = await client.Reconciliation.CheckDownloadReportByPeriod(new CheckDownloadReportByPeriodRequest
+    {
+        PartnerId = "some example string",
+        Date = DateTimeOffset.Parse("2024-01-15T00:00:00Z"),
+    });
     // TODO: Handle 'response' of type ReportAvailabilityResponse
 }
-catch (SdkException<CheckDownloadReportByPeriodError> ex)
+catch (ApiException<CheckDownloadReportByPeriodError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4585,15 +4644,12 @@ catch (SdkException<CheckDownloadReportByPeriodError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
-| <code>date</code> | <code>DateTimeOffset</code> | Report date in yyyy-MM-dd format |
+<code>[CheckDownloadReportByPeriodRequest](src/WalmartApIs/Requests/Reconciliation/CheckDownloadReportByPeriodRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4603,9 +4659,9 @@ catch (SdkException<CheckDownloadReportByPeriodError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReportAvailabilityResponse](Models/ReportAvailabilityResponse.cs)</code>
+**OnSuccess**: <code>[ReportAvailabilityResponse](src/WalmartApIs/Models/ReportAvailabilityResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CheckDownloadReportByPeriodError](Errors/CheckDownloadReportByPeriodError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CheckDownloadReportByPeriodError](src/WalmartApIs/Errors/CheckDownloadReportByPeriodError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4616,7 +4672,7 @@ catch (SdkException<CheckDownloadReportByPeriodError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;BinaryContent&gt; DownloadReconciliationReport(string partnerId, string reportDate, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;BinaryContent&gt; DownloadReconciliationReport(DownloadReconciliationReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4629,7 +4685,6 @@ catch (SdkException<CheckDownloadReportByPeriodError> ex)
 Downloads a reconciliation report ZIP for the given partner and date.
 Delegates to mp-payment-reporting GET /v1/mt/report/reconreport/reconFile (Azure MT storage).
 
-
 </dd>
 </dl>
 
@@ -4641,10 +4696,14 @@ Delegates to mp-payment-reporting GET /v1/mt/report/reconreport/reconFile (Azure
 ```csharp
 try
 {
-    var response = await client.Reconciliation.DownloadReconciliationReport(partnerId, reportDate);
+    var response = await client.Reconciliation.DownloadReconciliationReport(new DownloadReconciliationReportRequest
+    {
+        PartnerId = "some example string",
+        ReportDate = "some example string",
+    });
     // TODO: Handle 'response' of type BinaryContent
 }
-catch (SdkException<DownloadReconciliationReportError> ex)
+catch (ApiException<DownloadReconciliationReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4656,15 +4715,12 @@ catch (SdkException<DownloadReconciliationReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
-| <code>reportDate</code> | <code>string</code> | Report date in MMddyyyy format (e.g. 06172026) |
+<code>[DownloadReconciliationReportRequest](src/WalmartApIs/Requests/Reconciliation/DownloadReconciliationReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4676,7 +4732,7 @@ catch (SdkException<DownloadReconciliationReportError> ex)
 
 **OnSuccess**: <code>BinaryContent</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DownloadReconciliationReportError](Errors/DownloadReconciliationReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DownloadReconciliationReportError](src/WalmartApIs/Errors/DownloadReconciliationReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4687,7 +4743,7 @@ catch (SdkException<DownloadReconciliationReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ReportAvailabilityResponse&gt; ListReconciliationDates(string partnerId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ReportAvailabilityResponse&gt; ListReconciliationDates(ListReconciliationDatesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4700,7 +4756,6 @@ catch (SdkException<DownloadReconciliationReportError> ex)
 Returns the set of available reconciliation report dates for a partner.
 Delegates to mp-payment-reporting GET /v3/report/reconreport/availableReconFiles.
 
-
 </dd>
 </dl>
 
@@ -4712,10 +4767,13 @@ Delegates to mp-payment-reporting GET /v3/report/reconreport/availableReconFiles
 ```csharp
 try
 {
-    var response = await client.Reconciliation.ListReconciliationDates(partnerId);
+    var response = await client.Reconciliation.ListReconciliationDates(new ListReconciliationDatesRequest
+    {
+        PartnerId = "some example string",
+    });
     // TODO: Handle 'response' of type ReportAvailabilityResponse
 }
-catch (SdkException<ListReconciliationDatesError> ex)
+catch (ApiException<ListReconciliationDatesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4727,14 +4785,12 @@ catch (SdkException<ListReconciliationDatesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
+<code>[ListReconciliationDatesRequest](src/WalmartApIs/Requests/Reconciliation/ListReconciliationDatesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4744,9 +4800,9 @@ catch (SdkException<ListReconciliationDatesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReportAvailabilityResponse](Models/ReportAvailabilityResponse.cs)</code>
+**OnSuccess**: <code>[ReportAvailabilityResponse](src/WalmartApIs/Models/ReportAvailabilityResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListReconciliationDatesError](Errors/ListReconciliationDatesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListReconciliationDatesError](src/WalmartApIs/Errors/ListReconciliationDatesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4758,10 +4814,10 @@ catch (SdkException<ListReconciliationDatesError> ex)
 
 ## ReportSchedules
 
-> Source: [ReportSchedules](Api/ReportSchedules.cs)
+> Source: [ReportSchedules](src/WalmartApIs/Api/ReportSchedules.cs)
 
 <details>
-<summary><code>Task&lt;CancelReportScheduleResponse&gt; CancelReportSchedule(string reportScheduleId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelReportScheduleResponse&gt; CancelReportSchedule(CancelReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4774,10 +4830,13 @@ catch (SdkException<ListReconciliationDatesError> ex)
 ```csharp
 try
 {
-    var response = await client.ReportSchedules.CancelReportSchedule(reportScheduleId);
+    var response = await client.ReportSchedules.CancelReportSchedule(new CancelReportScheduleRequest
+    {
+        ReportScheduleId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelReportScheduleResponse
 }
-catch (SdkException<CancelReportScheduleError> ex)
+catch (ApiException<CancelReportScheduleError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4789,14 +4848,12 @@ catch (SdkException<CancelReportScheduleError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportScheduleId</code> | <code>string</code> | - |
+<code>[CancelReportScheduleRequest](src/WalmartApIs/Requests/ReportSchedules/CancelReportScheduleRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4806,9 +4863,9 @@ catch (SdkException<CancelReportScheduleError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelReportScheduleResponse](Models/CancelReportScheduleResponse.cs)</code>
+**OnSuccess**: <code>[CancelReportScheduleResponse](src/WalmartApIs/Models/CancelReportScheduleResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelReportScheduleError](Errors/CancelReportScheduleError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelReportScheduleError](src/WalmartApIs/Errors/CancelReportScheduleError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4819,7 +4876,7 @@ catch (SdkException<CancelReportScheduleError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateReportScheduleResponse&gt; CreateReportSchedule(CreateReportScheduleSpecification body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateReportScheduleResponse&gt; CreateReportSchedule(CreateReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4832,10 +4889,13 @@ catch (SdkException<CancelReportScheduleError> ex)
 ```csharp
 try
 {
-    var response = await client.ReportSchedules.CreateReportSchedule(body);
+    var response = await client.ReportSchedules.CreateReportSchedule(new CreateReportScheduleRequest
+    {
+        Body = new CreateReportScheduleSpecification { ReportType = "some example string", Period = Period1.Pt5M },
+    });
     // TODO: Handle 'response' of type CreateReportScheduleResponse
 }
-catch (SdkException<CreateReportScheduleError> ex)
+catch (ApiException<CreateReportScheduleError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4847,14 +4907,12 @@ catch (SdkException<CreateReportScheduleError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateReportScheduleSpecification](Models/CreateReportScheduleSpecification.cs)</code> | - |
+<code>[CreateReportScheduleRequest](src/WalmartApIs/Requests/ReportSchedules/CreateReportScheduleRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4864,9 +4922,9 @@ catch (SdkException<CreateReportScheduleError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateReportScheduleResponse](Models/CreateReportScheduleResponse.cs)</code>
+**OnSuccess**: <code>[CreateReportScheduleResponse](src/WalmartApIs/Models/CreateReportScheduleResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateReportScheduleError](Errors/CreateReportScheduleError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateReportScheduleError](src/WalmartApIs/Errors/CreateReportScheduleError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4877,7 +4935,7 @@ catch (SdkException<CreateReportScheduleError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ReportSchedule&gt; GetReportSchedule(string reportScheduleId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ReportSchedule&gt; GetReportSchedule(GetReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4890,10 +4948,13 @@ catch (SdkException<CreateReportScheduleError> ex)
 ```csharp
 try
 {
-    var response = await client.ReportSchedules.GetReportSchedule(reportScheduleId);
+    var response = await client.ReportSchedules.GetReportSchedule(new GetReportScheduleRequest
+    {
+        ReportScheduleId = "some example string",
+    });
     // TODO: Handle 'response' of type ReportSchedule
 }
-catch (SdkException<GetReportScheduleError> ex)
+catch (ApiException<GetReportScheduleError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4905,14 +4966,12 @@ catch (SdkException<GetReportScheduleError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportScheduleId</code> | <code>string</code> | - |
+<code>[GetReportScheduleRequest](src/WalmartApIs/Requests/ReportSchedules/GetReportScheduleRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4922,9 +4981,9 @@ catch (SdkException<GetReportScheduleError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReportSchedule](Models/ReportSchedule.cs)</code>
+**OnSuccess**: <code>[ReportSchedule](src/WalmartApIs/Models/ReportSchedule.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetReportScheduleError](Errors/GetReportScheduleError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetReportScheduleError](src/WalmartApIs/Errors/GetReportScheduleError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4935,7 +4994,7 @@ catch (SdkException<GetReportScheduleError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetReportSchedulesResponse&gt; GetReportSchedules(IReadOnlyList&lt;ReportType1&gt;? reportTypes, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetReportSchedulesResponse&gt; GetReportSchedules(GetReportSchedulesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -4948,10 +5007,10 @@ catch (SdkException<GetReportScheduleError> ex)
 ```csharp
 try
 {
-    var response = await client.ReportSchedules.GetReportSchedules(reportTypes);
+    var response = await client.ReportSchedules.GetReportSchedules(new GetReportSchedulesRequest());
     // TODO: Handle 'response' of type GetReportSchedulesResponse
 }
-catch (SdkException<GetReportSchedulesError> ex)
+catch (ApiException<GetReportSchedulesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -4963,14 +5022,12 @@ catch (SdkException<GetReportSchedulesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportTypes</code> | <code>IReadOnlyList&lt;[ReportType1](Models/Enums/ReportType1.cs)&gt;?</code> | Filter by report type. Values are Walmart Partner Reporting Platform enum names. Runtime availability is CCM-controlled; consult PRP docs for current PROD-enabled types. |
+<code>[GetReportSchedulesRequest](src/WalmartApIs/Requests/ReportSchedules/GetReportSchedulesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -4980,9 +5037,9 @@ catch (SdkException<GetReportSchedulesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetReportSchedulesResponse](Models/GetReportSchedulesResponse.cs)</code>
+**OnSuccess**: <code>[GetReportSchedulesResponse](src/WalmartApIs/Models/GetReportSchedulesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetReportSchedulesError](Errors/GetReportSchedulesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetReportSchedulesError](src/WalmartApIs/Errors/GetReportSchedulesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -4994,10 +5051,10 @@ catch (SdkException<GetReportSchedulesError> ex)
 
 ## Reports
 
-> Source: [Reports](Api/Reports.cs)
+> Source: [Reports](src/WalmartApIs/Api/Reports.cs)
 
 <details>
-<summary><code>Task&lt;CancelReportResponse&gt; CancelReport(string reportId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelReportResponse&gt; CancelReport(CancelReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5010,10 +5067,10 @@ catch (SdkException<GetReportSchedulesError> ex)
 ```csharp
 try
 {
-    var response = await client.Reports.CancelReport(reportId);
+    var response = await client.Reports.CancelReport(new CancelReportRequest { ReportId = "some example string" });
     // TODO: Handle 'response' of type CancelReportResponse
 }
-catch (SdkException<CancelReportError> ex)
+catch (ApiException<CancelReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5025,14 +5082,12 @@ catch (SdkException<CancelReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportId</code> | <code>string</code> | - |
+<code>[CancelReportRequest](src/WalmartApIs/Requests/Reports/CancelReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5042,9 +5097,9 @@ catch (SdkException<CancelReportError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelReportResponse](Models/CancelReportResponse.cs)</code>
+**OnSuccess**: <code>[CancelReportResponse](src/WalmartApIs/Models/CancelReportResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelReportError](Errors/CancelReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelReportError](src/WalmartApIs/Errors/CancelReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5055,7 +5110,7 @@ catch (SdkException<CancelReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateReportResponse&gt; CreateReport(CreateReportSpecification body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateReportResponse&gt; CreateReport(CreateReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5068,7 +5123,6 @@ catch (SdkException<CancelReportError> ex)
 Submits a report request. Poll `GET /reports/{reportId}` for status.
 Report type taxonomy TBD — coordinate with Pod 5 for financial reports.
 
-
 </dd>
 </dl>
 
@@ -5080,10 +5134,13 @@ Report type taxonomy TBD — coordinate with Pod 5 for financial reports.
 ```csharp
 try
 {
-    var response = await client.Reports.CreateReport(body);
+    var response = await client.Reports.CreateReport(new CreateReportRequest
+    {
+        Body = new CreateReportSpecification { ReportType = ReportType.Item },
+    });
     // TODO: Handle 'response' of type CreateReportResponse
 }
-catch (SdkException<CreateReportError> ex)
+catch (ApiException<CreateReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5095,14 +5152,12 @@ catch (SdkException<CreateReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateReportSpecification](Models/CreateReportSpecification.cs)</code> | - |
+<code>[CreateReportRequest](src/WalmartApIs/Requests/Reports/CreateReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5112,9 +5167,9 @@ catch (SdkException<CreateReportError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateReportResponse](Models/CreateReportResponse.cs)</code>
+**OnSuccess**: <code>[CreateReportResponse](src/WalmartApIs/Models/CreateReportResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateReportError](Errors/CreateReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateReportError](src/WalmartApIs/Errors/CreateReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5125,7 +5180,7 @@ catch (SdkException<CreateReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;BinaryContent&gt; DownloadNewReport(string partnerId, string reportDate, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;BinaryContent&gt; DownloadNewReport(DownloadNewReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5138,7 +5193,6 @@ catch (SdkException<CreateReportError> ex)
 Downloads the current-format settlement summary report ZIP.
 Delegates to mp-payment-reporting GET /v3/report/reconreport/v1/reconFile (Swift v1 storage).
 
-
 </dd>
 </dl>
 
@@ -5150,10 +5204,14 @@ Delegates to mp-payment-reporting GET /v3/report/reconreport/v1/reconFile (Swift
 ```csharp
 try
 {
-    var response = await client.Reports.DownloadNewReport(partnerId, reportDate);
+    var response = await client.Reports.DownloadNewReport(new DownloadNewReportRequest
+    {
+        PartnerId = "some example string",
+        ReportDate = "some example string",
+    });
     // TODO: Handle 'response' of type BinaryContent
 }
-catch (SdkException<DownloadNewReportError> ex)
+catch (ApiException<DownloadNewReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5165,15 +5223,12 @@ catch (SdkException<DownloadNewReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
-| <code>reportDate</code> | <code>string</code> | Report date in MMddyyyy format (e.g. 06172026) |
+<code>[DownloadNewReportRequest](src/WalmartApIs/Requests/Reports/DownloadNewReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5185,7 +5240,7 @@ catch (SdkException<DownloadNewReportError> ex)
 
 **OnSuccess**: <code>BinaryContent</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DownloadNewReportError](Errors/DownloadNewReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DownloadNewReportError](src/WalmartApIs/Errors/DownloadNewReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5196,7 +5251,7 @@ catch (SdkException<DownloadNewReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;BinaryContent&gt; DownloadOldReport(string partnerId, string reportDate, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;BinaryContent&gt; DownloadOldReport(DownloadOldReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5209,7 +5264,6 @@ catch (SdkException<DownloadNewReportError> ex)
 Downloads the legacy-format settlement summary report ZIP.
 Delegates to mp-payment-reporting GET /v3/report/reconreport/reconFile (legacy Swift storage).
 
-
 </dd>
 </dl>
 
@@ -5221,10 +5275,14 @@ Delegates to mp-payment-reporting GET /v3/report/reconreport/reconFile (legacy S
 ```csharp
 try
 {
-    var response = await client.Reports.DownloadOldReport(partnerId, reportDate);
+    var response = await client.Reports.DownloadOldReport(new DownloadOldReportRequest
+    {
+        PartnerId = "some example string",
+        ReportDate = "some example string",
+    });
     // TODO: Handle 'response' of type BinaryContent
 }
-catch (SdkException<DownloadOldReportError> ex)
+catch (ApiException<DownloadOldReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5236,15 +5294,12 @@ catch (SdkException<DownloadOldReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
-| <code>reportDate</code> | <code>string</code> | Report date in MMddyyyy format (e.g. 06172026) |
+<code>[DownloadOldReportRequest](src/WalmartApIs/Requests/Reports/DownloadOldReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5256,7 +5311,7 @@ catch (SdkException<DownloadOldReportError> ex)
 
 **OnSuccess**: <code>BinaryContent</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DownloadOldReportError](Errors/DownloadOldReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DownloadOldReportError](src/WalmartApIs/Errors/DownloadOldReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5267,7 +5322,7 @@ catch (SdkException<DownloadOldReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Report&gt; GetReport(string reportId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Report&gt; GetReport(GetReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5280,10 +5335,10 @@ catch (SdkException<DownloadOldReportError> ex)
 ```csharp
 try
 {
-    var response = await client.Reports.GetReport(reportId);
+    var response = await client.Reports.GetReport(new GetReportRequest { ReportId = "some example string" });
     // TODO: Handle 'response' of type Report
 }
-catch (SdkException<GetReportError> ex)
+catch (ApiException<GetReportError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5295,14 +5350,12 @@ catch (SdkException<GetReportError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportId</code> | <code>string</code> | - |
+<code>[GetReportRequest](src/WalmartApIs/Requests/Reports/GetReportRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5312,9 +5365,9 @@ catch (SdkException<GetReportError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Report](Models/Report.cs)</code>
+**OnSuccess**: <code>[Report](src/WalmartApIs/Models/Report.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetReportError](Errors/GetReportError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetReportError](src/WalmartApIs/Errors/GetReportError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5325,7 +5378,7 @@ catch (SdkException<GetReportError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ReportDocument&gt; GetReportDocument(string reportDocumentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ReportDocument&gt; GetReportDocument(GetReportDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5338,7 +5391,6 @@ catch (SdkException<GetReportError> ex)
 Returns a pre-signed URL for downloading the completed report.
 Do not log the pre-signed URL.
 
-
 </dd>
 </dl>
 
@@ -5350,10 +5402,13 @@ Do not log the pre-signed URL.
 ```csharp
 try
 {
-    var response = await client.Reports.GetReportDocument(reportDocumentId);
+    var response = await client.Reports.GetReportDocument(new GetReportDocumentRequest
+    {
+        ReportDocumentId = "some example string",
+    });
     // TODO: Handle 'response' of type ReportDocument
 }
-catch (SdkException<GetReportDocumentError> ex)
+catch (ApiException<GetReportDocumentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5365,14 +5420,12 @@ catch (SdkException<GetReportDocumentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportDocumentId</code> | <code>string</code> | - |
+<code>[GetReportDocumentRequest](src/WalmartApIs/Requests/Reports/GetReportDocumentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5382,9 +5435,9 @@ catch (SdkException<GetReportDocumentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReportDocument](Models/ReportDocument.cs)</code>
+**OnSuccess**: <code>[ReportDocument](src/WalmartApIs/Models/ReportDocument.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetReportDocumentError](Errors/GetReportDocumentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetReportDocumentError](src/WalmartApIs/Errors/GetReportDocumentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5395,7 +5448,7 @@ catch (SdkException<GetReportDocumentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetReportsResponse&gt; GetReports(IReadOnlyList&lt;ReportType1&gt;? reportTypes, IReadOnlyList&lt;ProcessingStatus&gt;? processingStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetReportsResponse&gt; GetReports(GetReportsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5408,14 +5461,10 @@ catch (SdkException<GetReportDocumentError> ex)
 ```csharp
 try
 {
-    var response = await client.Reports.GetReports(reportTypes,
-        processingStatuses,
-        createdSince,
-        createdUntil,
-        nextToken);
+    var response = await client.Reports.GetReports(new GetReportsRequest());
     // TODO: Handle 'response' of type GetReportsResponse
 }
-catch (SdkException<GetReportsError> ex)
+catch (ApiException<GetReportsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5427,19 +5476,12 @@ catch (SdkException<GetReportsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>reportTypes</code> | <code>IReadOnlyList&lt;[ReportType1](Models/Enums/ReportType1.cs)&gt;?</code> | Filter by report type. Values are Walmart Partner Reporting Platform enum names. Runtime availability is CCM-controlled; consult PRP docs for current PROD-enabled types. |
-| <code>processingStatuses</code> | <code>IReadOnlyList&lt;[ProcessingStatus](Models/Enums/ProcessingStatus.cs)&gt;?</code> | - |
-| <code>createdSince</code> | <code>DateTimeOffset?</code> | - |
-| <code>createdUntil</code> | <code>DateTimeOffset?</code> | - |
-| <code>nextToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[GetReportsRequest](src/WalmartApIs/Requests/Reports/GetReportsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5449,9 +5491,9 @@ catch (SdkException<GetReportsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetReportsResponse](Models/GetReportsResponse.cs)</code>
+**OnSuccess**: <code>[GetReportsResponse](src/WalmartApIs/Models/GetReportsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetReportsError](Errors/GetReportsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetReportsError](src/WalmartApIs/Errors/GetReportsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5463,10 +5505,10 @@ catch (SdkException<GetReportsError> ex)
 
 ## Sellers
 
-> Source: [Sellers](Api/Sellers.cs)
+> Source: [Sellers](src/WalmartApIs/Api/Sellers.cs)
 
 <details>
-<summary><code>Task&lt;SellerAccount&gt; GetAccount(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;SellerAccount&gt; GetAccount(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5478,7 +5520,6 @@ catch (SdkException<GetReportsError> ex)
 
 Returns the authenticated seller's account information including
 business name, email, account status, and seller type.
-
 
 </dd>
 </dl>
@@ -5494,7 +5535,7 @@ try
     var response = await client.Sellers.GetAccount();
     // TODO: Handle 'response' of type SellerAccount
 }
-catch (SdkException<GetAccountError> ex)
+catch (ApiException<GetAccountError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5511,9 +5552,9 @@ catch (SdkException<GetAccountError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SellerAccount](Models/SellerAccount.cs)</code>
+**OnSuccess**: <code>[SellerAccount](src/WalmartApIs/Models/SellerAccount.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetAccountError](Errors/GetAccountError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetAccountError](src/WalmartApIs/Errors/GetAccountError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5524,7 +5565,7 @@ catch (SdkException<GetAccountError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetMarketplaceParticipationsResponse&gt; GetMarketplaceParticipations(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetMarketplaceParticipationsResponse&gt; GetMarketplaceParticipations(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5536,7 +5577,6 @@ catch (SdkException<GetAccountError> ex)
 
 Returns the list of marketplaces the authenticated seller participates in
 (e.g. Walmart US, Walmart Canada, Walmart Mexico).
-
 
 </dd>
 </dl>
@@ -5552,7 +5592,7 @@ try
     var response = await client.Sellers.GetMarketplaceParticipations();
     // TODO: Handle 'response' of type GetMarketplaceParticipationsResponse
 }
-catch (SdkException<GetMarketplaceParticipationsError> ex)
+catch (ApiException<GetMarketplaceParticipationsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5569,9 +5609,9 @@ catch (SdkException<GetMarketplaceParticipationsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetMarketplaceParticipationsResponse](Models/GetMarketplaceParticipationsResponse.cs)</code>
+**OnSuccess**: <code>[GetMarketplaceParticipationsResponse](src/WalmartApIs/Models/GetMarketplaceParticipationsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetMarketplaceParticipationsError](Errors/GetMarketplaceParticipationsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetMarketplaceParticipationsError](src/WalmartApIs/Errors/GetMarketplaceParticipationsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5583,10 +5623,10 @@ catch (SdkException<GetMarketplaceParticipationsError> ex)
 
 ## Settlement
 
-> Source: [Settlement](Api/Settlement.cs)
+> Source: [Settlement](src/WalmartApIs/Api/Settlement.cs)
 
 <details>
-<summary><code>Task&lt;SettlementDetailsResponse&gt; ListSettlementDetails(string partnerId, string reportDate, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;SettlementDetailsResponse&gt; ListSettlementDetails(ListSettlementDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5601,7 +5641,6 @@ Contains PII (purchase order IDs). Delegates to mp-payment-reporting
 GET /v3/report/reconreport/v1/getJson with offset-based pagination.
 nextToken is a Base64-encoded offset into the report file.
 
-
 </dd>
 </dl>
 
@@ -5613,10 +5652,14 @@ nextToken is a Base64-encoded offset into the report file.
 ```csharp
 try
 {
-    var response = await client.Settlement.ListSettlementDetails(partnerId, reportDate, nextToken);
+    var response = await client.Settlement.ListSettlementDetails(new ListSettlementDetailsRequest
+    {
+        PartnerId = "some example string",
+        ReportDate = "some example string",
+    });
     // TODO: Handle 'response' of type SettlementDetailsResponse
 }
-catch (SdkException<ListSettlementDetailsError> ex)
+catch (ApiException<ListSettlementDetailsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5628,17 +5671,12 @@ catch (SdkException<ListSettlementDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>partnerId</code> | <code>string</code> | Numeric partner/seller ID |
-| <code>reportDate</code> | <code>string</code> | Report date in MMddyyyy format (e.g. 06172026) |
-| <code>nextToken</code> | <code>string?</code> | Opaque cursor from a prior response; omit for first page |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[ListSettlementDetailsRequest](src/WalmartApIs/Requests/Settlement/ListSettlementDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5648,9 +5686,9 @@ catch (SdkException<ListSettlementDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SettlementDetailsResponse](Models/SettlementDetailsResponse.cs)</code>
+**OnSuccess**: <code>[SettlementDetailsResponse](src/WalmartApIs/Models/SettlementDetailsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListSettlementDetailsError](Errors/ListSettlementDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListSettlementDetailsError](src/WalmartApIs/Errors/ListSettlementDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5661,7 +5699,7 @@ catch (SdkException<ListSettlementDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;SettlementPeriodsResponse&gt; ListSettlementPeriods(string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;SettlementPeriodsResponse&gt; ListSettlementPeriods(ListSettlementPeriodsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5674,7 +5712,6 @@ catch (SdkException<ListSettlementDetailsError> ex)
 Returns available settlement period dates for the authenticated seller.
 Delegates to mp-payment-reporting GET /v3/report/reconreport/v1/availableReconFiles.
 
-
 </dd>
 </dl>
 
@@ -5686,10 +5723,10 @@ Delegates to mp-payment-reporting GET /v3/report/reconreport/v1/availableReconFi
 ```csharp
 try
 {
-    var response = await client.Settlement.ListSettlementPeriods(nextToken);
+    var response = await client.Settlement.ListSettlementPeriods(new ListSettlementPeriodsRequest());
     // TODO: Handle 'response' of type SettlementPeriodsResponse
 }
-catch (SdkException<ListSettlementPeriodsError> ex)
+catch (ApiException<ListSettlementPeriodsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5701,15 +5738,12 @@ catch (SdkException<ListSettlementPeriodsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>nextToken</code> | <code>string?</code> | Opaque cursor from a prior response; omit for first page |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[ListSettlementPeriodsRequest](src/WalmartApIs/Requests/Settlement/ListSettlementPeriodsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5719,9 +5753,9 @@ catch (SdkException<ListSettlementPeriodsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SettlementPeriodsResponse](Models/SettlementPeriodsResponse.cs)</code>
+**OnSuccess**: <code>[SettlementPeriodsResponse](src/WalmartApIs/Models/SettlementPeriodsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListSettlementPeriodsError](Errors/ListSettlementPeriodsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListSettlementPeriodsError](src/WalmartApIs/Errors/ListSettlementPeriodsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5732,7 +5766,7 @@ catch (SdkException<ListSettlementPeriodsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;TransactionSearchResponse&gt; SearchTransactions(string? nextToken, DateTimeOffset? postedAfter, DateTimeOffset? postedBefore, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;TransactionSearchResponse&gt; SearchTransactions(SearchTransactionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5746,7 +5780,6 @@ Returns a paginated list of payment transactions for the authenticated seller
 filtered by optional date range. Contains PII (purchase order IDs).
 Delegates to GMPPaymentsPlatform (Phase 5).
 
-
 </dd>
 </dl>
 
@@ -5758,10 +5791,10 @@ Delegates to GMPPaymentsPlatform (Phase 5).
 ```csharp
 try
 {
-    var response = await client.Settlement.SearchTransactions(nextToken, postedAfter, postedBefore);
+    var response = await client.Settlement.SearchTransactions(new SearchTransactionsRequest());
     // TODO: Handle 'response' of type TransactionSearchResponse
 }
-catch (SdkException<SearchTransactionsError> ex)
+catch (ApiException<SearchTransactionsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5773,17 +5806,12 @@ catch (SdkException<SearchTransactionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>nextToken</code> | <code>string?</code> | Opaque cursor from a prior response; omit for first page |
-| <code>postedAfter</code> | <code>DateTimeOffset?</code> | - |
-| <code>postedBefore</code> | <code>DateTimeOffset?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 10 |
+<code>[SearchTransactionsRequest](src/WalmartApIs/Requests/Settlement/SearchTransactionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5793,9 +5821,9 @@ catch (SdkException<SearchTransactionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[TransactionSearchResponse](Models/TransactionSearchResponse.cs)</code>
+**OnSuccess**: <code>[TransactionSearchResponse](src/WalmartApIs/Models/TransactionSearchResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SearchTransactionsError](Errors/SearchTransactionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SearchTransactionsError](src/WalmartApIs/Errors/SearchTransactionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5807,10 +5835,10 @@ catch (SdkException<SearchTransactionsError> ex)
 
 ## Uploads
 
-> Source: [Uploads](Api/Uploads.cs)
+> Source: [Uploads](src/WalmartApIs/Api/Uploads.cs)
 
 <details>
-<summary><code>Task&lt;CreateUploadDestinationResponse&gt; CreateUploadDestinationForResource(Resource resource, ContentType1 contentType, IReadOnlyList&lt;string&gt; marketplaceIds, string contentMd5, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateUploadDestinationResponse&gt; CreateUploadDestinationForResource(CreateUploadDestinationForResourceRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5824,7 +5852,6 @@ Returns a pre-signed URL and upload destination ID for uploading
 a document for the given resource (e.g. feeds, reports).
 **Do not log the pre-signed URL — it contains temporary credentials.**
 
-
 </dd>
 </dl>
 
@@ -5836,13 +5863,16 @@ a document for the given resource (e.g. feeds, reports).
 ```csharp
 try
 {
-    var response = await client.Uploads.CreateUploadDestinationForResource(resource,
-        contentType,
-        marketplaceIds,
-        contentMd5);
+    var response = await client.Uploads.CreateUploadDestinationForResource(new CreateUploadDestinationForResourceRequest
+    {
+        Resource = Resource.Feeds,
+        ContentType = ContentType1.TextXmlCharsetUtf8,
+        MarketplaceIds = ["some example string"],
+        ContentMd5 = "some example string",
+    });
     // TODO: Handle 'response' of type CreateUploadDestinationResponse
 }
-catch (SdkException<CreateUploadDestinationForResourceError> ex)
+catch (ApiException<CreateUploadDestinationForResourceError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5854,17 +5884,12 @@ catch (SdkException<CreateUploadDestinationForResourceError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>resource</code> | <code>[Resource](Models/Enums/Resource.cs)</code> | The resource type for the upload destination (e.g. feeds) |
-| <code>contentType</code> | <code>[ContentType1](Models/Enums/ContentType1.cs)</code> | MIME type of the content to be uploaded |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | - |
-| <code>contentMd5</code> | <code>string</code> | MD5 hash of the content to be uploaded, encoded as base64 |
+<code>[CreateUploadDestinationForResourceRequest](src/WalmartApIs/Requests/Uploads/CreateUploadDestinationForResourceRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5874,9 +5899,9 @@ catch (SdkException<CreateUploadDestinationForResourceError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateUploadDestinationResponse](Models/CreateUploadDestinationResponse.cs)</code>
+**OnSuccess**: <code>[CreateUploadDestinationResponse](src/WalmartApIs/Models/CreateUploadDestinationResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateUploadDestinationForResourceError](Errors/CreateUploadDestinationForResourceError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateUploadDestinationForResourceError](src/WalmartApIs/Errors/CreateUploadDestinationForResourceError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5888,10 +5913,10 @@ catch (SdkException<CreateUploadDestinationForResourceError> ex)
 
 ## WfsInventory
 
-> Source: [WfsInventory](Api/WfsInventory.cs)
+> Source: [WfsInventory](src/WalmartApIs/Api/WfsInventory.cs)
 
 <details>
-<summary><code>Task&lt;GetWfsInventoryResponse&gt; GetWfsInventoryItems(string? skus, string? nextToken, int? pageSize = 100, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetWfsInventoryResponse&gt; GetWfsInventoryItems(GetWfsInventoryItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5909,7 +5934,6 @@ not available on seller-fulfilled inventory.
 Requests retrieving more than 100 items per page will receive
 `X-RateLimit-Limit` and `X-RateLimit-Remaining` headers in the response.
 
-
 </dd>
 </dl>
 
@@ -5921,10 +5945,10 @@ Requests retrieving more than 100 items per page will receive
 ```csharp
 try
 {
-    var response = await client.WfsInventory.GetWfsInventoryItems(skus, nextToken);
+    var response = await client.WfsInventory.GetWfsInventoryItems(new GetWfsInventoryItemsRequest());
     // TODO: Handle 'response' of type GetWfsInventoryResponse
 }
-catch (SdkException<GetWfsInventoryItemsError> ex)
+catch (ApiException<GetWfsInventoryItemsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -5936,16 +5960,12 @@ catch (SdkException<GetWfsInventoryItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>skus</code> | <code>string?</code> | Comma-separated seller SKUs to filter (max 50). Omit to return all WFS items. |
-| <code>nextToken</code> | <code>string?</code> | - |
-| <code>pageSize</code> | <code>int?</code> | **Default**: 100 |
+<code>[GetWfsInventoryItemsRequest](src/WalmartApIs/Requests/WfsInventory/GetWfsInventoryItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -5955,9 +5975,9 @@ catch (SdkException<GetWfsInventoryItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetWfsInventoryResponse](Models/GetWfsInventoryResponse.cs)</code>
+**OnSuccess**: <code>[GetWfsInventoryResponse](src/WalmartApIs/Models/GetWfsInventoryResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetWfsInventoryItemsError](Errors/GetWfsInventoryItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetWfsInventoryItemsError](src/WalmartApIs/Errors/GetWfsInventoryItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -5969,10 +5989,10 @@ catch (SdkException<GetWfsInventoryItemsError> ex)
 
 ## Messaging
 
-> Source: [Messaging](Api/Messaging.cs)
+> Source: [Messaging](src/WalmartApIs/Api/Messaging.cs)
 
 <details>
-<summary><code>Task&lt;object&gt; CreateWarranty(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateWarranty(CreateWarrantyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -5985,10 +6005,15 @@ catch (SdkException<GetWfsInventoryItemsError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateWarranty(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateWarranty(new CreateWarrantyRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateWarrantyError> ex)
+catch (ApiException<CreateWarrantyError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6000,16 +6025,12 @@ catch (SdkException<CreateWarrantyError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateWarrantyRequest](src/WalmartApIs/Requests/Messaging/CreateWarrantyRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6021,7 +6042,7 @@ catch (SdkException<CreateWarrantyError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateWarrantyError](Errors/CreateWarrantyError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateWarrantyError](src/WalmartApIs/Errors/CreateWarrantyError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6032,7 +6053,7 @@ catch (SdkException<CreateWarrantyError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; GetAttributes(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetAttributes(GetAttributesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6045,10 +6066,14 @@ catch (SdkException<CreateWarrantyError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.GetAttributes(spApiOrderId, marketplaceIds);
+    var response = await client.Messaging.GetAttributes(new GetAttributesRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetAttributesError> ex)
+catch (ApiException<GetAttributesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6060,15 +6085,12 @@ catch (SdkException<GetAttributesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
+<code>[GetAttributesRequest](src/WalmartApIs/Requests/Messaging/GetAttributesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6080,7 +6102,7 @@ catch (SdkException<GetAttributesError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetAttributesError](Errors/GetAttributesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetAttributesError](src/WalmartApIs/Errors/GetAttributesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6091,7 +6113,7 @@ catch (SdkException<GetAttributesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; ConfirmCustomizationDetails(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; ConfirmCustomizationDetails(ConfirmCustomizationDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6104,10 +6126,15 @@ catch (SdkException<GetAttributesError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.ConfirmCustomizationDetails(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.ConfirmCustomizationDetails(new ConfirmCustomizationDetailsRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<ConfirmCustomizationDetailsError> ex)
+catch (ApiException<ConfirmCustomizationDetailsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6119,16 +6146,12 @@ catch (SdkException<ConfirmCustomizationDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[ConfirmCustomizationDetailsRequest](src/WalmartApIs/Requests/Messaging/ConfirmCustomizationDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6140,7 +6163,7 @@ catch (SdkException<ConfirmCustomizationDetailsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmCustomizationDetailsError](Errors/ConfirmCustomizationDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmCustomizationDetailsError](src/WalmartApIs/Errors/ConfirmCustomizationDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6151,7 +6174,7 @@ catch (SdkException<ConfirmCustomizationDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateConfirmDeliveryDetails(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateConfirmDeliveryDetails(CreateConfirmDeliveryDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6164,10 +6187,15 @@ catch (SdkException<ConfirmCustomizationDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateConfirmDeliveryDetails(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateConfirmDeliveryDetails(new CreateConfirmDeliveryDetailsRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateConfirmDeliveryDetailsError> ex)
+catch (ApiException<CreateConfirmDeliveryDetailsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6179,16 +6207,12 @@ catch (SdkException<CreateConfirmDeliveryDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateConfirmDeliveryDetailsRequest](src/WalmartApIs/Requests/Messaging/CreateConfirmDeliveryDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6200,7 +6224,7 @@ catch (SdkException<CreateConfirmDeliveryDetailsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateConfirmDeliveryDetailsError](Errors/CreateConfirmDeliveryDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateConfirmDeliveryDetailsError](src/WalmartApIs/Errors/CreateConfirmDeliveryDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6211,7 +6235,7 @@ catch (SdkException<CreateConfirmDeliveryDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateConfirmOrderDetails(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateConfirmOrderDetails(CreateConfirmOrderDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6224,10 +6248,15 @@ catch (SdkException<CreateConfirmDeliveryDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateConfirmOrderDetails(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateConfirmOrderDetails(new CreateConfirmOrderDetailsRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateConfirmOrderDetailsError> ex)
+catch (ApiException<CreateConfirmOrderDetailsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6239,16 +6268,12 @@ catch (SdkException<CreateConfirmOrderDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateConfirmOrderDetailsRequest](src/WalmartApIs/Requests/Messaging/CreateConfirmOrderDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6260,7 +6285,7 @@ catch (SdkException<CreateConfirmOrderDetailsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateConfirmOrderDetailsError](Errors/CreateConfirmOrderDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateConfirmOrderDetailsError](src/WalmartApIs/Errors/CreateConfirmOrderDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6271,7 +6296,7 @@ catch (SdkException<CreateConfirmOrderDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateConfirmServiceDetails(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateConfirmServiceDetails(CreateConfirmServiceDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6284,10 +6309,15 @@ catch (SdkException<CreateConfirmOrderDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateConfirmServiceDetails(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateConfirmServiceDetails(new CreateConfirmServiceDetailsRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateConfirmServiceDetailsError> ex)
+catch (ApiException<CreateConfirmServiceDetailsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6299,16 +6329,12 @@ catch (SdkException<CreateConfirmServiceDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateConfirmServiceDetailsRequest](src/WalmartApIs/Requests/Messaging/CreateConfirmServiceDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6320,7 +6346,7 @@ catch (SdkException<CreateConfirmServiceDetailsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateConfirmServiceDetailsError](Errors/CreateConfirmServiceDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateConfirmServiceDetailsError](src/WalmartApIs/Errors/CreateConfirmServiceDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6331,7 +6357,7 @@ catch (SdkException<CreateConfirmServiceDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateDigitalAccessKey(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateDigitalAccessKey(CreateDigitalAccessKeyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6344,10 +6370,15 @@ catch (SdkException<CreateConfirmServiceDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateDigitalAccessKey(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateDigitalAccessKey(new CreateDigitalAccessKeyRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateDigitalAccessKeyError> ex)
+catch (ApiException<CreateDigitalAccessKeyError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6359,16 +6390,12 @@ catch (SdkException<CreateDigitalAccessKeyError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateDigitalAccessKeyRequest](src/WalmartApIs/Requests/Messaging/CreateDigitalAccessKeyRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6380,7 +6407,7 @@ catch (SdkException<CreateDigitalAccessKeyError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateDigitalAccessKeyError](Errors/CreateDigitalAccessKeyError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateDigitalAccessKeyError](src/WalmartApIs/Errors/CreateDigitalAccessKeyError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6391,7 +6418,7 @@ catch (SdkException<CreateDigitalAccessKeyError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateLegalDisclosure(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateLegalDisclosure(CreateLegalDisclosureRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6404,10 +6431,15 @@ catch (SdkException<CreateDigitalAccessKeyError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateLegalDisclosure(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateLegalDisclosure(new CreateLegalDisclosureRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateLegalDisclosureError> ex)
+catch (ApiException<CreateLegalDisclosureError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6419,16 +6451,12 @@ catch (SdkException<CreateLegalDisclosureError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateLegalDisclosureRequest](src/WalmartApIs/Requests/Messaging/CreateLegalDisclosureRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6440,7 +6468,7 @@ catch (SdkException<CreateLegalDisclosureError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateLegalDisclosureError](Errors/CreateLegalDisclosureError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateLegalDisclosureError](src/WalmartApIs/Errors/CreateLegalDisclosureError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6451,7 +6479,7 @@ catch (SdkException<CreateLegalDisclosureError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateUnexpectedProblem(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateUnexpectedProblem(CreateUnexpectedProblemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6464,10 +6492,15 @@ catch (SdkException<CreateLegalDisclosureError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.CreateUnexpectedProblem(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.CreateUnexpectedProblem(new CreateUnexpectedProblemRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateUnexpectedProblemError> ex)
+catch (ApiException<CreateUnexpectedProblemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6479,16 +6512,12 @@ catch (SdkException<CreateUnexpectedProblemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateUnexpectedProblemRequest](src/WalmartApIs/Requests/Messaging/CreateUnexpectedProblemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6500,7 +6529,7 @@ catch (SdkException<CreateUnexpectedProblemError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateUnexpectedProblemError](Errors/CreateUnexpectedProblemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateUnexpectedProblemError](src/WalmartApIs/Errors/CreateUnexpectedProblemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6511,7 +6540,7 @@ catch (SdkException<CreateUnexpectedProblemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; GetMessagingActionsForOrder(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetMessagingActionsForOrder(GetMessagingActionsForOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6524,10 +6553,14 @@ catch (SdkException<CreateUnexpectedProblemError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.GetMessagingActionsForOrder(spApiOrderId, marketplaceIds);
+    var response = await client.Messaging.GetMessagingActionsForOrder(new GetMessagingActionsForOrderRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetMessagingActionsForOrderError> ex)
+catch (ApiException<GetMessagingActionsForOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6539,15 +6572,12 @@ catch (SdkException<GetMessagingActionsForOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This specifies the order for which you want a list of available message types. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
+<code>[GetMessagingActionsForOrderRequest](src/WalmartApIs/Requests/Messaging/GetMessagingActionsForOrderRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6559,7 +6589,7 @@ catch (SdkException<GetMessagingActionsForOrderError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetMessagingActionsForOrderError](Errors/GetMessagingActionsForOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetMessagingActionsForOrderError](src/WalmartApIs/Errors/GetMessagingActionsForOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6570,7 +6600,7 @@ catch (SdkException<GetMessagingActionsForOrderError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; SendInvoice(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; SendInvoice(SendInvoiceRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6583,10 +6613,15 @@ catch (SdkException<GetMessagingActionsForOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.Messaging.SendInvoice(spApiOrderId, marketplaceIds, body);
+    var response = await client.Messaging.SendInvoice(new SendInvoiceRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<SendInvoiceError> ex)
+catch (ApiException<SendInvoiceError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -6598,16 +6633,12 @@ catch (SdkException<SendInvoiceError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | A marketplace order identifier. This identifies the order for which a message is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This identifies the marketplace in which the order was placed. You can only specify one market |
-| <code>body</code> | <code>object</code> | - |
+<code>[SendInvoiceRequest](src/WalmartApIs/Requests/Messaging/SendInvoiceRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6619,7 +6650,7 @@ catch (SdkException<SendInvoiceError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SendInvoiceError](Errors/SendInvoiceError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SendInvoiceError](src/WalmartApIs/Errors/SendInvoiceError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6631,10 +6662,10 @@ catch (SdkException<SendInvoiceError> ex)
 
 ## Notifications
 
-> Source: [Notifications](Api/Notifications.cs)
+> Source: [Notifications](src/WalmartApIs/Api/Notifications.cs)
 
 <details>
-<summary><code>Task&lt;Channel&gt; CreateDestination(object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Channel&gt; CreateDestination(CreateDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6647,10 +6678,10 @@ catch (SdkException<SendInvoiceError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.CreateDestination(body);
+    var response = await client.Notifications.CreateDestination(new CreateDestinationRequest { Body = body });
     // TODO: Handle 'response' of type Channel
 }
-catch (SdkException<CreateDestinationError> ex)
+catch (ApiException<CreateDestinationError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6662,14 +6693,12 @@ catch (SdkException<CreateDestinationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateDestinationRequest](src/WalmartApIs/Requests/Notifications/CreateDestinationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6679,9 +6708,9 @@ catch (SdkException<CreateDestinationError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Channel](Models/Channel.cs)</code>
+**OnSuccess**: <code>[Channel](src/WalmartApIs/Models/Channel.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateDestinationError](Errors/CreateDestinationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateDestinationError](src/WalmartApIs/Errors/CreateDestinationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6692,7 +6721,7 @@ catch (SdkException<CreateDestinationError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; CreateSubscription(string notificationType, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateSubscription(CreateSubscriptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6705,10 +6734,14 @@ catch (SdkException<CreateDestinationError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.CreateSubscription(notificationType, body);
+    var response = await client.Notifications.CreateSubscription(new CreateSubscriptionRequest
+    {
+        NotificationType = "some example string",
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateSubscriptionError> ex)
+catch (ApiException<CreateSubscriptionError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6720,15 +6753,12 @@ catch (SdkException<CreateSubscriptionError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>notificationType</code> | <code>string</code> | The type of notification. Must be one of: EMAIL, WEBHOOKS, SMS, PULL, MOBILE_PUSH. |
-| <code>body</code> | <code>object</code> | - |
+<code>[CreateSubscriptionRequest](src/WalmartApIs/Requests/Notifications/CreateSubscriptionRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6740,7 +6770,7 @@ catch (SdkException<CreateSubscriptionError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateSubscriptionError](Errors/CreateSubscriptionError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateSubscriptionError](src/WalmartApIs/Errors/CreateSubscriptionError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6751,7 +6781,7 @@ catch (SdkException<CreateSubscriptionError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Channel&gt; DeleteDestination(string destinationId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Channel&gt; DeleteDestination(DeleteDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6764,10 +6794,13 @@ catch (SdkException<CreateSubscriptionError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.DeleteDestination(destinationId);
+    var response = await client.Notifications.DeleteDestination(new DeleteDestinationRequest
+    {
+        DestinationId = "some example string",
+    });
     // TODO: Handle 'response' of type Channel
 }
-catch (SdkException<DeleteDestinationError> ex)
+catch (ApiException<DeleteDestinationError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6779,14 +6812,12 @@ catch (SdkException<DeleteDestinationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>destinationId</code> | <code>string</code> | The identifier for the destination that you want to delete. |
+<code>[DeleteDestinationRequest](src/WalmartApIs/Requests/Notifications/DeleteDestinationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6796,9 +6827,9 @@ catch (SdkException<DeleteDestinationError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Channel](Models/Channel.cs)</code>
+**OnSuccess**: <code>[Channel](src/WalmartApIs/Models/Channel.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DeleteDestinationError](Errors/DeleteDestinationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DeleteDestinationError](src/WalmartApIs/Errors/DeleteDestinationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6809,7 +6840,7 @@ catch (SdkException<DeleteDestinationError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; DeleteSubscriptionById(string subscriptionId, string notificationType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; DeleteSubscriptionById(DeleteSubscriptionByIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6822,10 +6853,14 @@ catch (SdkException<DeleteDestinationError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.DeleteSubscriptionById(subscriptionId, notificationType);
+    var response = await client.Notifications.DeleteSubscriptionById(new DeleteSubscriptionByIdRequest
+    {
+        SubscriptionId = "some example string",
+        NotificationType = "some example string",
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<DeleteSubscriptionByIdError> ex)
+catch (ApiException<DeleteSubscriptionByIdError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6837,15 +6872,12 @@ catch (SdkException<DeleteSubscriptionByIdError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>subscriptionId</code> | <code>string</code> | The identifier for the subscription that you want to delete. |
-| <code>notificationType</code> | <code>string</code> | The type of notification. Must be one of: EMAIL, WEBHOOKS, SMS, PULL, MOBILE_PUSH. |
+<code>[DeleteSubscriptionByIdRequest](src/WalmartApIs/Requests/Notifications/DeleteSubscriptionByIdRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6857,7 +6889,7 @@ catch (SdkException<DeleteSubscriptionByIdError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[DeleteSubscriptionByIdError](Errors/DeleteSubscriptionByIdError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[DeleteSubscriptionByIdError](src/WalmartApIs/Errors/DeleteSubscriptionByIdError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6868,7 +6900,7 @@ catch (SdkException<DeleteSubscriptionByIdError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;Channel&gt; GetDestination(string destinationId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;Channel&gt; GetDestination(GetDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6881,10 +6913,13 @@ catch (SdkException<DeleteSubscriptionByIdError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.GetDestination(destinationId);
+    var response = await client.Notifications.GetDestination(new GetDestinationRequest
+    {
+        DestinationId = "some example string",
+    });
     // TODO: Handle 'response' of type Channel
 }
-catch (SdkException<GetDestinationError> ex)
+catch (ApiException<GetDestinationError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6896,14 +6931,12 @@ catch (SdkException<GetDestinationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>destinationId</code> | <code>string</code> | The identifier generated when you created the destination. |
+<code>[GetDestinationRequest](src/WalmartApIs/Requests/Notifications/GetDestinationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -6913,9 +6946,9 @@ catch (SdkException<GetDestinationError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Channel](Models/Channel.cs)</code>
+**OnSuccess**: <code>[Channel](src/WalmartApIs/Models/Channel.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetDestinationError](Errors/GetDestinationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetDestinationError](src/WalmartApIs/Errors/GetDestinationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6926,7 +6959,7 @@ catch (SdkException<GetDestinationError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ChannelList&gt; GetDestinations(RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ChannelList&gt; GetDestinations(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6942,7 +6975,7 @@ try
     var response = await client.Notifications.GetDestinations();
     // TODO: Handle 'response' of type ChannelList
 }
-catch (SdkException<GetDestinationsError> ex)
+catch (ApiException<GetDestinationsError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -6959,9 +6992,9 @@ catch (SdkException<GetDestinationsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ChannelList](Models/ChannelList.cs)</code>
+**OnSuccess**: <code>[ChannelList](src/WalmartApIs/Models/ChannelList.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetDestinationsError](Errors/GetDestinationsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetDestinationsError](src/WalmartApIs/Errors/GetDestinationsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -6972,7 +7005,7 @@ catch (SdkException<GetDestinationsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; GetSubscription(string notificationType, string? payloadVersion, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetSubscription(GetSubscriptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -6985,10 +7018,13 @@ catch (SdkException<GetDestinationsError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.GetSubscription(notificationType, payloadVersion);
+    var response = await client.Notifications.GetSubscription(new GetSubscriptionRequest
+    {
+        NotificationType = "some example string",
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetSubscriptionError> ex)
+catch (ApiException<GetSubscriptionError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -7000,15 +7036,12 @@ catch (SdkException<GetSubscriptionError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>notificationType</code> | <code>string</code> | The type of notification. Must be one of: EMAIL, WEBHOOKS, SMS, PULL, MOBILE_PUSH. |
-| <code>payloadVersion</code> | <code>string?</code> | The version of the payload object to be used in the notification. |
+<code>[GetSubscriptionRequest](src/WalmartApIs/Requests/Notifications/GetSubscriptionRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7020,7 +7053,7 @@ catch (SdkException<GetSubscriptionError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetSubscriptionError](Errors/GetSubscriptionError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetSubscriptionError](src/WalmartApIs/Errors/GetSubscriptionError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7031,7 +7064,7 @@ catch (SdkException<GetSubscriptionError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; GetSubscriptionById(string subscriptionId, string notificationType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetSubscriptionById(GetSubscriptionByIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7044,10 +7077,14 @@ catch (SdkException<GetSubscriptionError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.GetSubscriptionById(subscriptionId, notificationType);
+    var response = await client.Notifications.GetSubscriptionById(new GetSubscriptionByIdRequest
+    {
+        SubscriptionId = "some example string",
+        NotificationType = "some example string",
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetSubscriptionByIdError> ex)
+catch (ApiException<GetSubscriptionByIdError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -7059,15 +7096,12 @@ catch (SdkException<GetSubscriptionByIdError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>subscriptionId</code> | <code>string</code> | The identifier for the subscription that you want to get. |
-| <code>notificationType</code> | <code>string</code> | The type of notification. Must be one of: EMAIL, WEBHOOKS, SMS, PULL, MOBILE_PUSH. |
+<code>[GetSubscriptionByIdRequest](src/WalmartApIs/Requests/Notifications/GetSubscriptionByIdRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7079,7 +7113,7 @@ catch (SdkException<GetSubscriptionByIdError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetSubscriptionByIdError](Errors/GetSubscriptionByIdError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetSubscriptionByIdError](src/WalmartApIs/Errors/GetSubscriptionByIdError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7090,7 +7124,7 @@ catch (SdkException<GetSubscriptionByIdError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; SendTestNotification(string notificationType, object body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; SendTestNotification(SendTestNotificationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7103,10 +7137,14 @@ catch (SdkException<GetSubscriptionByIdError> ex)
 ```csharp
 try
 {
-    var response = await client.Notifications.SendTestNotification(notificationType, body);
+    var response = await client.Notifications.SendTestNotification(new SendTestNotificationRequest
+    {
+        NotificationType = "some example string",
+        Body = body,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<SendTestNotificationError> ex)
+catch (ApiException<SendTestNotificationError> ex)
 {
     if (ex.Error.TryGetNoContent(out var error))
     {
@@ -7118,15 +7156,12 @@ catch (SdkException<SendTestNotificationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>notificationType</code> | <code>string</code> | The type of notification. Must be one of: EMAIL, WEBHOOKS, SMS, PULL, MOBILE_PUSH. |
-| <code>body</code> | <code>object</code> | - |
+<code>[SendTestNotificationRequest](src/WalmartApIs/Requests/Notifications/SendTestNotificationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7138,7 +7173,7 @@ catch (SdkException<SendTestNotificationError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SendTestNotificationError](Errors/SendTestNotificationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SendTestNotificationError](src/WalmartApIs/Errors/SendTestNotificationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7150,10 +7185,10 @@ catch (SdkException<SendTestNotificationError> ex)
 
 ## ProductFees
 
-> Source: [ProductFees](Api/ProductFees.cs)
+> Source: [ProductFees](src/WalmartApIs/Api/ProductFees.cs)
 
 <details>
-<summary><code>Task&lt;GetMyFeesEstimateResponse&gt; GetMyFeesEstimateForItem(string walmartItemId, GetMyFeesEstimateRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetMyFeesEstimateResponse&gt; GetMyFeesEstimateForItem(GetMyFeesEstimateForItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7169,7 +7204,6 @@ Walmart Item ID replaces the SP-API ASIN path parameter.
 SP-API equivalent: `getMyFeesEstimateForASIN` (identifier changed from
 ASIN to Walmart Item ID; request/response shape is otherwise 1:1).
 
-
 </dd>
 </dl>
 
@@ -7181,10 +7215,14 @@ ASIN to Walmart Item ID; request/response shape is otherwise 1:1).
 ```csharp
 try
 {
-    var response = await client.ProductFees.GetMyFeesEstimateForItem(walmartItemId, body);
+    var response = await client.ProductFees.GetMyFeesEstimateForItem(new GetMyFeesEstimateForItemRequest
+    {
+        WalmartItemId = "some example string",
+        Body = new GetMyFeesEstimateRequest(),
+    });
     // TODO: Handle 'response' of type GetMyFeesEstimateResponse
 }
-catch (SdkException<GetMyFeesEstimateForItemError> ex)
+catch (ApiException<GetMyFeesEstimateForItemError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -7196,15 +7234,12 @@ catch (SdkException<GetMyFeesEstimateForItemError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>walmartItemId</code> | <code>string</code> | The Walmart Item ID of the item. Replaces SP-API ASIN. |
-| <code>body</code> | <code>[GetMyFeesEstimateRequest](Models/GetMyFeesEstimateRequest.cs)</code> | - |
+<code>[GetMyFeesEstimateForItemRequest](src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimateForItemRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7214,9 +7249,9 @@ catch (SdkException<GetMyFeesEstimateForItemError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetMyFeesEstimateResponse](Models/GetMyFeesEstimateResponse.cs)</code>
+**OnSuccess**: <code>[GetMyFeesEstimateResponse](src/WalmartApIs/Models/GetMyFeesEstimateResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetMyFeesEstimateForItemError](Errors/GetMyFeesEstimateForItemError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetMyFeesEstimateForItemError](src/WalmartApIs/Errors/GetMyFeesEstimateForItemError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7227,7 +7262,7 @@ catch (SdkException<GetMyFeesEstimateForItemError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetMyFeesEstimateResponse&gt; GetMyFeesEstimateForSku(string sellerSku, string marketplaceId, GetMyFeesEstimateRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetMyFeesEstimateResponse&gt; GetMyFeesEstimateForSku(GetMyFeesEstimateForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7239,7 +7274,6 @@ catch (SdkException<GetMyFeesEstimateForItemError> ex)
 
 Returns an estimated fee for a seller listing identified by Seller SKU.
 
-
 </dd>
 </dl>
 
@@ -7251,10 +7285,15 @@ Returns an estimated fee for a seller listing identified by Seller SKU.
 ```csharp
 try
 {
-    var response = await client.ProductFees.GetMyFeesEstimateForSku(sellerSku, marketplaceId, body);
+    var response = await client.ProductFees.GetMyFeesEstimateForSku(new GetMyFeesEstimateForSkuRequest
+    {
+        SellerSku = "some example string",
+        MarketplaceId = "some example string",
+        Body = new GetMyFeesEstimateRequest(),
+    });
     // TODO: Handle 'response' of type GetMyFeesEstimateResponse
 }
-catch (SdkException<GetMyFeesEstimateForSkuError> ex)
+catch (ApiException<GetMyFeesEstimateForSkuError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -7266,16 +7305,12 @@ catch (SdkException<GetMyFeesEstimateForSkuError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerSku</code> | <code>string</code> | The seller's SKU for the listing. Scoped to the authenticated seller. |
-| <code>marketplaceId</code> | <code>string</code> | Marketplace identifier. |
-| <code>body</code> | <code>[GetMyFeesEstimateRequest](Models/GetMyFeesEstimateRequest.cs)</code> | - |
+<code>[GetMyFeesEstimateForSkuRequest](src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimateForSkuRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7285,9 +7320,9 @@ catch (SdkException<GetMyFeesEstimateForSkuError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetMyFeesEstimateResponse](Models/GetMyFeesEstimateResponse.cs)</code>
+**OnSuccess**: <code>[GetMyFeesEstimateResponse](src/WalmartApIs/Models/GetMyFeesEstimateResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetMyFeesEstimateForSkuError](Errors/GetMyFeesEstimateForSkuError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetMyFeesEstimateForSkuError](src/WalmartApIs/Errors/GetMyFeesEstimateForSkuError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7298,7 +7333,7 @@ catch (SdkException<GetMyFeesEstimateForSkuError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;IReadOnlyList&lt;FeesEstimateResult&gt;&gt; GetMyFeesEstimates(IReadOnlyList&lt;FeesEstimateByIdRequest&gt; body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;IReadOnlyList&lt;FeesEstimateResult&gt;&gt; GetMyFeesEstimates(GetMyFeesEstimatesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7311,7 +7346,6 @@ catch (SdkException<GetMyFeesEstimateForSkuError> ex)
 Returns estimated Walmart fees for a list of items identified by
 Walmart Item ID or Seller SKU.
 
-
 </dd>
 </dl>
 
@@ -7323,10 +7357,28 @@ Walmart Item ID or Seller SKU.
 ```csharp
 try
 {
-    var response = await client.ProductFees.GetMyFeesEstimates(body);
+    var response = await client.ProductFees.GetMyFeesEstimates(new GetMyFeesEstimatesRequest
+    {
+        Body = [
+            new FeesEstimateByIdRequest
+            {
+                IdType = IdType.WalmartItemId,
+                IdValue = "some example string",
+                FeesEstimateRequest = new FeesEstimateRequest
+                {
+                    MarketplaceId = "some example string",
+                    IsWalmartFulfilled = true,
+                    PriceToEstimateFees = new PriceToEstimateFees
+                    {
+                        ListingPrice = new MoneyType1 { CurrencyCode = currencyCode, Amount = amount },
+                    },
+                },
+            },
+        ],
+    });
     // TODO: Handle 'response' of type IReadOnlyList<FeesEstimateResult>
 }
-catch (SdkException<GetMyFeesEstimatesError> ex)
+catch (ApiException<GetMyFeesEstimatesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -7338,14 +7390,12 @@ catch (SdkException<GetMyFeesEstimatesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>IReadOnlyList&lt;[FeesEstimateByIdRequest](Models/FeesEstimateByIdRequest.cs)&gt;</code> | - |
+<code>[GetMyFeesEstimatesRequest](src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimatesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7355,9 +7405,9 @@ catch (SdkException<GetMyFeesEstimatesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>IReadOnlyList&lt;[FeesEstimateResult](Models/FeesEstimateResult.cs)&gt;</code>
+**OnSuccess**: <code>IReadOnlyList&lt;[FeesEstimateResult](src/WalmartApIs/Models/FeesEstimateResult.cs)&gt;</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetMyFeesEstimatesError](Errors/GetMyFeesEstimatesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetMyFeesEstimatesError](src/WalmartApIs/Errors/GetMyFeesEstimatesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7369,10 +7419,10 @@ catch (SdkException<GetMyFeesEstimatesError> ex)
 
 ## ProductPricing
 
-> Source: [ProductPricing](Api/ProductPricing.cs)
+> Source: [ProductPricing](src/WalmartApIs/Api/ProductPricing.cs)
 
 <details>
-<summary><code>Task&lt;GetPricingResponse&gt; GetCompetitivePricing(string marketplaceId, ItemType itemType, IReadOnlyList&lt;string&gt;? skus, IReadOnlyList&lt;string&gt;? walmartItemIds, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetPricingResponse&gt; GetCompetitivePricing(GetCompetitivePricingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7395,14 +7445,14 @@ Returns competitive pricing information for a seller's offer listings based on s
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetCompetitivePricing(marketplaceId,
-        itemType,
-        skus,
-        walmartItemIds,
-        customerType);
+    var response = await client.ProductPricing.GetCompetitivePricing(new GetCompetitivePricingRequest
+    {
+        MarketplaceId = "some example string",
+        ItemType = ItemType.WalmartItemId,
+    });
     // TODO: Handle 'response' of type GetPricingResponse
 }
-catch (SdkException<GetCompetitivePricingError> ex)
+catch (ApiException<GetCompetitivePricingError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7414,18 +7464,12 @@ catch (SdkException<GetCompetitivePricingError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceId</code> | <code>string</code> | A marketplace identifier. Specifies the marketplace for which prices are returned. |
-| <code>itemType</code> | <code>[ItemType](Models/Enums/ItemType.cs)</code> | Indicates whether Walmart Item ID values or seller SKU values are used to identify items. |
-| <code>skus</code> | <code>IReadOnlyList&lt;string&gt;?</code> | A list of up to twenty seller SKU values used to identify items in the given marketplace. |
-| <code>walmartItemIds</code> | <code>IReadOnlyList&lt;string&gt;?</code> | A list of up to twenty Walmart Item ID values used to identify items in the given marketplace. |
-| <code>customerType</code> | <code>[CustomerType?](Models/Enums/CustomerType.cs)</code> | Indicates whether to request pricing information from the point of view of Consumer or Business buyers. Default is Consumer. |
+<code>[GetCompetitivePricingRequest](src/WalmartApIs/Requests/ProductPricing/GetCompetitivePricingRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7435,9 +7479,9 @@ catch (SdkException<GetCompetitivePricingError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetPricingResponse](Models/GetPricingResponse.cs)</code>
+**OnSuccess**: <code>[GetPricingResponse](src/WalmartApIs/Models/GetPricingResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetCompetitivePricingError](Errors/GetCompetitivePricingError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetCompetitivePricingError](src/WalmartApIs/Errors/GetCompetitivePricingError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7448,7 +7492,7 @@ catch (SdkException<GetCompetitivePricingError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CompetitiveSummaryBatchResponse&gt; GetCompetitiveSummary(CompetitiveSummaryBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CompetitiveSummaryBatchResponse&gt; GetCompetitiveSummary(GetCompetitiveSummaryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7465,7 +7509,6 @@ for a batch of Walmart Item IDs .
 Returns HTTP 501 until an upstream is confirmed.
 Track: .
 
-
 </dd>
 </dl>
 
@@ -7477,10 +7520,13 @@ Track: .
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetCompetitiveSummary(body);
+    var response = await client.ProductPricing.GetCompetitiveSummary(new GetCompetitiveSummaryRequest
+    {
+        Body = new CompetitiveSummaryBatchRequest(),
+    });
     // TODO: Handle 'response' of type CompetitiveSummaryBatchResponse
 }
-catch (SdkException<GetCompetitiveSummaryError> ex)
+catch (ApiException<GetCompetitiveSummaryError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7492,14 +7538,12 @@ catch (SdkException<GetCompetitiveSummaryError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CompetitiveSummaryBatchRequest](Models/CompetitiveSummaryBatchRequest.cs)</code> | - |
+<code>[GetCompetitiveSummaryRequest](src/WalmartApIs/Requests/ProductPricing/GetCompetitiveSummaryRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7509,9 +7553,9 @@ catch (SdkException<GetCompetitiveSummaryError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CompetitiveSummaryBatchResponse](Models/CompetitiveSummaryBatchResponse.cs)</code>
+**OnSuccess**: <code>[CompetitiveSummaryBatchResponse](src/WalmartApIs/Models/CompetitiveSummaryBatchResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetCompetitiveSummaryError](Errors/GetCompetitiveSummaryError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetCompetitiveSummaryError](src/WalmartApIs/Errors/GetCompetitiveSummaryError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7522,7 +7566,7 @@ catch (SdkException<GetCompetitiveSummaryError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFeaturedOfferExpectedPriceBatchResponse&gt; GetFeaturedOfferExpectedPriceBatch(GetFeaturedOfferExpectedPriceBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFeaturedOfferExpectedPriceBatchResponse&gt; GetFeaturedOfferExpectedPriceBatch(GetFeaturedOfferExpectedPriceBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7538,7 +7582,6 @@ catch (SdkException<GetCompetitiveSummaryError> ex)
 Returns HTTP 501 until an upstream is confirmed.
 Track: .
 
-
 </dd>
 </dl>
 
@@ -7550,10 +7593,14 @@ Track: .
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetFeaturedOfferExpectedPriceBatch(body);
+    var response = await client.ProductPricing.GetFeaturedOfferExpectedPriceBatch(
+        new GetFeaturedOfferExpectedPriceBatchOperationRequest
+        {
+            Body = new GetFeaturedOfferExpectedPriceBatchRequest(),
+        });
     // TODO: Handle 'response' of type GetFeaturedOfferExpectedPriceBatchResponse
 }
-catch (SdkException<GetFeaturedOfferExpectedPriceBatchError> ex)
+catch (ApiException<GetFeaturedOfferExpectedPriceBatchError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7565,14 +7612,12 @@ catch (SdkException<GetFeaturedOfferExpectedPriceBatchError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetFeaturedOfferExpectedPriceBatchRequest](Models/GetFeaturedOfferExpectedPriceBatchRequest.cs)</code> | - |
+<code>[GetFeaturedOfferExpectedPriceBatchOperationRequest](src/WalmartApIs/Requests/ProductPricing/GetFeaturedOfferExpectedPriceBatchOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7582,9 +7627,9 @@ catch (SdkException<GetFeaturedOfferExpectedPriceBatchError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFeaturedOfferExpectedPriceBatchResponse](Models/GetFeaturedOfferExpectedPriceBatchResponse.cs)</code>
+**OnSuccess**: <code>[GetFeaturedOfferExpectedPriceBatchResponse](src/WalmartApIs/Models/GetFeaturedOfferExpectedPriceBatchResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetFeaturedOfferExpectedPriceBatchError](Errors/GetFeaturedOfferExpectedPriceBatchError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetFeaturedOfferExpectedPriceBatchError](src/WalmartApIs/Errors/GetFeaturedOfferExpectedPriceBatchError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7595,7 +7640,7 @@ catch (SdkException<GetFeaturedOfferExpectedPriceBatchError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOffersResponse&gt; GetItemOffers(string itemId, string marketplaceId, ConditionType2 itemCondition, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOffersResponse&gt; GetItemOffers(GetItemOffersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7613,7 +7658,6 @@ no ASIN resolver exists in the Walmart platform; IQS queries by product.item_id)
 Backed by IQS catalog_index cross-seller query (same as getListingOffers hop-2).
 Returns 404 when no offers are found for the given itemId.
 
-
 </dd>
 </dl>
 
@@ -7625,10 +7669,15 @@ Returns 404 when no offers are found for the given itemId.
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetItemOffers(itemId, marketplaceId, itemCondition, customerType);
+    var response = await client.ProductPricing.GetItemOffers(new GetItemOffersRequest
+    {
+        ItemId = "some example string",
+        MarketplaceId = "some example string",
+        ItemCondition = ConditionType2.New,
+    });
     // TODO: Handle 'response' of type GetOffersResponse
 }
-catch (SdkException<GetItemOffersError> ex)
+catch (ApiException<GetItemOffersError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7640,17 +7689,12 @@ catch (SdkException<GetItemOffersError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>itemId</code> | <code>string</code> | The Walmart Item ID of the item. |
-| <code>marketplaceId</code> | <code>string</code> | A marketplace identifier. Specifies the marketplace for which prices are returned. |
-| <code>itemCondition</code> | <code>[ConditionType2](Models/Enums/ConditionType2.cs)</code> | Filters the offer listings based on item condition. Possible values: New, Used, Collectible, Refurbished, Club. |
-| <code>customerType</code> | <code>[CustomerType?](Models/Enums/CustomerType.cs)</code> | Indicates whether to request Consumer or Business offers. Default is Consumer. |
+<code>[GetItemOffersRequest](src/WalmartApIs/Requests/ProductPricing/GetItemOffersRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7660,9 +7704,9 @@ catch (SdkException<GetItemOffersError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOffersResponse](Models/GetOffersResponse.cs)</code>
+**OnSuccess**: <code>[GetOffersResponse](src/WalmartApIs/Models/GetOffersResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetItemOffersError](Errors/GetItemOffersError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetItemOffersError](src/WalmartApIs/Errors/GetItemOffersError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7673,7 +7717,7 @@ catch (SdkException<GetItemOffersError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetItemOffersBatchResponse&gt; GetItemOffersBatch(GetItemOffersBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetItemOffersBatchResponse&gt; GetItemOffersBatch(GetItemOffersBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7691,7 +7735,6 @@ Each item gets its own per-item HTTP status code in the response body;
 the outer HTTP response is always 200.
 Implemented: .
 
-
 </dd>
 </dl>
 
@@ -7703,10 +7746,13 @@ Implemented: .
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetItemOffersBatch(body);
+    var response = await client.ProductPricing.GetItemOffersBatch(new GetItemOffersBatchOperationRequest
+    {
+        Body = new GetItemOffersBatchRequest(),
+    });
     // TODO: Handle 'response' of type GetItemOffersBatchResponse
 }
-catch (SdkException<GetItemOffersBatchError> ex)
+catch (ApiException<GetItemOffersBatchError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7718,14 +7764,12 @@ catch (SdkException<GetItemOffersBatchError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetItemOffersBatchRequest](Models/GetItemOffersBatchRequest.cs)</code> | - |
+<code>[GetItemOffersBatchOperationRequest](src/WalmartApIs/Requests/ProductPricing/GetItemOffersBatchOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7735,9 +7779,9 @@ catch (SdkException<GetItemOffersBatchError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetItemOffersBatchResponse](Models/GetItemOffersBatchResponse.cs)</code>
+**OnSuccess**: <code>[GetItemOffersBatchResponse](src/WalmartApIs/Models/GetItemOffersBatchResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetItemOffersBatchError](Errors/GetItemOffersBatchError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetItemOffersBatchError](src/WalmartApIs/Errors/GetItemOffersBatchError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7748,7 +7792,7 @@ catch (SdkException<GetItemOffersBatchError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetOffersResponse&gt; GetListingOffers(string sellerSku, string marketplaceId, ConditionType2 itemCondition, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetOffersResponse&gt; GetListingOffers(GetListingOffersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7771,10 +7815,15 @@ Returns the lowest priced offers for a single SKU listing, based on SKU and item
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetListingOffers(sellerSku, marketplaceId, itemCondition, customerType);
+    var response = await client.ProductPricing.GetListingOffers(new GetListingOffersRequest
+    {
+        SellerSku = "some example string",
+        MarketplaceId = "some example string",
+        ItemCondition = ConditionType2.New,
+    });
     // TODO: Handle 'response' of type GetOffersResponse
 }
-catch (SdkException<GetListingOffersError> ex)
+catch (ApiException<GetListingOffersError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7786,17 +7835,12 @@ catch (SdkException<GetListingOffersError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>sellerSku</code> | <code>string</code> | Identifies an item in the given marketplace. SellerSKU is qualified by the seller's SellerId. |
-| <code>marketplaceId</code> | <code>string</code> | A marketplace identifier. Specifies the marketplace for which prices are returned. |
-| <code>itemCondition</code> | <code>[ConditionType2](Models/Enums/ConditionType2.cs)</code> | Filters the offer listings based on item condition. Possible values: New, Used, Collectible, Refurbished, Club. |
-| <code>customerType</code> | <code>[CustomerType?](Models/Enums/CustomerType.cs)</code> | Indicates whether to request Consumer or Business offers. Default is Consumer. |
+<code>[GetListingOffersRequest](src/WalmartApIs/Requests/ProductPricing/GetListingOffersRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7806,9 +7850,9 @@ catch (SdkException<GetListingOffersError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOffersResponse](Models/GetOffersResponse.cs)</code>
+**OnSuccess**: <code>[GetOffersResponse](src/WalmartApIs/Models/GetOffersResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetListingOffersError](Errors/GetListingOffersError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetListingOffersError](src/WalmartApIs/Errors/GetListingOffersError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7819,7 +7863,7 @@ catch (SdkException<GetListingOffersError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetListingOffersBatchResponse&gt; GetListingOffersBatch(GetListingOffersBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetListingOffersBatchResponse&gt; GetListingOffersBatch(GetListingOffersBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7836,7 +7880,6 @@ Each SKU gets its own per-item HTTP status code in the response body;
 the outer HTTP response is always 200.
 Implemented: .
 
-
 </dd>
 </dl>
 
@@ -7848,10 +7891,13 @@ Implemented: .
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetListingOffersBatch(body);
+    var response = await client.ProductPricing.GetListingOffersBatch(new GetListingOffersBatchOperationRequest
+    {
+        Body = new GetListingOffersBatchRequest(),
+    });
     // TODO: Handle 'response' of type GetListingOffersBatchResponse
 }
-catch (SdkException<GetListingOffersBatchError> ex)
+catch (ApiException<GetListingOffersBatchError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7863,14 +7909,12 @@ catch (SdkException<GetListingOffersBatchError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetListingOffersBatchRequest](Models/GetListingOffersBatchRequest.cs)</code> | - |
+<code>[GetListingOffersBatchOperationRequest](src/WalmartApIs/Requests/ProductPricing/GetListingOffersBatchOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7880,9 +7924,9 @@ catch (SdkException<GetListingOffersBatchError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetListingOffersBatchResponse](Models/GetListingOffersBatchResponse.cs)</code>
+**OnSuccess**: <code>[GetListingOffersBatchResponse](src/WalmartApIs/Models/GetListingOffersBatchResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetListingOffersBatchError](Errors/GetListingOffersBatchError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetListingOffersBatchError](src/WalmartApIs/Errors/GetListingOffersBatchError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7893,7 +7937,7 @@ catch (SdkException<GetListingOffersBatchError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetPricingResponse&gt; GetPricing(string marketplaceId, ItemType itemType, IReadOnlyList&lt;string&gt;? skus, IReadOnlyList&lt;string&gt;? walmartItemIds, ConditionType2? itemCondition, OfferType? offerType, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetPricingResponse&gt; GetPricing(GetPricingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7916,16 +7960,14 @@ Returns pricing information for a seller's active offer listings based on seller
 ```csharp
 try
 {
-    var response = await client.ProductPricing.GetPricing(marketplaceId,
-        itemType,
-        skus,
-        walmartItemIds,
-        itemCondition,
-        offerType,
-        customerType);
+    var response = await client.ProductPricing.GetPricing(new GetPricingRequest
+    {
+        MarketplaceId = "some example string",
+        ItemType = ItemType.WalmartItemId,
+    });
     // TODO: Handle 'response' of type GetPricingResponse
 }
-catch (SdkException<GetPricingError> ex)
+catch (ApiException<GetPricingError> ex)
 {
     if (ex.Error.TryGetListOfError3(out var error))
     {
@@ -7937,20 +7979,12 @@ catch (SdkException<GetPricingError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceId</code> | <code>string</code> | A marketplace identifier. Specifies the marketplace for which prices are returned. |
-| <code>itemType</code> | <code>[ItemType](Models/Enums/ItemType.cs)</code> | Indicates whether Walmart Item ID values or seller SKU values are used to identify items. |
-| <code>skus</code> | <code>IReadOnlyList&lt;string&gt;?</code> | A list of up to twenty seller SKU values used to identify items in the given marketplace. |
-| <code>walmartItemIds</code> | <code>IReadOnlyList&lt;string&gt;?</code> | A list of up to twenty Walmart Item ID values used to identify items in the given marketplace. |
-| <code>itemCondition</code> | <code>[ConditionType2?](Models/Enums/ConditionType2.cs)</code> | Filters the offer listings based on item condition. Possible values: New, Used, Collectible, Refurbished, Club. |
-| <code>offerType</code> | <code>[OfferType?](Models/Enums/OfferType.cs)</code> | Indicates whether to request pricing information for the seller's B2C or B2B offers. Default is B2C. |
-| <code>customerType</code> | <code>[CustomerType?](Models/Enums/CustomerType.cs)</code> | Indicates whether to request Consumer or Business offers. Default is Consumer. |
+<code>[GetPricingRequest](src/WalmartApIs/Requests/ProductPricing/GetPricingRequest.cs)</code>
 
 </dd>
 </dl>
@@ -7960,9 +7994,9 @@ catch (SdkException<GetPricingError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetPricingResponse](Models/GetPricingResponse.cs)</code>
+**OnSuccess**: <code>[GetPricingResponse](src/WalmartApIs/Models/GetPricingResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetPricingError](Errors/GetPricingError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetPricingError](src/WalmartApIs/Errors/GetPricingError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -7974,10 +8008,10 @@ catch (SdkException<GetPricingError> ex)
 
 ## Sales
 
-> Source: [Sales](Api/Sales.cs)
+> Source: [Sales](src/WalmartApIs/Api/Sales.cs)
 
 <details>
-<summary><code>Task&lt;object&gt; GetOrderMetrics(IReadOnlyList&lt;string&gt; marketplaceIds, string interval, Granularity granularity, string? granularityTimeZone, BuyerType? buyerType, string? fulfillmentNetwork, FirstDayOfWeek? firstDayOfWeek, string? asin, string? sku, string? spApiProgram, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetOrderMetrics(GetOrderMetricsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -7990,19 +8024,15 @@ catch (SdkException<GetPricingError> ex)
 ```csharp
 try
 {
-    var response = await client.Sales.GetOrderMetrics(marketplaceIds,
-        interval,
-        granularity,
-        granularityTimeZone,
-        buyerType,
-        fulfillmentNetwork,
-        firstDayOfWeek,
-        asin,
-        sku,
-        spApiProgram);
+    var response = await client.Sales.GetOrderMetrics(new GetOrderMetricsRequest
+    {
+        MarketplaceIds = ["some example string"],
+        Interval = "some example string",
+        Granularity = Granularity.Hour,
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetOrderMetricsError> ex)
+catch (ApiException<GetOrderMetricsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8014,23 +8044,12 @@ catch (SdkException<GetOrderMetricsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified |
-| <code>interval</code> | <code>string</code> | A time interval used for selecting order metrics. This takes the form of two dates separated by two hyphens (first date is inclusive; second date is exclusive). Dates are in ISO8601 format and must represent absolute time (either Z notation or offset notation). Example: 2018-09-01T00:00:00-07:00--2018-09-04T00:00:00-07:00 requests order metrics for Sept 1st, 2nd and 3rd in the -07:00 zone. |
-| <code>granularity</code> | <code>[Granularity](Models/Enums/Granularity.cs)</code> | The granularity of the grouping of order metrics, based on a unit of time. Specifying granularity=Hour results in a successful request only if the interval specified is less than or equal to 30 days from now. For all other granularities, the interval specified must be less or equal to 2 years from now. Specifying granularity=Total results in order metrics that are aggregated over the entire interval that you specify. If the interval start and end date don’t align with the specified granularity, the head and tail end of the response interval will contain partial data. Example: Day to get a daily breakdown of the request interval, where the day boundary is defined by the granularityTimeZone. |
-| <code>granularityTimeZone</code> | <code>string?</code> | An IANA-compatible time zone for determining the day boundary. Required when specifying a granularity value greater than Hour. The granularityTimeZone value must align with the offset of the specified interval value. For example, if the interval value uses Z notation, then granularityTimeZone must be UTC. If the interval value uses an offset, then granularityTimeZone must be an IANA-compatible time zone that matches the offset. Example: US/Pacific to compute day boundaries, accounting for daylight time savings, for US/Pacific zone. |
-| <code>buyerType</code> | <code>[BuyerType?](Models/Enums/BuyerType.cs)</code> | Filters the results by the buyer type that you specify, B2B (business to business) or B2C (business to customer). Example: B2B, if you want the response to include order metrics for only B2B buyers. |
-| <code>fulfillmentNetwork</code> | <code>string?</code> | Filters the results by the fulfillment network that you specify, MFN (merchant fulfillment network) or AFN (marketplace fulfillment network). Do not include this filter if you want the response to include order metrics for all fulfillment networks. Example: AFN, if you want the response to include order metrics for only the marketplace fulfillment network. |
-| <code>firstDayOfWeek</code> | <code>[FirstDayOfWeek?](Models/Enums/FirstDayOfWeek.cs)</code> | Specifies the day that the week starts on when granularity=Week, either Monday or Sunday. Default: Monday. Example: Sund |
-| <code>asin</code> | <code>string?</code> | Filters the results by the ASIN that you specify. Specifying both ASIN and SKU returns an error. Do not include this filter if you want the response to include order metrics for all ASINs. Example: B0792R1RSN, if you want the response to include order metrics for only ASIN B0792R1RSN. |
-| <code>sku</code> | <code>string?</code> | Filters the results by the SKU that you specify. Specifying both ASIN and SKU returns an error. Do not include this filter if you want the response to include order metrics for all SKUs. Example: TestSKU, if you want the response to include order metrics for only SKU TestSKU. |
-| <code>spApiProgram</code> | <code>string?</code> | Filters the results by the program that you specify. Do not include this filter if you want the response to inclu |
+<code>[GetOrderMetricsRequest](src/WalmartApIs/Requests/Sales/GetOrderMetricsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8042,7 +8061,7 @@ catch (SdkException<GetOrderMetricsError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetOrderMetricsError](Errors/GetOrderMetricsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetOrderMetricsError](src/WalmartApIs/Errors/GetOrderMetricsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8054,10 +8073,10 @@ catch (SdkException<GetOrderMetricsError> ex)
 
 ## Shipping
 
-> Source: [Shipping](Api/Shipping.cs)
+> Source: [Shipping](src/WalmartApIs/Api/Shipping.cs)
 
 <details>
-<summary><code>Task&lt;CancelShipmentResponse1&gt; CancelShipment2(string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelShipmentResponse1&gt; CancelShipment2(CancelShipment2Request request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8071,7 +8090,6 @@ Cancels a shipment that has not yet shipped. Cancellation
 eligibility is carrier-dependent; refer to the response
 cancellation status to confirm.
 
-
 </dd>
 </dl>
 
@@ -8083,10 +8101,13 @@ cancellation status to confirm.
 ```csharp
 try
 {
-    var response = await client.Shipping.CancelShipment2(shipmentId);
+    var response = await client.Shipping.CancelShipment2(new CancelShipment2Request
+    {
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelShipmentResponse1
 }
-catch (SdkException<CancelShipment2Error> ex)
+catch (ApiException<CancelShipment2Error> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8098,14 +8119,12 @@ catch (SdkException<CancelShipment2Error> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>shipmentId</code> | <code>string</code> | Identifier of the shipment to cancel. |
+<code>[CancelShipment2Request](src/WalmartApIs/Requests/Shipping/CancelShipment2Request.cs)</code>
 
 </dd>
 </dl>
@@ -8115,9 +8134,9 @@ catch (SdkException<CancelShipment2Error> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelShipmentResponse1](Models/CancelShipmentResponse1.cs)</code>
+**OnSuccess**: <code>[CancelShipmentResponse1](src/WalmartApIs/Models/CancelShipmentResponse1.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelShipment2Error](Errors/CancelShipment2Error.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelShipment2Error](src/WalmartApIs/Errors/CancelShipment2Error.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8128,7 +8147,7 @@ catch (SdkException<CancelShipment2Error> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetAccessPointsResponse&gt; GetAccessPoints(string accessPointTypes, string countryCode, string postalCode, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetAccessPointsResponse&gt; GetAccessPoints(GetAccessPointsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8142,7 +8161,6 @@ Returns access points (pickup and dropoff locations) near the
 supplied postal code and country, optionally filtered by access
 point type.
 
-
 </dd>
 </dl>
 
@@ -8154,10 +8172,15 @@ point type.
 ```csharp
 try
 {
-    var response = await client.Shipping.GetAccessPoints(accessPointTypes, countryCode, postalCode);
+    var response = await client.Shipping.GetAccessPoints(new GetAccessPointsRequest
+    {
+        AccessPointTypes = "some example string",
+        CountryCode = "some example string",
+        PostalCode = "some example string",
+    });
     // TODO: Handle 'response' of type GetAccessPointsResponse
 }
-catch (SdkException<GetAccessPointsError> ex)
+catch (ApiException<GetAccessPointsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8169,16 +8192,12 @@ catch (SdkException<GetAccessPointsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>accessPointTypes</code> | <code>string</code> | Comma-separated list of access point types to include. |
-| <code>countryCode</code> | <code>string</code> | ISO 3166-1 alpha-2 country code (e.g. US, CA, MX). |
-| <code>postalCode</code> | <code>string</code> | Postal code to search around. |
+<code>[GetAccessPointsRequest](src/WalmartApIs/Requests/Shipping/GetAccessPointsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8188,9 +8207,9 @@ catch (SdkException<GetAccessPointsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetAccessPointsResponse](Models/GetAccessPointsResponse.cs)</code>
+**OnSuccess**: <code>[GetAccessPointsResponse](src/WalmartApIs/Models/GetAccessPointsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetAccessPointsError](Errors/GetAccessPointsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetAccessPointsError](src/WalmartApIs/Errors/GetAccessPointsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8201,7 +8220,7 @@ catch (SdkException<GetAccessPointsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetAdditionalInputsResponse&gt; GetAdditionalInputs(string rateId, string requestToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetAdditionalInputsResponse&gt; GetAdditionalInputs(GetAdditionalInputsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8217,7 +8236,6 @@ shipment for the supplied requestToken + rateId. The schema is
 served verbatim and the calling client should validate the
 seller's input against it before issuing purchaseShipment.
 
-
 </dd>
 </dl>
 
@@ -8229,10 +8247,14 @@ seller's input against it before issuing purchaseShipment.
 ```csharp
 try
 {
-    var response = await client.Shipping.GetAdditionalInputs(rateId, requestToken);
+    var response = await client.Shipping.GetAdditionalInputs(new GetAdditionalInputsRequest
+    {
+        RateId = "some example string",
+        RequestToken = "some example string",
+    });
     // TODO: Handle 'response' of type GetAdditionalInputsResponse
 }
-catch (SdkException<GetAdditionalInputsError> ex)
+catch (ApiException<GetAdditionalInputsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8244,15 +8266,12 @@ catch (SdkException<GetAdditionalInputsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>rateId</code> | <code>string</code> | rateId returned by a prior getRates response. |
-| <code>requestToken</code> | <code>string</code> | requestToken returned by a prior getRates response. |
+<code>[GetAdditionalInputsRequest](src/WalmartApIs/Requests/Shipping/GetAdditionalInputsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8262,9 +8281,9 @@ catch (SdkException<GetAdditionalInputsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetAdditionalInputsResponse](Models/GetAdditionalInputsResponse.cs)</code>
+**OnSuccess**: <code>[GetAdditionalInputsResponse](src/WalmartApIs/Models/GetAdditionalInputsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetAdditionalInputsError](Errors/GetAdditionalInputsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetAdditionalInputsError](src/WalmartApIs/Errors/GetAdditionalInputsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8275,7 +8294,7 @@ catch (SdkException<GetAdditionalInputsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetRates(GetRatesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderResponse&gt; GetRates(GetRatesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8289,7 +8308,6 @@ Returns a list of shipping rate quotes for the given shipment
 request. The seller can then call purchaseShipment with the
 selected rateId to commit to a label purchase.
 
-
 </dd>
 </dl>
 
@@ -8301,10 +8319,48 @@ selected rateId to commit to a label purchase.
 ```csharp
 try
 {
-    var response = await client.Shipping.GetRates(body);
+    var response = await client.Shipping.GetRates(new GetRatesOperationRequest
+    {
+        Body = new GetRatesRequest
+        {
+            ShipTo = new Address1
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            ShipFrom = new Address1
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            Packages = [
+                new Package
+                {
+                    Dimensions = new PackageDimensions
+                    {
+                        Length = 1.5d,
+                        Width = 1.5d,
+                        Height = 1.5d,
+                        Unit = Unit.Inches,
+                    },
+                    Weight = new Weight { Value = 1.5d, Unit = Unit1.Oz },
+                    PackageClientReferenceId = "some example string",
+                },
+            ],
+            ChannelDetails = new ChannelDetails { ChannelType = ChannelType.WalmartMarketplace },
+        },
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderResponse
 }
-catch (SdkException<GetRatesError> ex)
+catch (ApiException<GetRatesError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8316,14 +8372,12 @@ catch (SdkException<GetRatesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[GetRatesRequest](Models/GetRatesRequest.cs)</code> | - |
+<code>[GetRatesOperationRequest](src/WalmartApIs/Requests/Shipping/GetRatesOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8333,9 +8387,9 @@ catch (SdkException<GetRatesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderResponse](Models/GetFulfillmentOrderResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderResponse](src/WalmartApIs/Models/GetFulfillmentOrderResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetRatesError](Errors/GetRatesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetRatesError](src/WalmartApIs/Errors/GetRatesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8346,7 +8400,7 @@ catch (SdkException<GetRatesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetShipmentDocumentsResponse&gt; GetShipmentDocuments(string shipmentId, string? packageClientReferenceId, Format1? format, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetShipmentDocumentsResponse&gt; GetShipmentDocuments(GetShipmentDocumentsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8359,7 +8413,6 @@ catch (SdkException<GetRatesError> ex)
 Returns the label, customs, and other printable documents
 associated with a previously-purchased shipment.
 
-
 </dd>
 </dl>
 
@@ -8371,10 +8424,13 @@ associated with a previously-purchased shipment.
 ```csharp
 try
 {
-    var response = await client.Shipping.GetShipmentDocuments(shipmentId, packageClientReferenceId, format);
+    var response = await client.Shipping.GetShipmentDocuments(new GetShipmentDocumentsRequest
+    {
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type GetShipmentDocumentsResponse
 }
-catch (SdkException<GetShipmentDocumentsError> ex)
+catch (ApiException<GetShipmentDocumentsError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8386,16 +8442,12 @@ catch (SdkException<GetShipmentDocumentsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>shipmentId</code> | <code>string</code> | Identifier of the shipment whose documents to retrieve. |
-| <code>packageClientReferenceId</code> | <code>string?</code> | Optional package-level reference id to retrieve documents<br>for a specific package within a multi-package shipment. |
-| <code>format</code> | <code>[Format1?](Models/Enums/Format1.cs)</code> | Requested document format (defaults to PDF). |
+<code>[GetShipmentDocumentsRequest](src/WalmartApIs/Requests/Shipping/GetShipmentDocumentsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8405,9 +8457,9 @@ catch (SdkException<GetShipmentDocumentsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetShipmentDocumentsResponse](Models/GetShipmentDocumentsResponse.cs)</code>
+**OnSuccess**: <code>[GetShipmentDocumentsResponse](src/WalmartApIs/Models/GetShipmentDocumentsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetShipmentDocumentsError](Errors/GetShipmentDocumentsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetShipmentDocumentsError](src/WalmartApIs/Errors/GetShipmentDocumentsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8418,7 +8470,7 @@ catch (SdkException<GetShipmentDocumentsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetTrackingResponse&gt; GetTracking(string trackingId, string? carrierId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetTrackingResponse&gt; GetTracking(GetTrackingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8436,7 +8488,6 @@ Vulcan team (STRIDE-TNT-CORE-PACKAGE-SERVICES) 2026-08-19.
 When provided, it's used only as a defense-in-depth check
 against the resolved carrier; a mismatch surfaces as 404.
 
-
 </dd>
 </dl>
 
@@ -8448,10 +8499,10 @@ against the resolved carrier; a mismatch surfaces as 404.
 ```csharp
 try
 {
-    var response = await client.Shipping.GetTracking(trackingId, carrierId);
+    var response = await client.Shipping.GetTracking(new GetTrackingRequest { TrackingId = "some example string" });
     // TODO: Handle 'response' of type GetTrackingResponse
 }
-catch (SdkException<GetTrackingError> ex)
+catch (ApiException<GetTrackingError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8463,15 +8514,12 @@ catch (SdkException<GetTrackingError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>trackingId</code> | <code>string</code> | Tracking identifier returned by purchaseShipment. |
-| <code>carrierId</code> | <code>string?</code> | Optional carrier identifier for defense-in-depth validation<br>against TNT's resolved carrier. Not required by TNT itself<br>-- omit unless you specifically want mismatch protection. |
+<code>[GetTrackingRequest](src/WalmartApIs/Requests/Shipping/GetTrackingRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8481,9 +8529,9 @@ catch (SdkException<GetTrackingError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetTrackingResponse](Models/GetTrackingResponse.cs)</code>
+**OnSuccess**: <code>[GetTrackingResponse](src/WalmartApIs/Models/GetTrackingResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetTrackingError](Errors/GetTrackingError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetTrackingError](src/WalmartApIs/Errors/GetTrackingError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8494,7 +8542,7 @@ catch (SdkException<GetTrackingError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; OneClickShipment(OneClickShipmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; OneClickShipment(OneClickShipmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8508,7 +8556,6 @@ Convenience endpoint that combines rate quote and purchase into
 a single round trip when the seller already knows the desired
 service level. Returns the purchased shipment record directly.
 
-
 </dd>
 </dl>
 
@@ -8520,10 +8567,55 @@ service level. Returns the purchased shipment record directly.
 ```csharp
 try
 {
-    var response = await client.Shipping.OneClickShipment(body);
+    var response = await client.Shipping.OneClickShipment(new OneClickShipmentOperationRequest
+    {
+        Body = new OneClickShipmentRequest
+        {
+            ShipTo = new Address1
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            ShipFrom = new Address1
+            {
+                Name = "some example string",
+                AddressLine1 = "some example string",
+                City = "some example string",
+                StateOrRegion = "some example string",
+                PostalCode = "some example string",
+                CountryCode = "some example string",
+            },
+            Packages = [
+                new Package
+                {
+                    Dimensions = new PackageDimensions
+                    {
+                        Length = 1.5d,
+                        Width = 1.5d,
+                        Height = 1.5d,
+                        Unit = Unit.Inches,
+                    },
+                    Weight = new Weight { Value = 1.5d, Unit = Unit1.Oz },
+                    PackageClientReferenceId = "some example string",
+                },
+            ],
+            ServiceSelection = new ServiceSelection(),
+            RequestedDocumentSpecification = new RequestedDocumentSpecification
+            {
+                Format = Format1.Pdf,
+                Size = new LabelDimensions(),
+                Dpi = Dpi.Value203,
+            },
+            ChannelDetails = new ChannelDetails { ChannelType = ChannelType.WalmartMarketplace },
+        },
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderShipmentsResponse
 }
-catch (SdkException<OneClickShipmentError> ex)
+catch (ApiException<OneClickShipmentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8535,14 +8627,12 @@ catch (SdkException<OneClickShipmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[OneClickShipmentRequest](Models/OneClickShipmentRequest.cs)</code> | - |
+<code>[OneClickShipmentOperationRequest](src/WalmartApIs/Requests/Shipping/OneClickShipmentOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8552,9 +8642,9 @@ catch (SdkException<OneClickShipmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[OneClickShipmentError](Errors/OneClickShipmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[OneClickShipmentError](src/WalmartApIs/Errors/OneClickShipmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8565,7 +8655,7 @@ catch (SdkException<OneClickShipmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; PurchaseShipment(PurchaseShipmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetFulfillmentOrderShipmentsResponse&gt; PurchaseShipment(PurchaseShipmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8579,7 +8669,6 @@ Purchases the shipping label for the rate selected from a prior
 getRates response. Returns the shipment record with label
 document references.
 
-
 </dd>
 </dl>
 
@@ -8591,10 +8680,23 @@ document references.
 ```csharp
 try
 {
-    var response = await client.Shipping.PurchaseShipment(body);
+    var response = await client.Shipping.PurchaseShipment(new PurchaseShipmentOperationRequest
+    {
+        Body = new PurchaseShipmentRequest
+        {
+            RequestToken = "some example string",
+            RateId = "some example string",
+            RequestedDocumentSpecification = new RequestedDocumentSpecification
+            {
+                Format = Format1.Pdf,
+                Size = new LabelDimensions(),
+                Dpi = Dpi.Value203,
+            },
+        },
+    });
     // TODO: Handle 'response' of type GetFulfillmentOrderShipmentsResponse
 }
-catch (SdkException<PurchaseShipmentError> ex)
+catch (ApiException<PurchaseShipmentError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8606,14 +8708,12 @@ catch (SdkException<PurchaseShipmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[PurchaseShipmentRequest](Models/PurchaseShipmentRequest.cs)</code> | - |
+<code>[PurchaseShipmentOperationRequest](src/WalmartApIs/Requests/Shipping/PurchaseShipmentOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8623,9 +8723,9 @@ catch (SdkException<PurchaseShipmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
+**OnSuccess**: <code>[GetFulfillmentOrderShipmentsResponse](src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[PurchaseShipmentError](Errors/PurchaseShipmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[PurchaseShipmentError](src/WalmartApIs/Errors/PurchaseShipmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8636,7 +8736,7 @@ catch (SdkException<PurchaseShipmentError> ex)
 </details>
 
 <details>
-<summary><code>Task SubmitNdrFeedback(SubmitNdrFeedbackRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task SubmitNdrFeedback(SubmitNdrFeedbackOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8650,7 +8750,6 @@ Submits seller feedback on a non-delivery event for a shipment,
 instructing the carrier on how to proceed (return, reattempt,
 redirect, etc).
 
-
 </dd>
 </dl>
 
@@ -8662,9 +8761,16 @@ redirect, etc).
 ```csharp
 try
 {
-    await client.Shipping.SubmitNdrFeedback(body);
+    await client.Shipping.SubmitNdrFeedback(new SubmitNdrFeedbackOperationRequest
+    {
+        Body = new SubmitNdrFeedbackRequest
+        {
+            SellerTrackingId = "some example string",
+            NdrAction = NdrAction.ReturnToOrigin,
+        },
+    });
 }
-catch (SdkException<SubmitNdrFeedbackError> ex)
+catch (ApiException<SubmitNdrFeedbackError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8676,14 +8782,12 @@ catch (SdkException<SubmitNdrFeedbackError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[SubmitNdrFeedbackRequest](Models/SubmitNdrFeedbackRequest.cs)</code> | - |
+<code>[SubmitNdrFeedbackOperationRequest](src/WalmartApIs/Requests/Shipping/SubmitNdrFeedbackOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8695,7 +8799,7 @@ catch (SdkException<SubmitNdrFeedbackError> ex)
 
 **OnSuccess**: No content
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SubmitNdrFeedbackError](Errors/SubmitNdrFeedbackError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SubmitNdrFeedbackError](src/WalmartApIs/Errors/SubmitNdrFeedbackError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8707,10 +8811,10 @@ catch (SdkException<SubmitNdrFeedbackError> ex)
 
 ## Solicitations
 
-> Source: [Solicitations](Api/Solicitations.cs)
+> Source: [Solicitations](src/WalmartApIs/Api/Solicitations.cs)
 
 <details>
-<summary><code>Task&lt;object&gt; CreateProductReviewAndSellerFeedbackSolicitation(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; CreateProductReviewAndSellerFeedbackSolicitation(CreateProductReviewAndSellerFeedbackSolicitationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8723,11 +8827,15 @@ catch (SdkException<SubmitNdrFeedbackError> ex)
 ```csharp
 try
 {
-    var response = await client.Solicitations.CreateProductReviewAndSellerFeedbackSolicitation(spApiOrderId,
-        marketplaceIds);
+    var response = await client.Solicitations.CreateProductReviewAndSellerFeedbackSolicitation(
+        new CreateProductReviewAndSellerFeedbackSolicitationRequest
+        {
+            SpApiOrderId = "some example string",
+            MarketplaceIds = ["some example string"],
+        });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
+catch (ApiException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8739,15 +8847,12 @@ catch (SdkException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | An SP-API order identifier. This specifies the order for which a solicitation is sent. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be spec |
+<code>[CreateProductReviewAndSellerFeedbackSolicitationRequest](src/WalmartApIs/Requests/Solicitations/CreateProductReviewAndSellerFeedbackSolicitationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8759,7 +8864,7 @@ catch (SdkException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateProductReviewAndSellerFeedbackSolicitationError](Errors/CreateProductReviewAndSellerFeedbackSolicitationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateProductReviewAndSellerFeedbackSolicitationError](src/WalmartApIs/Errors/CreateProductReviewAndSellerFeedbackSolicitationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8770,7 +8875,7 @@ catch (SdkException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;object&gt; GetSolicitationActionsForOrder(string spApiOrderId, IReadOnlyList&lt;string&gt; marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;object&gt; GetSolicitationActionsForOrder(GetSolicitationActionsForOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8783,10 +8888,14 @@ catch (SdkException<CreateProductReviewAndSellerFeedbackSolicitationError> ex)
 ```csharp
 try
 {
-    var response = await client.Solicitations.GetSolicitationActionsForOrder(spApiOrderId, marketplaceIds);
+    var response = await client.Solicitations.GetSolicitationActionsForOrder(new GetSolicitationActionsForOrderRequest
+    {
+        SpApiOrderId = "some example string",
+        MarketplaceIds = ["some example string"],
+    });
     // TODO: Handle 'response' of type object
 }
-catch (SdkException<GetSolicitationActionsForOrderError> ex)
+catch (ApiException<GetSolicitationActionsForOrderError> ex)
 {
     if (ex.Error.TryGetErrorList(out var error))
     {
@@ -8798,15 +8907,12 @@ catch (SdkException<GetSolicitationActionsForOrderError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>spApiOrderId</code> | <code>string</code> | An SP-API order identifier. This specifies the order for which you want a list of available solicitation types. |
-| <code>marketplaceIds</code> | <code>IReadOnlyList&lt;string&gt;</code> | A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be spec |
+<code>[GetSolicitationActionsForOrderRequest](src/WalmartApIs/Requests/Solicitations/GetSolicitationActionsForOrderRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8818,7 +8924,7 @@ catch (SdkException<GetSolicitationActionsForOrderError> ex)
 
 **OnSuccess**: <code>object</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetSolicitationActionsForOrderError](Errors/GetSolicitationActionsForOrderError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetSolicitationActionsForOrderError](src/WalmartApIs/Errors/GetSolicitationActionsForOrderError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8830,10 +8936,10 @@ catch (SdkException<GetSolicitationActionsForOrderError> ex)
 
 ## WfsInbound
 
-> Source: [WfsInbound](Api/WfsInbound.cs)
+> Source: [WfsInbound](src/WalmartApIs/Api/WfsInbound.cs)
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; CancelInboundPlan(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; CancelInboundPlan(CancelInboundPlanRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8846,10 +8952,13 @@ catch (SdkException<GetSolicitationActionsForOrderError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.CancelInboundPlan(inboundPlanId);
+    var response = await client.WfsInbound.CancelInboundPlan(new CancelInboundPlanRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<CancelInboundPlanError> ex)
+catch (ApiException<CancelInboundPlanError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -8861,14 +8970,12 @@ catch (SdkException<CancelInboundPlanError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
+<code>[CancelInboundPlanRequest](src/WalmartApIs/Requests/WfsInbound/CancelInboundPlanRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8878,9 +8985,9 @@ catch (SdkException<CancelInboundPlanError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelInboundPlanError](Errors/CancelInboundPlanError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelInboundPlanError](src/WalmartApIs/Errors/CancelInboundPlanError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8891,7 +8998,7 @@ catch (SdkException<CancelInboundPlanError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; CancelSelfShipAppointment(string inboundPlanId, string shipmentId, CancelSelfShipAppointmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; CancelSelfShipAppointment(CancelSelfShipAppointmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8904,10 +9011,15 @@ catch (SdkException<CancelInboundPlanError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.CancelSelfShipAppointment(inboundPlanId, shipmentId, body);
+    var response = await client.WfsInbound.CancelSelfShipAppointment(new CancelSelfShipAppointmentOperationRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        Body = new CancelSelfShipAppointmentRequest(),
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<CancelSelfShipAppointmentError> ex)
+catch (ApiException<CancelSelfShipAppointmentError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -8919,16 +9031,12 @@ catch (SdkException<CancelSelfShipAppointmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[CancelSelfShipAppointmentRequest](Models/CancelSelfShipAppointmentRequest.cs)</code> | - |
+<code>[CancelSelfShipAppointmentOperationRequest](src/WalmartApIs/Requests/WfsInbound/CancelSelfShipAppointmentOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -8938,9 +9046,9 @@ catch (SdkException<CancelSelfShipAppointmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CancelSelfShipAppointmentError](Errors/CancelSelfShipAppointmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CancelSelfShipAppointmentError](src/WalmartApIs/Errors/CancelSelfShipAppointmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -8951,7 +9059,7 @@ catch (SdkException<CancelSelfShipAppointmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmDeliveryWindowOptions(string inboundPlanId, string shipmentId, string deliveryWindowOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmDeliveryWindowOptions(ConfirmDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -8964,12 +9072,15 @@ catch (SdkException<CancelSelfShipAppointmentError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ConfirmDeliveryWindowOptions(inboundPlanId,
-        shipmentId,
-        deliveryWindowOptionId);
+    var response = await client.WfsInbound.ConfirmDeliveryWindowOptions(new ConfirmDeliveryWindowOptionsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        DeliveryWindowOptionId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<ConfirmDeliveryWindowOptionsError> ex)
+catch (ApiException<ConfirmDeliveryWindowOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -8981,16 +9092,12 @@ catch (SdkException<ConfirmDeliveryWindowOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | The shipment to confirm the delivery window option for. |
-| <code>deliveryWindowOptionId</code> | <code>string</code> | The ID of the delivery window option to be confirmed. |
+<code>[ConfirmDeliveryWindowOptionsRequest](src/WalmartApIs/Requests/WfsInbound/ConfirmDeliveryWindowOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9000,9 +9107,9 @@ catch (SdkException<ConfirmDeliveryWindowOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmDeliveryWindowOptionsError](Errors/ConfirmDeliveryWindowOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmDeliveryWindowOptionsError](src/WalmartApIs/Errors/ConfirmDeliveryWindowOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9013,7 +9120,7 @@ catch (SdkException<ConfirmDeliveryWindowOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmPackingOption(string inboundPlanId, string packingOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmPackingOption(ConfirmPackingOptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9026,10 +9133,14 @@ catch (SdkException<ConfirmDeliveryWindowOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ConfirmPackingOption(inboundPlanId, packingOptionId);
+    var response = await client.WfsInbound.ConfirmPackingOption(new ConfirmPackingOptionRequest
+    {
+        InboundPlanId = "some example string",
+        PackingOptionId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<ConfirmPackingOptionError> ex)
+catch (ApiException<ConfirmPackingOptionError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9041,15 +9152,12 @@ catch (SdkException<ConfirmPackingOptionError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>packingOptionId</code> | <code>string</code> | Identifier of a packing option. |
+<code>[ConfirmPackingOptionRequest](src/WalmartApIs/Requests/WfsInbound/ConfirmPackingOptionRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9059,9 +9167,9 @@ catch (SdkException<ConfirmPackingOptionError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmPackingOptionError](Errors/ConfirmPackingOptionError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmPackingOptionError](src/WalmartApIs/Errors/ConfirmPackingOptionError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9072,7 +9180,7 @@ catch (SdkException<ConfirmPackingOptionError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmPlacementOption(string inboundPlanId, string placementOptionId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmPlacementOption(ConfirmPlacementOptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9085,10 +9193,14 @@ catch (SdkException<ConfirmPackingOptionError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ConfirmPlacementOption(inboundPlanId, placementOptionId);
+    var response = await client.WfsInbound.ConfirmPlacementOption(new ConfirmPlacementOptionRequest
+    {
+        InboundPlanId = "some example string",
+        PlacementOptionId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<ConfirmPlacementOptionError> ex)
+catch (ApiException<ConfirmPlacementOptionError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9100,15 +9212,12 @@ catch (SdkException<ConfirmPlacementOptionError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>placementOptionId</code> | <code>string</code> | The identifier of a placement option. |
+<code>[ConfirmPlacementOptionRequest](src/WalmartApIs/Requests/WfsInbound/ConfirmPlacementOptionRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9118,9 +9227,9 @@ catch (SdkException<ConfirmPlacementOptionError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmPlacementOptionError](Errors/ConfirmPlacementOptionError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmPlacementOptionError](src/WalmartApIs/Errors/ConfirmPlacementOptionError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9131,7 +9240,7 @@ catch (SdkException<ConfirmPlacementOptionError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmShipmentContentUpdatePreview(string inboundPlanId, string shipmentId, string contentUpdatePreviewId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmShipmentContentUpdatePreview(ConfirmShipmentContentUpdatePreviewRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9144,12 +9253,16 @@ catch (SdkException<ConfirmPlacementOptionError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ConfirmShipmentContentUpdatePreview(inboundPlanId,
-        shipmentId,
-        contentUpdatePreviewId);
+    var response = await client.WfsInbound.ConfirmShipmentContentUpdatePreview(
+        new ConfirmShipmentContentUpdatePreviewRequest
+        {
+            InboundPlanId = "some example string",
+            ShipmentId = "some example string",
+            ContentUpdatePreviewId = "some example string",
+        });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<ConfirmShipmentContentUpdatePreviewError> ex)
+catch (ApiException<ConfirmShipmentContentUpdatePreviewError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9161,16 +9274,12 @@ catch (SdkException<ConfirmShipmentContentUpdatePreviewError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>contentUpdatePreviewId</code> | <code>string</code> | Identifier of a content update preview. |
+<code>[ConfirmShipmentContentUpdatePreviewRequest](src/WalmartApIs/Requests/WfsInbound/ConfirmShipmentContentUpdatePreviewRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9180,9 +9289,9 @@ catch (SdkException<ConfirmShipmentContentUpdatePreviewError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmShipmentContentUpdatePreviewError](Errors/ConfirmShipmentContentUpdatePreviewError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmShipmentContentUpdatePreviewError](src/WalmartApIs/Errors/ConfirmShipmentContentUpdatePreviewError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9193,7 +9302,7 @@ catch (SdkException<ConfirmShipmentContentUpdatePreviewError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmTransportationOptions(string inboundPlanId, ConfirmTransportationOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; ConfirmTransportationOptions(ConfirmTransportationOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9206,10 +9315,23 @@ catch (SdkException<ConfirmShipmentContentUpdatePreviewError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ConfirmTransportationOptions(inboundPlanId, body);
+    var response = await client.WfsInbound.ConfirmTransportationOptions(new ConfirmTransportationOptionsOperationRequest
+    {
+        InboundPlanId = "some example string",
+        Body = new ConfirmTransportationOptionsRequest
+        {
+            TransportationSelections = [
+                new CommonTransportationSelection
+                {
+                    ShipmentId = "some example string",
+                    TransportationOptionId = "some example string",
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<ConfirmTransportationOptionsError> ex)
+catch (ApiException<ConfirmTransportationOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9221,15 +9343,12 @@ catch (SdkException<ConfirmTransportationOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>body</code> | <code>[ConfirmTransportationOptionsRequest](Models/ConfirmTransportationOptionsRequest.cs)</code> | - |
+<code>[ConfirmTransportationOptionsOperationRequest](src/WalmartApIs/Requests/WfsInbound/ConfirmTransportationOptionsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9239,9 +9358,9 @@ catch (SdkException<ConfirmTransportationOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ConfirmTransportationOptionsError](Errors/ConfirmTransportationOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ConfirmTransportationOptionsError](src/WalmartApIs/Errors/ConfirmTransportationOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9252,7 +9371,7 @@ catch (SdkException<ConfirmTransportationOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateInboundPlanResponse&gt; CreateInboundPlan(CreateInboundPlanRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateInboundPlanResponse&gt; CreateInboundPlan(CreateInboundPlanOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9265,10 +9384,34 @@ catch (SdkException<ConfirmTransportationOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.CreateInboundPlan(body);
+    var response = await client.WfsInbound.CreateInboundPlan(new CreateInboundPlanOperationRequest
+    {
+        Body = new CreateInboundPlanRequest
+        {
+            DestinationMarketplaces = ["some example string"],
+            Items = [
+                new CommonItemInput
+                {
+                    LabelOwner = CommonLabelOwner.Seller,
+                    Msku = "some example string",
+                    PrepOwner = CommonPrepOwner.Seller,
+                    Quantity = 1,
+                },
+            ],
+            SourceAddress = new CommonAddressInput
+            {
+                AddressLine1 = "some example string",
+                City = "some example string",
+                CountryCode = "some example string",
+                Name = "some example string",
+                PhoneNumber = "some example string",
+                PostalCode = "some example string",
+            },
+        },
+    });
     // TODO: Handle 'response' of type CreateInboundPlanResponse
 }
-catch (SdkException<CreateInboundPlanError> ex)
+catch (ApiException<CreateInboundPlanError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9280,14 +9423,12 @@ catch (SdkException<CreateInboundPlanError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateInboundPlanRequest](Models/CreateInboundPlanRequest.cs)</code> | - |
+<code>[CreateInboundPlanOperationRequest](src/WalmartApIs/Requests/WfsInbound/CreateInboundPlanOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9297,9 +9438,9 @@ catch (SdkException<CreateInboundPlanError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateInboundPlanResponse](Models/CreateInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CreateInboundPlanResponse](src/WalmartApIs/Models/CreateInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateInboundPlanError](Errors/CreateInboundPlanError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateInboundPlanError](src/WalmartApIs/Errors/CreateInboundPlanError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9310,7 +9451,7 @@ catch (SdkException<CreateInboundPlanError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CreateMarketplaceItemLabelsResponse&gt; CreateMarketplaceItemLabels(CreateMarketplaceItemLabelsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CreateMarketplaceItemLabelsResponse&gt; CreateMarketplaceItemLabels(CreateMarketplaceItemLabelsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9323,10 +9464,18 @@ catch (SdkException<CreateInboundPlanError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.CreateMarketplaceItemLabels(body);
+    var response = await client.WfsInbound.CreateMarketplaceItemLabels(new CreateMarketplaceItemLabelsOperationRequest
+    {
+        Body = new CreateMarketplaceItemLabelsRequest
+        {
+            LabelType = CommonLabelPrintType.StandardFormat,
+            MarketplaceId = "some example string",
+            MskuQuantities = [new CommonMskuQuantity { Msku = "some example string", Quantity = 1 }],
+        },
+    });
     // TODO: Handle 'response' of type CreateMarketplaceItemLabelsResponse
 }
-catch (SdkException<CreateMarketplaceItemLabelsError> ex)
+catch (ApiException<CreateMarketplaceItemLabelsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9338,14 +9487,12 @@ catch (SdkException<CreateMarketplaceItemLabelsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[CreateMarketplaceItemLabelsRequest](Models/CreateMarketplaceItemLabelsRequest.cs)</code> | - |
+<code>[CreateMarketplaceItemLabelsOperationRequest](src/WalmartApIs/Requests/WfsInbound/CreateMarketplaceItemLabelsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9355,9 +9502,9 @@ catch (SdkException<CreateMarketplaceItemLabelsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreateMarketplaceItemLabelsResponse](Models/CreateMarketplaceItemLabelsResponse.cs)</code>
+**OnSuccess**: <code>[CreateMarketplaceItemLabelsResponse](src/WalmartApIs/Models/CreateMarketplaceItemLabelsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[CreateMarketplaceItemLabelsError](Errors/CreateMarketplaceItemLabelsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[CreateMarketplaceItemLabelsError](src/WalmartApIs/Errors/CreateMarketplaceItemLabelsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9368,7 +9515,7 @@ catch (SdkException<CreateMarketplaceItemLabelsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateDeliveryWindowOptions(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateDeliveryWindowOptions(GenerateDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9381,10 +9528,14 @@ catch (SdkException<CreateMarketplaceItemLabelsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GenerateDeliveryWindowOptions(inboundPlanId, shipmentId);
+    var response = await client.WfsInbound.GenerateDeliveryWindowOptions(new GenerateDeliveryWindowOptionsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GenerateDeliveryWindowOptionsError> ex)
+catch (ApiException<GenerateDeliveryWindowOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9396,15 +9547,12 @@ catch (SdkException<GenerateDeliveryWindowOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | The shipment to generate delivery window options for. |
+<code>[GenerateDeliveryWindowOptionsRequest](src/WalmartApIs/Requests/WfsInbound/GenerateDeliveryWindowOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9414,9 +9562,9 @@ catch (SdkException<GenerateDeliveryWindowOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GenerateDeliveryWindowOptionsError](Errors/GenerateDeliveryWindowOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GenerateDeliveryWindowOptionsError](src/WalmartApIs/Errors/GenerateDeliveryWindowOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9427,7 +9575,7 @@ catch (SdkException<GenerateDeliveryWindowOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GeneratePackingOptions(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GeneratePackingOptions(GeneratePackingOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9440,10 +9588,13 @@ catch (SdkException<GenerateDeliveryWindowOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GeneratePackingOptions(inboundPlanId);
+    var response = await client.WfsInbound.GeneratePackingOptions(new GeneratePackingOptionsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GeneratePackingOptionsError> ex)
+catch (ApiException<GeneratePackingOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9455,14 +9606,12 @@ catch (SdkException<GeneratePackingOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
+<code>[GeneratePackingOptionsRequest](src/WalmartApIs/Requests/WfsInbound/GeneratePackingOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9472,9 +9621,9 @@ catch (SdkException<GeneratePackingOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GeneratePackingOptionsError](Errors/GeneratePackingOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GeneratePackingOptionsError](src/WalmartApIs/Errors/GeneratePackingOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9485,7 +9634,7 @@ catch (SdkException<GeneratePackingOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GeneratePlacementOptions(string inboundPlanId, GeneratePlacementOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GeneratePlacementOptions(GeneratePlacementOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9498,10 +9647,14 @@ catch (SdkException<GeneratePackingOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GeneratePlacementOptions(inboundPlanId, body);
+    var response = await client.WfsInbound.GeneratePlacementOptions(new GeneratePlacementOptionsOperationRequest
+    {
+        InboundPlanId = "some example string",
+        Body = new GeneratePlacementOptionsRequest(),
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GeneratePlacementOptionsError> ex)
+catch (ApiException<GeneratePlacementOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9513,15 +9666,12 @@ catch (SdkException<GeneratePlacementOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>body</code> | <code>[GeneratePlacementOptionsRequest](Models/GeneratePlacementOptionsRequest.cs)</code> | - |
+<code>[GeneratePlacementOptionsOperationRequest](src/WalmartApIs/Requests/WfsInbound/GeneratePlacementOptionsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9531,9 +9681,9 @@ catch (SdkException<GeneratePlacementOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GeneratePlacementOptionsError](Errors/GeneratePlacementOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GeneratePlacementOptionsError](src/WalmartApIs/Errors/GeneratePlacementOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9544,7 +9694,7 @@ catch (SdkException<GeneratePlacementOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateSelfShipAppointmentSlots(string inboundPlanId, string shipmentId, GenerateSelfShipAppointmentSlotsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateSelfShipAppointmentSlots(GenerateSelfShipAppointmentSlotsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9557,10 +9707,16 @@ catch (SdkException<GeneratePlacementOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GenerateSelfShipAppointmentSlots(inboundPlanId, shipmentId, body);
+    var response = await client.WfsInbound.GenerateSelfShipAppointmentSlots(
+        new GenerateSelfShipAppointmentSlotsOperationRequest
+        {
+            InboundPlanId = "some example string",
+            ShipmentId = "some example string",
+            Body = new GenerateSelfShipAppointmentSlotsRequest(),
+        });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GenerateSelfShipAppointmentSlotsError> ex)
+catch (ApiException<GenerateSelfShipAppointmentSlotsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9572,16 +9728,12 @@ catch (SdkException<GenerateSelfShipAppointmentSlotsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[GenerateSelfShipAppointmentSlotsRequest](Models/GenerateSelfShipAppointmentSlotsRequest.cs)</code> | - |
+<code>[GenerateSelfShipAppointmentSlotsOperationRequest](src/WalmartApIs/Requests/WfsInbound/GenerateSelfShipAppointmentSlotsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9591,9 +9743,9 @@ catch (SdkException<GenerateSelfShipAppointmentSlotsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GenerateSelfShipAppointmentSlotsError](Errors/GenerateSelfShipAppointmentSlotsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GenerateSelfShipAppointmentSlotsError](src/WalmartApIs/Errors/GenerateSelfShipAppointmentSlotsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9604,7 +9756,7 @@ catch (SdkException<GenerateSelfShipAppointmentSlotsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateShipmentContentUpdatePreviews(string inboundPlanId, string shipmentId, GenerateShipmentContentUpdatePreviewsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateShipmentContentUpdatePreviews(GenerateShipmentContentUpdatePreviewsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9617,10 +9769,42 @@ catch (SdkException<GenerateSelfShipAppointmentSlotsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GenerateShipmentContentUpdatePreviews(inboundPlanId, shipmentId, body);
+    var response = await client.WfsInbound.GenerateShipmentContentUpdatePreviews(
+        new GenerateShipmentContentUpdatePreviewsOperationRequest
+        {
+            InboundPlanId = "some example string",
+            ShipmentId = "some example string",
+            Body = new GenerateShipmentContentUpdatePreviewsRequest
+            {
+                Boxes = [
+                    new CommonBoxUpdateInput
+                    {
+                        ContentInformationSource = CommonBoxContentInformationSource.BoxContentProvided,
+                        Dimensions = new CommonDimensions
+                        {
+                            Height = 1.5d,
+                            Length = 1.5d,
+                            Width = 1.5d,
+                            UnitOfMeasurement = CommonUnitOfMeasurement.In,
+                        },
+                        Quantity = 1,
+                        Weight = new CommonWeight { Unit = CommonUnitOfWeight.Lb, Value = 1.5d },
+                    },
+                ],
+                Items = [
+                    new CommonItemInput
+                    {
+                        LabelOwner = CommonLabelOwner.Seller,
+                        Msku = "some example string",
+                        PrepOwner = CommonPrepOwner.Seller,
+                        Quantity = 1,
+                    },
+                ],
+            },
+        });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GenerateShipmentContentUpdatePreviewsError> ex)
+catch (ApiException<GenerateShipmentContentUpdatePreviewsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9632,16 +9816,12 @@ catch (SdkException<GenerateShipmentContentUpdatePreviewsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[GenerateShipmentContentUpdatePreviewsRequest](Models/GenerateShipmentContentUpdatePreviewsRequest.cs)</code> | - |
+<code>[GenerateShipmentContentUpdatePreviewsOperationRequest](src/WalmartApIs/Requests/WfsInbound/GenerateShipmentContentUpdatePreviewsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9651,9 +9831,9 @@ catch (SdkException<GenerateShipmentContentUpdatePreviewsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GenerateShipmentContentUpdatePreviewsError](Errors/GenerateShipmentContentUpdatePreviewsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GenerateShipmentContentUpdatePreviewsError](src/WalmartApIs/Errors/GenerateShipmentContentUpdatePreviewsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9664,7 +9844,7 @@ catch (SdkException<GenerateShipmentContentUpdatePreviewsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateTransportationOptions(string inboundPlanId, GenerateTransportationOptionsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; GenerateTransportationOptions(GenerateTransportationOptionsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9677,10 +9857,28 @@ catch (SdkException<GenerateShipmentContentUpdatePreviewsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GenerateTransportationOptions(inboundPlanId, body);
+    var response = await client.WfsInbound.GenerateTransportationOptions(
+        new GenerateTransportationOptionsOperationRequest
+        {
+            InboundPlanId = "some example string",
+            Body = new GenerateTransportationOptionsRequest
+            {
+                PlacementOptionId = "some example string",
+                ShipmentTransportationConfigurations = [
+                    new CommonShipmentTransportationConfiguration
+                    {
+                        ReadyToShipWindow = new CommonWindowInput
+                        {
+                            Start = DateTimeOffset.Parse("2024-01-15T09:30:00Z"),
+                        },
+                        ShipmentId = "some example string",
+                    },
+                ],
+            },
+        });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<GenerateTransportationOptionsError> ex)
+catch (ApiException<GenerateTransportationOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9692,15 +9890,12 @@ catch (SdkException<GenerateTransportationOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>body</code> | <code>[GenerateTransportationOptionsRequest](Models/GenerateTransportationOptionsRequest.cs)</code> | - |
+<code>[GenerateTransportationOptionsOperationRequest](src/WalmartApIs/Requests/WfsInbound/GenerateTransportationOptionsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9710,9 +9905,9 @@ catch (SdkException<GenerateTransportationOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GenerateTransportationOptionsError](Errors/GenerateTransportationOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GenerateTransportationOptionsError](src/WalmartApIs/Errors/GenerateTransportationOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9723,7 +9918,7 @@ catch (SdkException<GenerateTransportationOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetDeliveryChallanDocumentResponse&gt; GetDeliveryChallanDocument(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetDeliveryChallanDocumentResponse&gt; GetDeliveryChallanDocument(GetDeliveryChallanDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9736,10 +9931,14 @@ catch (SdkException<GenerateTransportationOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetDeliveryChallanDocument(inboundPlanId, shipmentId);
+    var response = await client.WfsInbound.GetDeliveryChallanDocument(new GetDeliveryChallanDocumentRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type GetDeliveryChallanDocumentResponse
 }
-catch (SdkException<GetDeliveryChallanDocumentError> ex)
+catch (ApiException<GetDeliveryChallanDocumentError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9751,15 +9950,12 @@ catch (SdkException<GetDeliveryChallanDocumentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
+<code>[GetDeliveryChallanDocumentRequest](src/WalmartApIs/Requests/WfsInbound/GetDeliveryChallanDocumentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9769,9 +9965,9 @@ catch (SdkException<GetDeliveryChallanDocumentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetDeliveryChallanDocumentResponse](Models/GetDeliveryChallanDocumentResponse.cs)</code>
+**OnSuccess**: <code>[GetDeliveryChallanDocumentResponse](src/WalmartApIs/Models/GetDeliveryChallanDocumentResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetDeliveryChallanDocumentError](Errors/GetDeliveryChallanDocumentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetDeliveryChallanDocumentError](src/WalmartApIs/Errors/GetDeliveryChallanDocumentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9782,7 +9978,7 @@ catch (SdkException<GetDeliveryChallanDocumentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CommonInboundOperationStatus&gt; GetInboundOperationStatus(string operationId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CommonInboundOperationStatus&gt; GetInboundOperationStatus(GetInboundOperationStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9795,10 +9991,13 @@ catch (SdkException<GetDeliveryChallanDocumentError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetInboundOperationStatus(operationId);
+    var response = await client.WfsInbound.GetInboundOperationStatus(new GetInboundOperationStatusRequest
+    {
+        OperationId = "some example string",
+    });
     // TODO: Handle 'response' of type CommonInboundOperationStatus
 }
-catch (SdkException<GetInboundOperationStatusError> ex)
+catch (ApiException<GetInboundOperationStatusError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9810,14 +10009,12 @@ catch (SdkException<GetInboundOperationStatusError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>operationId</code> | <code>string</code> | Identifier of an asynchronous operation. |
+<code>[GetInboundOperationStatusRequest](src/WalmartApIs/Requests/WfsInbound/GetInboundOperationStatusRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9827,9 +10024,9 @@ catch (SdkException<GetInboundOperationStatusError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CommonInboundOperationStatus](Models/CommonInboundOperationStatus.cs)</code>
+**OnSuccess**: <code>[CommonInboundOperationStatus](src/WalmartApIs/Models/CommonInboundOperationStatus.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetInboundOperationStatusError](Errors/GetInboundOperationStatusError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetInboundOperationStatusError](src/WalmartApIs/Errors/GetInboundOperationStatusError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9840,7 +10037,7 @@ catch (SdkException<GetInboundOperationStatusError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;InboundPlan&gt; GetInboundPlan(string inboundPlanId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;InboundPlan&gt; GetInboundPlan(GetInboundPlanRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9853,10 +10050,13 @@ catch (SdkException<GetInboundOperationStatusError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetInboundPlan(inboundPlanId);
+    var response = await client.WfsInbound.GetInboundPlan(new GetInboundPlanRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type InboundPlan
 }
-catch (SdkException<GetInboundPlanError> ex)
+catch (ApiException<GetInboundPlanError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9868,14 +10068,12 @@ catch (SdkException<GetInboundPlanError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
+<code>[GetInboundPlanRequest](src/WalmartApIs/Requests/WfsInbound/GetInboundPlanRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9885,9 +10083,9 @@ catch (SdkException<GetInboundPlanError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[InboundPlan](Models/InboundPlan.cs)</code>
+**OnSuccess**: <code>[InboundPlan](src/WalmartApIs/Models/InboundPlan.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetInboundPlanError](Errors/GetInboundPlanError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetInboundPlanError](src/WalmartApIs/Errors/GetInboundPlanError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9898,7 +10096,7 @@ catch (SdkException<GetInboundPlanError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;GetSelfShipAppointmentSlotsResponse&gt; GetSelfShipAppointmentSlots(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;GetSelfShipAppointmentSlotsResponse&gt; GetSelfShipAppointmentSlots(GetSelfShipAppointmentSlotsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9911,13 +10109,14 @@ catch (SdkException<GetInboundPlanError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetSelfShipAppointmentSlots(inboundPlanId,
-        shipmentId,
-        pageSize,
-        paginationToken);
+    var response = await client.WfsInbound.GetSelfShipAppointmentSlots(new GetSelfShipAppointmentSlotsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type GetSelfShipAppointmentSlotsResponse
 }
-catch (SdkException<GetSelfShipAppointmentSlotsError> ex)
+catch (ApiException<GetSelfShipAppointmentSlotsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9929,17 +10128,12 @@ catch (SdkException<GetSelfShipAppointmentSlotsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>pageSize</code> | <code>int?</code> | The number of self ship appointment slots to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[GetSelfShipAppointmentSlotsRequest](src/WalmartApIs/Requests/WfsInbound/GetSelfShipAppointmentSlotsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -9949,9 +10143,9 @@ catch (SdkException<GetSelfShipAppointmentSlotsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetSelfShipAppointmentSlotsResponse](Models/GetSelfShipAppointmentSlotsResponse.cs)</code>
+**OnSuccess**: <code>[GetSelfShipAppointmentSlotsResponse](src/WalmartApIs/Models/GetSelfShipAppointmentSlotsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetSelfShipAppointmentSlotsError](Errors/GetSelfShipAppointmentSlotsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetSelfShipAppointmentSlotsError](src/WalmartApIs/Errors/GetSelfShipAppointmentSlotsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -9962,7 +10156,7 @@ catch (SdkException<GetSelfShipAppointmentSlotsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CommonShipment&gt; GetShipment(string inboundPlanId, string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CommonShipment&gt; GetShipment(GetShipmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -9975,10 +10169,14 @@ catch (SdkException<GetSelfShipAppointmentSlotsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetShipment(inboundPlanId, shipmentId);
+    var response = await client.WfsInbound.GetShipment(new GetShipmentRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type CommonShipment
 }
-catch (SdkException<GetShipmentError> ex)
+catch (ApiException<GetShipmentError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -9990,15 +10188,12 @@ catch (SdkException<GetShipmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. A shipment contains the boxes and units being inbounded. |
+<code>[GetShipmentRequest](src/WalmartApIs/Requests/WfsInbound/GetShipmentRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10008,9 +10203,9 @@ catch (SdkException<GetShipmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CommonShipment](Models/CommonShipment.cs)</code>
+**OnSuccess**: <code>[CommonShipment](src/WalmartApIs/Models/CommonShipment.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetShipmentError](Errors/GetShipmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetShipmentError](src/WalmartApIs/Errors/GetShipmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10021,7 +10216,7 @@ catch (SdkException<GetShipmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CommonContentUpdatePreview&gt; GetShipmentContentUpdatePreview(string inboundPlanId, string shipmentId, string contentUpdatePreviewId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CommonContentUpdatePreview&gt; GetShipmentContentUpdatePreview(GetShipmentContentUpdatePreviewRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10034,12 +10229,15 @@ catch (SdkException<GetShipmentError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.GetShipmentContentUpdatePreview(inboundPlanId,
-        shipmentId,
-        contentUpdatePreviewId);
+    var response = await client.WfsInbound.GetShipmentContentUpdatePreview(new GetShipmentContentUpdatePreviewRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        ContentUpdatePreviewId = "some example string",
+    });
     // TODO: Handle 'response' of type CommonContentUpdatePreview
 }
-catch (SdkException<GetShipmentContentUpdatePreviewError> ex)
+catch (ApiException<GetShipmentContentUpdatePreviewError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10051,16 +10249,12 @@ catch (SdkException<GetShipmentContentUpdatePreviewError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>contentUpdatePreviewId</code> | <code>string</code> | Identifier of a content update preview. |
+<code>[GetShipmentContentUpdatePreviewRequest](src/WalmartApIs/Requests/WfsInbound/GetShipmentContentUpdatePreviewRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10070,9 +10264,9 @@ catch (SdkException<GetShipmentContentUpdatePreviewError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CommonContentUpdatePreview](Models/CommonContentUpdatePreview.cs)</code>
+**OnSuccess**: <code>[CommonContentUpdatePreview](src/WalmartApIs/Models/CommonContentUpdatePreview.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[GetShipmentContentUpdatePreviewError](Errors/GetShipmentContentUpdatePreviewError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[GetShipmentContentUpdatePreviewError](src/WalmartApIs/Errors/GetShipmentContentUpdatePreviewError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10083,7 +10277,7 @@ catch (SdkException<GetShipmentContentUpdatePreviewError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListDeliveryWindowOptionsResponse&gt; ListDeliveryWindowOptions(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListDeliveryWindowOptionsResponse&gt; ListDeliveryWindowOptions(ListDeliveryWindowOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10096,13 +10290,14 @@ catch (SdkException<GetShipmentContentUpdatePreviewError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListDeliveryWindowOptions(inboundPlanId,
-        shipmentId,
-        pageSize,
-        paginationToken);
+    var response = await client.WfsInbound.ListDeliveryWindowOptions(new ListDeliveryWindowOptionsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type ListDeliveryWindowOptionsResponse
 }
-catch (SdkException<ListDeliveryWindowOptionsError> ex)
+catch (ApiException<ListDeliveryWindowOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10114,17 +10309,12 @@ catch (SdkException<ListDeliveryWindowOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | The shipment to get delivery window options for. |
-| <code>pageSize</code> | <code>int?</code> | The number of delivery window options to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListDeliveryWindowOptionsRequest](src/WalmartApIs/Requests/WfsInbound/ListDeliveryWindowOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10134,9 +10324,9 @@ catch (SdkException<ListDeliveryWindowOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListDeliveryWindowOptionsResponse](Models/ListDeliveryWindowOptionsResponse.cs)</code>
+**OnSuccess**: <code>[ListDeliveryWindowOptionsResponse](src/WalmartApIs/Models/ListDeliveryWindowOptionsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListDeliveryWindowOptionsError](Errors/ListDeliveryWindowOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListDeliveryWindowOptionsError](src/WalmartApIs/Errors/ListDeliveryWindowOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10147,7 +10337,7 @@ catch (SdkException<ListDeliveryWindowOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListInboundPlanBoxes(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListInboundPlanBoxes(ListInboundPlanBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10160,10 +10350,13 @@ catch (SdkException<ListDeliveryWindowOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListInboundPlanBoxes(inboundPlanId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListInboundPlanBoxes(new ListInboundPlanBoxesRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanBoxesResponse
 }
-catch (SdkException<ListInboundPlanBoxesError> ex)
+catch (ApiException<ListInboundPlanBoxesError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10175,16 +10368,12 @@ catch (SdkException<ListInboundPlanBoxesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of boxes to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListInboundPlanBoxesRequest](src/WalmartApIs/Requests/WfsInbound/ListInboundPlanBoxesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10194,9 +10383,9 @@ catch (SdkException<ListInboundPlanBoxesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanBoxesResponse](Models/ListInboundPlanBoxesResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanBoxesResponse](src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListInboundPlanBoxesError](Errors/ListInboundPlanBoxesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListInboundPlanBoxesError](src/WalmartApIs/Errors/ListInboundPlanBoxesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10207,7 +10396,7 @@ catch (SdkException<ListInboundPlanBoxesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListInboundPlanItems(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListInboundPlanItems(ListInboundPlanItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10220,10 +10409,13 @@ catch (SdkException<ListInboundPlanBoxesError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListInboundPlanItems(inboundPlanId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListInboundPlanItems(new ListInboundPlanItemsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanItemsResponse
 }
-catch (SdkException<ListInboundPlanItemsError> ex)
+catch (ApiException<ListInboundPlanItemsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10235,16 +10427,12 @@ catch (SdkException<ListInboundPlanItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of items to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListInboundPlanItemsRequest](src/WalmartApIs/Requests/WfsInbound/ListInboundPlanItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10254,9 +10442,9 @@ catch (SdkException<ListInboundPlanItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanItemsResponse](Models/ListInboundPlanItemsResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanItemsResponse](src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListInboundPlanItemsError](Errors/ListInboundPlanItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListInboundPlanItemsError](src/WalmartApIs/Errors/ListInboundPlanItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10267,7 +10455,7 @@ catch (SdkException<ListInboundPlanItemsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanPalletsResponse&gt; ListInboundPlanPallets(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanPalletsResponse&gt; ListInboundPlanPallets(ListInboundPlanPalletsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10280,10 +10468,13 @@ catch (SdkException<ListInboundPlanItemsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListInboundPlanPallets(inboundPlanId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListInboundPlanPallets(new ListInboundPlanPalletsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanPalletsResponse
 }
-catch (SdkException<ListInboundPlanPalletsError> ex)
+catch (ApiException<ListInboundPlanPalletsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10295,16 +10486,12 @@ catch (SdkException<ListInboundPlanPalletsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of pallets to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListInboundPlanPalletsRequest](src/WalmartApIs/Requests/WfsInbound/ListInboundPlanPalletsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10314,9 +10501,9 @@ catch (SdkException<ListInboundPlanPalletsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanPalletsResponse](Models/ListInboundPlanPalletsResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanPalletsResponse](src/WalmartApIs/Models/ListInboundPlanPalletsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListInboundPlanPalletsError](Errors/ListInboundPlanPalletsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListInboundPlanPalletsError](src/WalmartApIs/Errors/ListInboundPlanPalletsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10327,7 +10514,7 @@ catch (SdkException<ListInboundPlanPalletsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlansResponse&gt; ListInboundPlans(string? paginationToken, string? status, string? sortBy, string? sortOrder, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlansResponse&gt; ListInboundPlans(ListInboundPlansRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10340,10 +10527,10 @@ catch (SdkException<ListInboundPlanPalletsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListInboundPlans(paginationToken, status, sortBy, sortOrder);
+    var response = await client.WfsInbound.ListInboundPlans(new ListInboundPlansRequest());
     // TODO: Handle 'response' of type ListInboundPlansResponse
 }
-catch (SdkException<ListInboundPlansError> ex)
+catch (ApiException<ListInboundPlansError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10355,18 +10542,12 @@ catch (SdkException<ListInboundPlansError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
-| <code>status</code> | <code>string?</code> | The status of an inbound plan. Possible values: `ACTIVE`, `VOIDED`, `SHIPPED`, `ERRORED`. |
-| <code>sortBy</code> | <code>string?</code> | Sort by field. |
-| <code>sortOrder</code> | <code>string?</code> | The sort order. Possible values: `ASC`, `DESC`. |
-| <code>pageSize</code> | <code>int?</code> | The number of inbound plans to return in the response matching the given query.<br>**Default**: 10 |
+<code>[ListInboundPlansRequest](src/WalmartApIs/Requests/WfsInbound/ListInboundPlansRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10376,9 +10557,9 @@ catch (SdkException<ListInboundPlansError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlansResponse](Models/ListInboundPlansResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlansResponse](src/WalmartApIs/Models/ListInboundPlansResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListInboundPlansError](Errors/ListInboundPlansError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListInboundPlansError](src/WalmartApIs/Errors/ListInboundPlansError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10389,7 +10570,7 @@ catch (SdkException<ListInboundPlansError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListItemComplianceDetailsResponse&gt; ListItemComplianceDetails(IReadOnlyList&lt;string&gt; mskus, string marketplaceId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListItemComplianceDetailsResponse&gt; ListItemComplianceDetails(ListItemComplianceDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10402,10 +10583,14 @@ catch (SdkException<ListInboundPlansError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListItemComplianceDetails(mskus, marketplaceId);
+    var response = await client.WfsInbound.ListItemComplianceDetails(new ListItemComplianceDetailsRequest
+    {
+        Mskus = ["some example string"],
+        MarketplaceId = "some example string",
+    });
     // TODO: Handle 'response' of type ListItemComplianceDetailsResponse
 }
-catch (SdkException<ListItemComplianceDetailsError> ex)
+catch (ApiException<ListItemComplianceDetailsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10417,15 +10602,12 @@ catch (SdkException<ListItemComplianceDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>mskus</code> | <code>IReadOnlyList&lt;string&gt;</code> | A list of merchant SKUs, a merchant-supplied identifier of a specific SKU. |
-| <code>marketplaceId</code> | <code>string</code> | The Walmart Marketplace ID. For a list of possible values, refer to [Marketplace IDs](https://developer-docs.walmart.com/seller-api/docs/marketplace-ids). |
+<code>[ListItemComplianceDetailsRequest](src/WalmartApIs/Requests/WfsInbound/ListItemComplianceDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10435,9 +10617,9 @@ catch (SdkException<ListItemComplianceDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListItemComplianceDetailsResponse](Models/ListItemComplianceDetailsResponse.cs)</code>
+**OnSuccess**: <code>[ListItemComplianceDetailsResponse](src/WalmartApIs/Models/ListItemComplianceDetailsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListItemComplianceDetailsError](Errors/ListItemComplianceDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListItemComplianceDetailsError](src/WalmartApIs/Errors/ListItemComplianceDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10448,7 +10630,7 @@ catch (SdkException<ListItemComplianceDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListPackingGroupBoxes(string inboundPlanId, string packingGroupId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListPackingGroupBoxes(ListPackingGroupBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10461,13 +10643,14 @@ catch (SdkException<ListItemComplianceDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListPackingGroupBoxes(inboundPlanId,
-        packingGroupId,
-        pageSize,
-        paginationToken);
+    var response = await client.WfsInbound.ListPackingGroupBoxes(new ListPackingGroupBoxesRequest
+    {
+        InboundPlanId = "some example string",
+        PackingGroupId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanBoxesResponse
 }
-catch (SdkException<ListPackingGroupBoxesError> ex)
+catch (ApiException<ListPackingGroupBoxesError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10479,17 +10662,12 @@ catch (SdkException<ListPackingGroupBoxesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>packingGroupId</code> | <code>string</code> | Identifier of a packing group. |
-| <code>pageSize</code> | <code>int?</code> | The number of packing group boxes to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListPackingGroupBoxesRequest](src/WalmartApIs/Requests/WfsInbound/ListPackingGroupBoxesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10499,9 +10677,9 @@ catch (SdkException<ListPackingGroupBoxesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanBoxesResponse](Models/ListInboundPlanBoxesResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanBoxesResponse](src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListPackingGroupBoxesError](Errors/ListPackingGroupBoxesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListPackingGroupBoxesError](src/WalmartApIs/Errors/ListPackingGroupBoxesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10512,7 +10690,7 @@ catch (SdkException<ListPackingGroupBoxesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListPackingGroupItems(string inboundPlanId, string packingGroupId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListPackingGroupItems(ListPackingGroupItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10525,13 +10703,14 @@ catch (SdkException<ListPackingGroupBoxesError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListPackingGroupItems(inboundPlanId,
-        packingGroupId,
-        pageSize,
-        paginationToken);
+    var response = await client.WfsInbound.ListPackingGroupItems(new ListPackingGroupItemsRequest
+    {
+        InboundPlanId = "some example string",
+        PackingGroupId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanItemsResponse
 }
-catch (SdkException<ListPackingGroupItemsError> ex)
+catch (ApiException<ListPackingGroupItemsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10543,17 +10722,12 @@ catch (SdkException<ListPackingGroupItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>packingGroupId</code> | <code>string</code> | Identifier of a packing group. |
-| <code>pageSize</code> | <code>int?</code> | The number of packing group items to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListPackingGroupItemsRequest](src/WalmartApIs/Requests/WfsInbound/ListPackingGroupItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10563,9 +10737,9 @@ catch (SdkException<ListPackingGroupItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanItemsResponse](Models/ListInboundPlanItemsResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanItemsResponse](src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListPackingGroupItemsError](Errors/ListPackingGroupItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListPackingGroupItemsError](src/WalmartApIs/Errors/ListPackingGroupItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10576,7 +10750,7 @@ catch (SdkException<ListPackingGroupItemsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListPackingOptionsResponse&gt; ListPackingOptions(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListPackingOptionsResponse&gt; ListPackingOptions(ListPackingOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10589,10 +10763,13 @@ catch (SdkException<ListPackingGroupItemsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListPackingOptions(inboundPlanId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListPackingOptions(new ListPackingOptionsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListPackingOptionsResponse
 }
-catch (SdkException<ListPackingOptionsError> ex)
+catch (ApiException<ListPackingOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10604,16 +10781,12 @@ catch (SdkException<ListPackingOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of packing options to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListPackingOptionsRequest](src/WalmartApIs/Requests/WfsInbound/ListPackingOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10623,9 +10796,9 @@ catch (SdkException<ListPackingOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListPackingOptionsResponse](Models/ListPackingOptionsResponse.cs)</code>
+**OnSuccess**: <code>[ListPackingOptionsResponse](src/WalmartApIs/Models/ListPackingOptionsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListPackingOptionsError](Errors/ListPackingOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListPackingOptionsError](src/WalmartApIs/Errors/ListPackingOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10636,7 +10809,7 @@ catch (SdkException<ListPackingOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListPlacementOptionsResponse&gt; ListPlacementOptions(string inboundPlanId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListPlacementOptionsResponse&gt; ListPlacementOptions(ListPlacementOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10649,10 +10822,13 @@ catch (SdkException<ListPackingOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListPlacementOptions(inboundPlanId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListPlacementOptions(new ListPlacementOptionsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListPlacementOptionsResponse
 }
-catch (SdkException<ListPlacementOptionsError> ex)
+catch (ApiException<ListPlacementOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10664,16 +10840,12 @@ catch (SdkException<ListPlacementOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of placement options to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListPlacementOptionsRequest](src/WalmartApIs/Requests/WfsInbound/ListPlacementOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10683,9 +10855,9 @@ catch (SdkException<ListPlacementOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListPlacementOptionsResponse](Models/ListPlacementOptionsResponse.cs)</code>
+**OnSuccess**: <code>[ListPlacementOptionsResponse](src/WalmartApIs/Models/ListPlacementOptionsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListPlacementOptionsError](Errors/ListPlacementOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListPlacementOptionsError](src/WalmartApIs/Errors/ListPlacementOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10696,7 +10868,7 @@ catch (SdkException<ListPlacementOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListPrepDetailsResponse&gt; ListPrepDetails(string marketplaceId, IReadOnlyList&lt;string&gt; mskus, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListPrepDetailsResponse&gt; ListPrepDetails(ListPrepDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10709,10 +10881,14 @@ catch (SdkException<ListPlacementOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListPrepDetails(marketplaceId, mskus);
+    var response = await client.WfsInbound.ListPrepDetails(new ListPrepDetailsRequest
+    {
+        MarketplaceId = "some example string",
+        Mskus = ["some example string"],
+    });
     // TODO: Handle 'response' of type ListPrepDetailsResponse
 }
-catch (SdkException<ListPrepDetailsError> ex)
+catch (ApiException<ListPrepDetailsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10724,15 +10900,12 @@ catch (SdkException<ListPrepDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceId</code> | <code>string</code> | The Walmart Marketplace ID. For a list of possible values, refer to [Marketplace IDs](https://developer-docs.walmart.com/seller-api/docs/marketplace-ids). |
-| <code>mskus</code> | <code>IReadOnlyList&lt;string&gt;</code> | A list of merchant SKUs, a merchant-supplied identifier of a specific SKU. |
+<code>[ListPrepDetailsRequest](src/WalmartApIs/Requests/WfsInbound/ListPrepDetailsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10742,9 +10915,9 @@ catch (SdkException<ListPrepDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListPrepDetailsResponse](Models/ListPrepDetailsResponse.cs)</code>
+**OnSuccess**: <code>[ListPrepDetailsResponse](src/WalmartApIs/Models/ListPrepDetailsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListPrepDetailsError](Errors/ListPrepDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListPrepDetailsError](src/WalmartApIs/Errors/ListPrepDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10755,7 +10928,7 @@ catch (SdkException<ListPrepDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListShipmentBoxes(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanBoxesResponse&gt; ListShipmentBoxes(ListShipmentBoxesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10768,10 +10941,14 @@ catch (SdkException<ListPrepDetailsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListShipmentBoxes(inboundPlanId, shipmentId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListShipmentBoxes(new ListShipmentBoxesRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanBoxesResponse
 }
-catch (SdkException<ListShipmentBoxesError> ex)
+catch (ApiException<ListShipmentBoxesError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10783,17 +10960,12 @@ catch (SdkException<ListShipmentBoxesError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. A shipment contains the boxes and units being inbounded. |
-| <code>pageSize</code> | <code>int?</code> | The number of boxes to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListShipmentBoxesRequest](src/WalmartApIs/Requests/WfsInbound/ListShipmentBoxesRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10803,9 +10975,9 @@ catch (SdkException<ListShipmentBoxesError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanBoxesResponse](Models/ListInboundPlanBoxesResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanBoxesResponse](src/WalmartApIs/Models/ListInboundPlanBoxesResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListShipmentBoxesError](Errors/ListShipmentBoxesError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListShipmentBoxesError](src/WalmartApIs/Errors/ListShipmentBoxesError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10816,7 +10988,7 @@ catch (SdkException<ListShipmentBoxesError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListShipmentContentUpdatePreviewsResponse&gt; ListShipmentContentUpdatePreviews(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListShipmentContentUpdatePreviewsResponse&gt; ListShipmentContentUpdatePreviews(ListShipmentContentUpdatePreviewsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10829,13 +11001,15 @@ catch (SdkException<ListShipmentBoxesError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListShipmentContentUpdatePreviews(inboundPlanId,
-        shipmentId,
-        pageSize,
-        paginationToken);
+    var response = await client.WfsInbound.ListShipmentContentUpdatePreviews(
+        new ListShipmentContentUpdatePreviewsRequest
+        {
+            InboundPlanId = "some example string",
+            ShipmentId = "some example string",
+        });
     // TODO: Handle 'response' of type ListShipmentContentUpdatePreviewsResponse
 }
-catch (SdkException<ListShipmentContentUpdatePreviewsError> ex)
+catch (ApiException<ListShipmentContentUpdatePreviewsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10847,17 +11021,12 @@ catch (SdkException<ListShipmentContentUpdatePreviewsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>pageSize</code> | <code>int?</code> | The number of content update previews to return. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListShipmentContentUpdatePreviewsRequest](src/WalmartApIs/Requests/WfsInbound/ListShipmentContentUpdatePreviewsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10867,9 +11036,9 @@ catch (SdkException<ListShipmentContentUpdatePreviewsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListShipmentContentUpdatePreviewsResponse](Models/ListShipmentContentUpdatePreviewsResponse.cs)</code>
+**OnSuccess**: <code>[ListShipmentContentUpdatePreviewsResponse](src/WalmartApIs/Models/ListShipmentContentUpdatePreviewsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListShipmentContentUpdatePreviewsError](Errors/ListShipmentContentUpdatePreviewsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListShipmentContentUpdatePreviewsError](src/WalmartApIs/Errors/ListShipmentContentUpdatePreviewsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10880,7 +11049,7 @@ catch (SdkException<ListShipmentContentUpdatePreviewsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListShipmentItems(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanItemsResponse&gt; ListShipmentItems(ListShipmentItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10893,10 +11062,14 @@ catch (SdkException<ListShipmentContentUpdatePreviewsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListShipmentItems(inboundPlanId, shipmentId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListShipmentItems(new ListShipmentItemsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanItemsResponse
 }
-catch (SdkException<ListShipmentItemsError> ex)
+catch (ApiException<ListShipmentItemsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10908,17 +11081,12 @@ catch (SdkException<ListShipmentItemsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. A shipment contains the boxes and units being inbounded. |
-| <code>pageSize</code> | <code>int?</code> | The number of items to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListShipmentItemsRequest](src/WalmartApIs/Requests/WfsInbound/ListShipmentItemsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10928,9 +11096,9 @@ catch (SdkException<ListShipmentItemsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanItemsResponse](Models/ListInboundPlanItemsResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanItemsResponse](src/WalmartApIs/Models/ListInboundPlanItemsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListShipmentItemsError](Errors/ListShipmentItemsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListShipmentItemsError](src/WalmartApIs/Errors/ListShipmentItemsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -10941,7 +11109,7 @@ catch (SdkException<ListShipmentItemsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListInboundPlanPalletsResponse&gt; ListShipmentPallets(string inboundPlanId, string shipmentId, int? pageSize, string? paginationToken, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListInboundPlanPalletsResponse&gt; ListShipmentPallets(ListShipmentPalletsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -10954,10 +11122,14 @@ catch (SdkException<ListShipmentItemsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListShipmentPallets(inboundPlanId, shipmentId, pageSize, paginationToken);
+    var response = await client.WfsInbound.ListShipmentPallets(new ListShipmentPalletsRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+    });
     // TODO: Handle 'response' of type ListInboundPlanPalletsResponse
 }
-catch (SdkException<ListShipmentPalletsError> ex)
+catch (ApiException<ListShipmentPalletsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -10969,17 +11141,12 @@ catch (SdkException<ListShipmentPalletsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>pageSize</code> | <code>int?</code> | The number of pallets to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
+<code>[ListShipmentPalletsRequest](src/WalmartApIs/Requests/WfsInbound/ListShipmentPalletsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -10989,9 +11156,9 @@ catch (SdkException<ListShipmentPalletsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInboundPlanPalletsResponse](Models/ListInboundPlanPalletsResponse.cs)</code>
+**OnSuccess**: <code>[ListInboundPlanPalletsResponse](src/WalmartApIs/Models/ListInboundPlanPalletsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListShipmentPalletsError](Errors/ListShipmentPalletsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListShipmentPalletsError](src/WalmartApIs/Errors/ListShipmentPalletsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11002,7 +11169,7 @@ catch (SdkException<ListShipmentPalletsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ListTransportationOptionsResponse&gt; ListTransportationOptions(string inboundPlanId, int? pageSize, string? paginationToken, string? placementOptionId, string? shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ListTransportationOptionsResponse&gt; ListTransportationOptions(ListTransportationOptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11015,14 +11182,13 @@ catch (SdkException<ListShipmentPalletsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ListTransportationOptions(inboundPlanId,
-        pageSize,
-        paginationToken,
-        placementOptionId,
-        shipmentId);
+    var response = await client.WfsInbound.ListTransportationOptions(new ListTransportationOptionsRequest
+    {
+        InboundPlanId = "some example string",
+    });
     // TODO: Handle 'response' of type ListTransportationOptionsResponse
 }
-catch (SdkException<ListTransportationOptionsError> ex)
+catch (ApiException<ListTransportationOptionsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11034,18 +11200,12 @@ catch (SdkException<ListTransportationOptionsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>pageSize</code> | <code>int?</code> | The number of transportation options to return in the response matching the given query. |
-| <code>paginationToken</code> | <code>string?</code> | A token to fetch a certain page when there are multiple pages worth of results. |
-| <code>placementOptionId</code> | <code>string?</code> | The placement option to get transportation options for. Either `placementOptionId` or `shipmentId` must be specified. |
-| <code>shipmentId</code> | <code>string?</code> | The shipment to get transportation options for. Either `placementOptionId` or `shipmentId` must be specified. |
+<code>[ListTransportationOptionsRequest](src/WalmartApIs/Requests/WfsInbound/ListTransportationOptionsRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11055,9 +11215,9 @@ catch (SdkException<ListTransportationOptionsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListTransportationOptionsResponse](Models/ListTransportationOptionsResponse.cs)</code>
+**OnSuccess**: <code>[ListTransportationOptionsResponse](src/WalmartApIs/Models/ListTransportationOptionsResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ListTransportationOptionsError](Errors/ListTransportationOptionsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ListTransportationOptionsError](src/WalmartApIs/Errors/ListTransportationOptionsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11068,7 +11228,7 @@ catch (SdkException<ListTransportationOptionsError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;ScheduleSelfShipAppointmentResponse&gt; ScheduleSelfShipAppointment(string inboundPlanId, string shipmentId, string slotId, ScheduleSelfShipAppointmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;ScheduleSelfShipAppointmentResponse&gt; ScheduleSelfShipAppointment(ScheduleSelfShipAppointmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11081,10 +11241,16 @@ catch (SdkException<ListTransportationOptionsError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.ScheduleSelfShipAppointment(inboundPlanId, shipmentId, slotId, body);
+    var response = await client.WfsInbound.ScheduleSelfShipAppointment(new ScheduleSelfShipAppointmentOperationRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        SlotId = "some example string",
+        Body = new ScheduleSelfShipAppointmentRequest(),
+    });
     // TODO: Handle 'response' of type ScheduleSelfShipAppointmentResponse
 }
-catch (SdkException<ScheduleSelfShipAppointmentError> ex)
+catch (ApiException<ScheduleSelfShipAppointmentError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11096,17 +11262,12 @@ catch (SdkException<ScheduleSelfShipAppointmentError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>slotId</code> | <code>string</code> | An identifier to a self-ship appointment slot. |
-| <code>body</code> | <code>[ScheduleSelfShipAppointmentRequest](Models/ScheduleSelfShipAppointmentRequest.cs)</code> | - |
+<code>[ScheduleSelfShipAppointmentOperationRequest](src/WalmartApIs/Requests/WfsInbound/ScheduleSelfShipAppointmentOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11116,9 +11277,9 @@ catch (SdkException<ScheduleSelfShipAppointmentError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduleSelfShipAppointmentResponse](Models/ScheduleSelfShipAppointmentResponse.cs)</code>
+**OnSuccess**: <code>[ScheduleSelfShipAppointmentResponse](src/WalmartApIs/Models/ScheduleSelfShipAppointmentResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[ScheduleSelfShipAppointmentError](Errors/ScheduleSelfShipAppointmentError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[ScheduleSelfShipAppointmentError](src/WalmartApIs/Errors/ScheduleSelfShipAppointmentError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11129,7 +11290,7 @@ catch (SdkException<ScheduleSelfShipAppointmentError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; SetPackingInformation(string inboundPlanId, SetPackingInformationRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; SetPackingInformation(SetPackingInformationOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11142,10 +11303,36 @@ catch (SdkException<ScheduleSelfShipAppointmentError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.SetPackingInformation(inboundPlanId, body);
+    var response = await client.WfsInbound.SetPackingInformation(new SetPackingInformationOperationRequest
+    {
+        InboundPlanId = "some example string",
+        Body = new SetPackingInformationRequest
+        {
+            PackageGroupings = [
+                new CommonPackageGroupingInput
+                {
+                    Boxes = [
+                        new CommonBoxInput
+                        {
+                            ContentInformationSource = CommonBoxContentInformationSource.BoxContentProvided,
+                            Dimensions = new CommonDimensions
+                            {
+                                Height = height,
+                                Length = length,
+                                Width = width,
+                                UnitOfMeasurement = unitOfMeasurement,
+                            },
+                            Quantity = 1,
+                            Weight = new CommonWeight { Unit = unit, Value = value },
+                        },
+                    ],
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<SetPackingInformationError> ex)
+catch (ApiException<SetPackingInformationError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11157,15 +11344,12 @@ catch (SdkException<SetPackingInformationError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>body</code> | <code>[SetPackingInformationRequest](Models/SetPackingInformationRequest.cs)</code> | - |
+<code>[SetPackingInformationOperationRequest](src/WalmartApIs/Requests/WfsInbound/SetPackingInformationOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11175,9 +11359,9 @@ catch (SdkException<SetPackingInformationError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SetPackingInformationError](Errors/SetPackingInformationError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SetPackingInformationError](src/WalmartApIs/Errors/SetPackingInformationError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11188,7 +11372,7 @@ catch (SdkException<SetPackingInformationError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; SetPrepDetails(SetPrepDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; SetPrepDetails(SetPrepDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11201,10 +11385,24 @@ catch (SdkException<SetPackingInformationError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.SetPrepDetails(body);
+    var response = await client.WfsInbound.SetPrepDetails(new SetPrepDetailsOperationRequest
+    {
+        Body = new SetPrepDetailsRequest
+        {
+            MarketplaceId = "some example string",
+            MskuPrepDetails = [
+                new CommonMskuPrepDetailInput
+                {
+                    Msku = "some example string",
+                    PrepCategory = CommonPrepCategory.Adult,
+                    PrepTypes = [CommonPrepType.ItemBlackShrinkwrap],
+                },
+            ],
+        },
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<SetPrepDetailsError> ex)
+catch (ApiException<SetPrepDetailsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11216,14 +11414,12 @@ catch (SdkException<SetPrepDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[SetPrepDetailsRequest](Models/SetPrepDetailsRequest.cs)</code> | - |
+<code>[SetPrepDetailsOperationRequest](src/WalmartApIs/Requests/WfsInbound/SetPrepDetailsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11233,9 +11429,9 @@ catch (SdkException<SetPrepDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[SetPrepDetailsError](Errors/SetPrepDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[SetPrepDetailsError](src/WalmartApIs/Errors/SetPrepDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11246,7 +11442,7 @@ catch (SdkException<SetPrepDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task UpdateInboundPlanName(string inboundPlanId, UpdateInboundPlanNameRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task UpdateInboundPlanName(UpdateInboundPlanNameOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11259,9 +11455,13 @@ catch (SdkException<SetPrepDetailsError> ex)
 ```csharp
 try
 {
-    await client.WfsInbound.UpdateInboundPlanName(inboundPlanId, body);
+    await client.WfsInbound.UpdateInboundPlanName(new UpdateInboundPlanNameOperationRequest
+    {
+        InboundPlanId = "some example string",
+        Body = new UpdateInboundPlanNameRequest { Name = "some example string" },
+    });
 }
-catch (SdkException<UpdateInboundPlanNameError> ex)
+catch (ApiException<UpdateInboundPlanNameError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11273,15 +11473,12 @@ catch (SdkException<UpdateInboundPlanNameError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>body</code> | <code>[UpdateInboundPlanNameRequest](Models/UpdateInboundPlanNameRequest.cs)</code> | - |
+<code>[UpdateInboundPlanNameOperationRequest](src/WalmartApIs/Requests/WfsInbound/UpdateInboundPlanNameOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11293,7 +11490,7 @@ catch (SdkException<UpdateInboundPlanNameError> ex)
 
 **OnSuccess**: No content
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateInboundPlanNameError](Errors/UpdateInboundPlanNameError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateInboundPlanNameError](src/WalmartApIs/Errors/UpdateInboundPlanNameError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11304,7 +11501,7 @@ catch (SdkException<UpdateInboundPlanNameError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateItemComplianceDetails(string marketplaceId, UpdateItemComplianceDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateItemComplianceDetails(UpdateItemComplianceDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11317,10 +11514,18 @@ catch (SdkException<UpdateInboundPlanNameError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.UpdateItemComplianceDetails(marketplaceId, body);
+    var response = await client.WfsInbound.UpdateItemComplianceDetails(new UpdateItemComplianceDetailsOperationRequest
+    {
+        MarketplaceId = "some example string",
+        Body = new UpdateItemComplianceDetailsRequest
+        {
+            Msku = "some example string",
+            TaxDetails = new CommonTaxDetails(),
+        },
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<UpdateItemComplianceDetailsError> ex)
+catch (ApiException<UpdateItemComplianceDetailsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11332,15 +11537,12 @@ catch (SdkException<UpdateItemComplianceDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>marketplaceId</code> | <code>string</code> | The Walmart Marketplace ID. For a list of possible values, refer to [Marketplace IDs](https://developer-docs.walmart.com/seller-api/docs/marketplace-ids). |
-| <code>body</code> | <code>[UpdateItemComplianceDetailsRequest](Models/UpdateItemComplianceDetailsRequest.cs)</code> | - |
+<code>[UpdateItemComplianceDetailsOperationRequest](src/WalmartApIs/Requests/WfsInbound/UpdateItemComplianceDetailsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11350,9 +11552,9 @@ catch (SdkException<UpdateItemComplianceDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateItemComplianceDetailsError](Errors/UpdateItemComplianceDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateItemComplianceDetailsError](src/WalmartApIs/Errors/UpdateItemComplianceDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11363,7 +11565,7 @@ catch (SdkException<UpdateItemComplianceDetailsError> ex)
 </details>
 
 <details>
-<summary><code>Task UpdateShipmentName(string inboundPlanId, string shipmentId, UpdateShipmentNameRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task UpdateShipmentName(UpdateShipmentNameOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11376,9 +11578,14 @@ catch (SdkException<UpdateItemComplianceDetailsError> ex)
 ```csharp
 try
 {
-    await client.WfsInbound.UpdateShipmentName(inboundPlanId, shipmentId, body);
+    await client.WfsInbound.UpdateShipmentName(new UpdateShipmentNameOperationRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        Body = new UpdateShipmentNameRequest { Name = "some example string" },
+    });
 }
-catch (SdkException<UpdateShipmentNameError> ex)
+catch (ApiException<UpdateShipmentNameError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11390,16 +11597,12 @@ catch (SdkException<UpdateShipmentNameError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[UpdateShipmentNameRequest](Models/UpdateShipmentNameRequest.cs)</code> | - |
+<code>[UpdateShipmentNameOperationRequest](src/WalmartApIs/Requests/WfsInbound/UpdateShipmentNameOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11411,7 +11614,7 @@ catch (SdkException<UpdateShipmentNameError> ex)
 
 **OnSuccess**: No content
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateShipmentNameError](Errors/UpdateShipmentNameError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateShipmentNameError](src/WalmartApIs/Errors/UpdateShipmentNameError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11422,7 +11625,7 @@ catch (SdkException<UpdateShipmentNameError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateShipmentSourceAddress(string inboundPlanId, string shipmentId, UpdateShipmentSourceAddressRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateShipmentSourceAddress(UpdateShipmentSourceAddressOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11435,10 +11638,26 @@ catch (SdkException<UpdateShipmentNameError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.UpdateShipmentSourceAddress(inboundPlanId, shipmentId, body);
+    var response = await client.WfsInbound.UpdateShipmentSourceAddress(new UpdateShipmentSourceAddressOperationRequest
+    {
+        InboundPlanId = "some example string",
+        ShipmentId = "some example string",
+        Body = new UpdateShipmentSourceAddressRequest
+        {
+            Address = new CommonAddressInput
+            {
+                AddressLine1 = "some example string",
+                City = "some example string",
+                CountryCode = "some example string",
+                Name = "some example string",
+                PhoneNumber = "some example string",
+                PostalCode = "some example string",
+            },
+        },
+    });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<UpdateShipmentSourceAddressError> ex)
+catch (ApiException<UpdateShipmentSourceAddressError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11450,16 +11669,12 @@ catch (SdkException<UpdateShipmentSourceAddressError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[UpdateShipmentSourceAddressRequest](Models/UpdateShipmentSourceAddressRequest.cs)</code> | - |
+<code>[UpdateShipmentSourceAddressOperationRequest](src/WalmartApIs/Requests/WfsInbound/UpdateShipmentSourceAddressOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11469,9 +11684,9 @@ catch (SdkException<UpdateShipmentSourceAddressError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateShipmentSourceAddressError](Errors/UpdateShipmentSourceAddressError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateShipmentSourceAddressError](src/WalmartApIs/Errors/UpdateShipmentSourceAddressError.cs)&gt;</code>
 
 </dd>
 </dl>
@@ -11482,7 +11697,7 @@ catch (SdkException<UpdateShipmentSourceAddressError> ex)
 </details>
 
 <details>
-<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateShipmentTrackingDetails(string inboundPlanId, string shipmentId, UpdateShipmentTrackingDetailsRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default);</code></summary>
+<summary><code>Task&lt;CancelInboundPlanResponse&gt; UpdateShipmentTrackingDetails(UpdateShipmentTrackingDetailsOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default);</code></summary>
 
 <dl>
 <dd>
@@ -11495,10 +11710,16 @@ catch (SdkException<UpdateShipmentSourceAddressError> ex)
 ```csharp
 try
 {
-    var response = await client.WfsInbound.UpdateShipmentTrackingDetails(inboundPlanId, shipmentId, body);
+    var response = await client.WfsInbound.UpdateShipmentTrackingDetails(
+        new UpdateShipmentTrackingDetailsOperationRequest
+        {
+            InboundPlanId = "some example string",
+            ShipmentId = "some example string",
+            Body = new UpdateShipmentTrackingDetailsRequest { TrackingDetails = new CommonTrackingDetailsInput() },
+        });
     // TODO: Handle 'response' of type CancelInboundPlanResponse
 }
-catch (SdkException<UpdateShipmentTrackingDetailsError> ex)
+catch (ApiException<UpdateShipmentTrackingDetailsError> ex)
 {
     if (ex.Error.TryGetCommonErrorList(out var error))
     {
@@ -11510,16 +11731,12 @@ catch (SdkException<UpdateShipmentTrackingDetailsError> ex)
 </dd>
 </dl>
 
-### Parameters
+### Request
 
 <dl>
 <dd>
 
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>inboundPlanId</code> | <code>string</code> | Identifier of an inbound plan. |
-| <code>shipmentId</code> | <code>string</code> | Identifier of a shipment. |
-| <code>body</code> | <code>[UpdateShipmentTrackingDetailsRequest](Models/UpdateShipmentTrackingDetailsRequest.cs)</code> | - |
+<code>[UpdateShipmentTrackingDetailsOperationRequest](src/WalmartApIs/Requests/WfsInbound/UpdateShipmentTrackingDetailsOperationRequest.cs)</code>
 
 </dd>
 </dl>
@@ -11529,9 +11746,9 @@ catch (SdkException<UpdateShipmentTrackingDetailsError> ex)
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CancelInboundPlanResponse](Models/CancelInboundPlanResponse.cs)</code>
+**OnSuccess**: <code>[CancelInboundPlanResponse](src/WalmartApIs/Models/CancelInboundPlanResponse.cs)</code>
 
-**OnError**: <code>[SdkException](Core/Exceptions/SdkException.cs)&lt;[UpdateShipmentTrackingDetailsError](Errors/UpdateShipmentTrackingDetailsError.cs)&gt;</code>
+**OnError**: <code>[ApiException](src/WalmartApIs/Core/Exceptions/ApiException.cs)&lt;[UpdateShipmentTrackingDetailsError](src/WalmartApIs/Errors/UpdateShipmentTrackingDetailsError.cs)&gt;</code>
 
 </dd>
 </dl>

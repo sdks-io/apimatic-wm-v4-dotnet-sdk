@@ -2,7 +2,7 @@
 
 # ProductFees — operations
 
-Accessor: `client.ProductFees` · Source: `Api/ProductFees.cs` · 3 operations
+Accessor: `client.ProductFees` · Source: `src/WalmartApIs/Api/ProductFees.cs` · 3 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,48 +10,54 @@ Accessor: `client.ProductFees` · Source: `Api/ProductFees.cs` · 3 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetMyFeesEstimateForItem(string walmartItemId, GetMyFeesEstimateRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetMyFeesEstimateForItem(GetMyFeesEstimateForItemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `WalmartItemId`, `Body`
 - **Returns**: `GetMyFeesEstimateResponse`
-- **Error**: `SdkException<GetMyFeesEstimateForItemError>` — **Case A (typed)**
+- **Error**: `ApiException<GetMyFeesEstimateForItemError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetMyFeesEstimateRequest` | `Models/GetMyFeesEstimateRequest.cs` |
-| `GetMyFeesEstimateResponse` | `Models/GetMyFeesEstimateResponse.cs` |
-| `GetMyFeesEstimateForItemError` | `Errors/GetMyFeesEstimateForItemError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetMyFeesEstimateForItemRequest` | `src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimateForItemRequest.cs` |
+| `GetMyFeesEstimateRequest` | `src/WalmartApIs/Models/GetMyFeesEstimateRequest.cs` |
+| `GetMyFeesEstimateResponse` | `src/WalmartApIs/Models/GetMyFeesEstimateResponse.cs` |
+| `GetMyFeesEstimateForItemError` | `src/WalmartApIs/Errors/GetMyFeesEstimateForItemError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetMyFeesEstimateForSku
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetMyFeesEstimateForSku(string sellerSku, string marketplaceId, GetMyFeesEstimateRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `MarketplaceId` ← `marketplaceId`
+- **Signature**: `GetMyFeesEstimateForSku(GetMyFeesEstimateForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerSku`, `MarketplaceId`, `Body`
+- **Query params (wire ← C#)**: `MarketplaceId` ← `MarketplaceId`
 - **Returns**: `GetMyFeesEstimateResponse`
-- **Error**: `SdkException<GetMyFeesEstimateForSkuError>` — **Case A (typed)**
+- **Error**: `ApiException<GetMyFeesEstimateForSkuError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetMyFeesEstimateRequest` | `Models/GetMyFeesEstimateRequest.cs` |
-| `GetMyFeesEstimateResponse` | `Models/GetMyFeesEstimateResponse.cs` |
-| `GetMyFeesEstimateForSkuError` | `Errors/GetMyFeesEstimateForSkuError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetMyFeesEstimateForSkuRequest` | `src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimateForSkuRequest.cs` |
+| `GetMyFeesEstimateRequest` | `src/WalmartApIs/Models/GetMyFeesEstimateRequest.cs` |
+| `GetMyFeesEstimateResponse` | `src/WalmartApIs/Models/GetMyFeesEstimateResponse.cs` |
+| `GetMyFeesEstimateForSkuError` | `src/WalmartApIs/Errors/GetMyFeesEstimateForSkuError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetMyFeesEstimates
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetMyFeesEstimates(IReadOnlyList<FeesEstimateByIdRequest> body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetMyFeesEstimates(GetMyFeesEstimatesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `IReadOnlyList<FeesEstimateResult>`
-- **Error**: `SdkException<GetMyFeesEstimatesError>` — **Case A (typed)**
+- **Error**: `ApiException<GetMyFeesEstimatesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `FeesEstimateByIdRequest` | `Models/FeesEstimateByIdRequest.cs` |
-| `FeesEstimateResult` | `Models/FeesEstimateResult.cs` |
-| `GetMyFeesEstimatesError` | `Errors/GetMyFeesEstimatesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetMyFeesEstimatesRequest` | `src/WalmartApIs/Requests/ProductFees/GetMyFeesEstimatesRequest.cs` |
+| `FeesEstimateByIdRequest` | `src/WalmartApIs/Models/FeesEstimateByIdRequest.cs` |
+| `FeesEstimateResult` | `src/WalmartApIs/Models/FeesEstimateResult.cs` |
+| `GetMyFeesEstimatesError` | `src/WalmartApIs/Errors/GetMyFeesEstimatesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

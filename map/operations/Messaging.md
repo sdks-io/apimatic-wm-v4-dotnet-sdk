@@ -2,7 +2,7 @@
 
 # Messaging — operations
 
-Accessor: `client.Messaging` · Source: `Api/Messaging.cs` · 11 operations
+Accessor: `client.Messaging` · Source: `src/WalmartApIs/Api/Messaging.cs` · 11 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,164 +10,186 @@ Accessor: `client.Messaging` · Source: `Api/Messaging.cs` · 11 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfirmCustomizationDetails(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `ConfirmCustomizationDetails(ConfirmCustomizationDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<ConfirmCustomizationDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfirmCustomizationDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ConfirmCustomizationDetailsError` | `Errors/ConfirmCustomizationDetailsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ConfirmCustomizationDetailsRequest` | `src/WalmartApIs/Requests/Messaging/ConfirmCustomizationDetailsRequest.cs` |
+| `ConfirmCustomizationDetailsError` | `src/WalmartApIs/Errors/ConfirmCustomizationDetailsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateConfirmDeliveryDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateConfirmDeliveryDetails(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateConfirmDeliveryDetails(CreateConfirmDeliveryDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateConfirmDeliveryDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateConfirmDeliveryDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateConfirmDeliveryDetailsError` | `Errors/CreateConfirmDeliveryDetailsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateConfirmDeliveryDetailsRequest` | `src/WalmartApIs/Requests/Messaging/CreateConfirmDeliveryDetailsRequest.cs` |
+| `CreateConfirmDeliveryDetailsError` | `src/WalmartApIs/Errors/CreateConfirmDeliveryDetailsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateConfirmOrderDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateConfirmOrderDetails(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateConfirmOrderDetails(CreateConfirmOrderDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateConfirmOrderDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateConfirmOrderDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateConfirmOrderDetailsError` | `Errors/CreateConfirmOrderDetailsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateConfirmOrderDetailsRequest` | `src/WalmartApIs/Requests/Messaging/CreateConfirmOrderDetailsRequest.cs` |
+| `CreateConfirmOrderDetailsError` | `src/WalmartApIs/Errors/CreateConfirmOrderDetailsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateConfirmServiceDetails
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateConfirmServiceDetails(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateConfirmServiceDetails(CreateConfirmServiceDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateConfirmServiceDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateConfirmServiceDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateConfirmServiceDetailsError` | `Errors/CreateConfirmServiceDetailsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateConfirmServiceDetailsRequest` | `src/WalmartApIs/Requests/Messaging/CreateConfirmServiceDetailsRequest.cs` |
+| `CreateConfirmServiceDetailsError` | `src/WalmartApIs/Errors/CreateConfirmServiceDetailsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateDigitalAccessKey
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateDigitalAccessKey(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateDigitalAccessKey(CreateDigitalAccessKeyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateDigitalAccessKeyError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateDigitalAccessKeyError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateDigitalAccessKeyError` | `Errors/CreateDigitalAccessKeyError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateDigitalAccessKeyRequest` | `src/WalmartApIs/Requests/Messaging/CreateDigitalAccessKeyRequest.cs` |
+| `CreateDigitalAccessKeyError` | `src/WalmartApIs/Errors/CreateDigitalAccessKeyError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateLegalDisclosure
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateLegalDisclosure(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateLegalDisclosure(CreateLegalDisclosureRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateLegalDisclosureError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateLegalDisclosureError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateLegalDisclosureError` | `Errors/CreateLegalDisclosureError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateLegalDisclosureRequest` | `src/WalmartApIs/Requests/Messaging/CreateLegalDisclosureRequest.cs` |
+| `CreateLegalDisclosureError` | `src/WalmartApIs/Errors/CreateLegalDisclosureError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateUnexpectedProblem
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateUnexpectedProblem(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateUnexpectedProblem(CreateUnexpectedProblemRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateUnexpectedProblemError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateUnexpectedProblemError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateUnexpectedProblemError` | `Errors/CreateUnexpectedProblemError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateUnexpectedProblemRequest` | `src/WalmartApIs/Requests/Messaging/CreateUnexpectedProblemRequest.cs` |
+| `CreateUnexpectedProblemError` | `src/WalmartApIs/Errors/CreateUnexpectedProblemError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateWarranty
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateWarranty(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateWarranty(CreateWarrantyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateWarrantyError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateWarrantyError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateWarrantyError` | `Errors/CreateWarrantyError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateWarrantyRequest` | `src/WalmartApIs/Requests/Messaging/CreateWarrantyRequest.cs` |
+| `CreateWarrantyError` | `src/WalmartApIs/Errors/CreateWarrantyError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetAttributes
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetAttributes(string spApiOrderId, IReadOnlyList<string> marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `GetAttributes(GetAttributesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<GetAttributesError>` — **Case A (typed)**
+- **Error**: `ApiException<GetAttributesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetAttributesError` | `Errors/GetAttributesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetAttributesRequest` | `src/WalmartApIs/Requests/Messaging/GetAttributesRequest.cs` |
+| `GetAttributesError` | `src/WalmartApIs/Errors/GetAttributesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetMessagingActionsForOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetMessagingActionsForOrder(string spApiOrderId, IReadOnlyList<string> marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `GetMessagingActionsForOrder(GetMessagingActionsForOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<GetMessagingActionsForOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<GetMessagingActionsForOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetMessagingActionsForOrderError` | `Errors/GetMessagingActionsForOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetMessagingActionsForOrderRequest` | `src/WalmartApIs/Requests/Messaging/GetMessagingActionsForOrderRequest.cs` |
+| `GetMessagingActionsForOrderError` | `src/WalmartApIs/Errors/GetMessagingActionsForOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### SendInvoice
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `SendInvoice(string spApiOrderId, IReadOnlyList<string> marketplaceIds, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `SendInvoice(SendInvoiceRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`, `Body`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<SendInvoiceError>` — **Case A (typed)**
+- **Error**: `ApiException<SendInvoiceError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SendInvoiceError` | `Errors/SendInvoiceError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `SendInvoiceRequest` | `src/WalmartApIs/Requests/Messaging/SendInvoiceRequest.cs` |
+| `SendInvoiceError` | `src/WalmartApIs/Errors/SendInvoiceError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

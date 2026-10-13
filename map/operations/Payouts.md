@@ -2,7 +2,7 @@
 
 # Payouts — operations
 
-Accessor: `client.Payouts` · Source: `Api/Payouts.cs` · 5 operations
+Accessor: `client.Payouts` · Source: `src/WalmartApIs/Api/Payouts.cs` · 5 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,75 +10,77 @@ Accessor: `client.Payouts` · Source: `Api/Payouts.cs` · 5 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ConfigureAutoPayout(DisbursementsV4PaymentAutoPayoutRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ConfigureAutoPayout(ConfigureAutoPayoutRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `PayoutStatusResponse`
-- **Error**: `SdkException<ConfigureAutoPayoutError>` — **Case A (typed)**
+- **Error**: `ApiException<ConfigureAutoPayoutError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `DisbursementsV4PaymentAutoPayoutRequest` | `Models/DisbursementsV4PaymentAutoPayoutRequest.cs` |
-| `PayoutStatusResponse` | `Models/PayoutStatusResponse.cs` |
-| `ConfigureAutoPayoutError` | `Errors/ConfigureAutoPayoutError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ConfigureAutoPayoutRequest` | `src/WalmartApIs/Requests/Payouts/ConfigureAutoPayoutRequest.cs` |
+| `DisbursementsV4PaymentAutoPayoutRequest` | `src/WalmartApIs/Models/DisbursementsV4PaymentAutoPayoutRequest.cs` |
+| `PayoutStatusResponse` | `src/WalmartApIs/Models/PayoutStatusResponse.cs` |
+| `ConfigureAutoPayoutError` | `src/WalmartApIs/Errors/ConfigureAutoPayoutError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetAnnualStatementOpts
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetAnnualStatementOpts(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetAnnualStatementOpts(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `AnnualStatementOptsResponse`
-- **Error**: `SdkException<GetAnnualStatementOptsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetAnnualStatementOptsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `AnnualStatementOptsResponse` | `Models/AnnualStatementOptsResponse.cs` |
-| `GetAnnualStatementOptsError` | `Errors/GetAnnualStatementOptsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `AnnualStatementOptsResponse` | `src/WalmartApIs/Models/AnnualStatementOptsResponse.cs` |
+| `GetAnnualStatementOptsError` | `src/WalmartApIs/Errors/GetAnnualStatementOptsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetFasterPayoutEligibility
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFasterPayoutEligibility(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFasterPayoutEligibility(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `FasterPayoutEligibilityResponse`
-- **Error**: `SdkException<GetFasterPayoutEligibilityError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFasterPayoutEligibilityError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `FasterPayoutEligibilityResponse` | `Models/FasterPayoutEligibilityResponse.cs` |
-| `GetFasterPayoutEligibilityError` | `Errors/GetFasterPayoutEligibilityError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `FasterPayoutEligibilityResponse` | `src/WalmartApIs/Models/FasterPayoutEligibilityResponse.cs` |
+| `GetFasterPayoutEligibilityError` | `src/WalmartApIs/Errors/GetFasterPayoutEligibilityError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetPaymentStatus
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetPaymentStatus(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetPaymentStatus(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `PayoutStatusResponse`
-- **Error**: `SdkException<GetPaymentStatusError>` — **Case A (typed)**
+- **Error**: `ApiException<GetPaymentStatusError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `PayoutStatusResponse` | `Models/PayoutStatusResponse.cs` |
-| `GetPaymentStatusError` | `Errors/GetPaymentStatusError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `PayoutStatusResponse` | `src/WalmartApIs/Models/PayoutStatusResponse.cs` |
+| `GetPaymentStatusError` | `src/WalmartApIs/Errors/GetPaymentStatusError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### InitiateFasterPayout
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `InitiateFasterPayout(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `InitiateFasterPayout(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `InitiatePayoutResponse`
-- **Error**: `SdkException<InitiateFasterPayoutError>` — **Case A (typed)**
+- **Error**: `ApiException<InitiateFasterPayoutError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 409, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `InitiatePayoutResponse` | `Models/InitiatePayoutResponse.cs` |
-| `InitiateFasterPayoutError` | `Errors/InitiateFasterPayoutError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `InitiatePayoutResponse` | `src/WalmartApIs/Models/InitiatePayoutResponse.cs` |
+| `InitiateFasterPayoutError` | `src/WalmartApIs/Errors/InitiateFasterPayoutError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

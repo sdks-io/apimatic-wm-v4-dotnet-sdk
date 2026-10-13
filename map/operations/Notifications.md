@@ -2,7 +2,7 @@
 
 # Notifications — operations
 
-Accessor: `client.Notifications` · Source: `Api/Notifications.cs` · 9 operations
+Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.cs` · 9 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,122 +10,137 @@ Accessor: `client.Notifications` · Source: `Api/Notifications.cs` · 9 operatio
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateDestination(object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateDestination(CreateDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `Channel`
-- **Error**: `SdkException<CreateDestinationError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateDestinationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Channel` | `Models/Channel.cs` |
-| `CreateDestinationError` | `Errors/CreateDestinationError.cs` |
+| `CreateDestinationRequest` | `src/WalmartApIs/Requests/Notifications/CreateDestinationRequest.cs` |
+| `Channel` | `src/WalmartApIs/Models/Channel.cs` |
+| `CreateDestinationError` | `src/WalmartApIs/Errors/CreateDestinationError.cs` |
 
 ### CreateSubscription
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateSubscription(string notificationType, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateSubscription(CreateSubscriptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `NotificationType`, `Body`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateSubscriptionError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateSubscriptionError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateSubscriptionError` | `Errors/CreateSubscriptionError.cs` |
+| `CreateSubscriptionRequest` | `src/WalmartApIs/Requests/Notifications/CreateSubscriptionRequest.cs` |
+| `CreateSubscriptionError` | `src/WalmartApIs/Errors/CreateSubscriptionError.cs` |
 
 ### DeleteDestination
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `DeleteDestination(string destinationId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `DeleteDestination(DeleteDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `DestinationId`
 - **Returns**: `Channel`
-- **Error**: `SdkException<DeleteDestinationError>` — **Case A (typed)**
+- **Error**: `ApiException<DeleteDestinationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Channel` | `Models/Channel.cs` |
-| `DeleteDestinationError` | `Errors/DeleteDestinationError.cs` |
+| `DeleteDestinationRequest` | `src/WalmartApIs/Requests/Notifications/DeleteDestinationRequest.cs` |
+| `Channel` | `src/WalmartApIs/Models/Channel.cs` |
+| `DeleteDestinationError` | `src/WalmartApIs/Errors/DeleteDestinationError.cs` |
 
 ### DeleteSubscriptionById
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `DeleteSubscriptionById(string subscriptionId, string notificationType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `DeleteSubscriptionById(DeleteSubscriptionByIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SubscriptionId`, `NotificationType`
 - **Returns**: `object`
-- **Error**: `SdkException<DeleteSubscriptionByIdError>` — **Case A (typed)**
+- **Error**: `ApiException<DeleteSubscriptionByIdError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `DeleteSubscriptionByIdError` | `Errors/DeleteSubscriptionByIdError.cs` |
+| `DeleteSubscriptionByIdRequest` | `src/WalmartApIs/Requests/Notifications/DeleteSubscriptionByIdRequest.cs` |
+| `DeleteSubscriptionByIdError` | `src/WalmartApIs/Errors/DeleteSubscriptionByIdError.cs` |
 
 ### GetDestination
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetDestination(string destinationId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetDestination(GetDestinationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `DestinationId`
 - **Returns**: `Channel`
-- **Error**: `SdkException<GetDestinationError>` — **Case A (typed)**
+- **Error**: `ApiException<GetDestinationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Channel` | `Models/Channel.cs` |
-| `GetDestinationError` | `Errors/GetDestinationError.cs` |
+| `GetDestinationRequest` | `src/WalmartApIs/Requests/Notifications/GetDestinationRequest.cs` |
+| `Channel` | `src/WalmartApIs/Models/Channel.cs` |
+| `GetDestinationError` | `src/WalmartApIs/Errors/GetDestinationError.cs` |
 
 ### GetDestinations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetDestinations(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetDestinations(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `ChannelList`
-- **Error**: `SdkException<GetDestinationsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetDestinationsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ChannelList` | `Models/ChannelList.cs` |
-| `GetDestinationsError` | `Errors/GetDestinationsError.cs` |
+| `ChannelList` | `src/WalmartApIs/Models/ChannelList.cs` |
+| `GetDestinationsError` | `src/WalmartApIs/Errors/GetDestinationsError.cs` |
 
 ### GetSubscription
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetSubscription(string notificationType, string? payloadVersion, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `payloadVersion` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `payloadVersion` ← `payloadVersion`
+- **Signature**: `GetSubscription(GetSubscriptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `NotificationType`
+- **Query params (wire ← C#)**: `payloadVersion` ← `PayloadVersion`
 - **Returns**: `object`
-- **Error**: `SdkException<GetSubscriptionError>` — **Case A (typed)**
+- **Error**: `ApiException<GetSubscriptionError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetSubscriptionError` | `Errors/GetSubscriptionError.cs` |
+| `GetSubscriptionRequest` | `src/WalmartApIs/Requests/Notifications/GetSubscriptionRequest.cs` |
+| `GetSubscriptionError` | `src/WalmartApIs/Errors/GetSubscriptionError.cs` |
 
 ### GetSubscriptionById
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetSubscriptionById(string subscriptionId, string notificationType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetSubscriptionById(GetSubscriptionByIdRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SubscriptionId`, `NotificationType`
 - **Returns**: `object`
-- **Error**: `SdkException<GetSubscriptionByIdError>` — **Case A (typed)**
+- **Error**: `ApiException<GetSubscriptionByIdError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetSubscriptionByIdError` | `Errors/GetSubscriptionByIdError.cs` |
+| `GetSubscriptionByIdRequest` | `src/WalmartApIs/Requests/Notifications/GetSubscriptionByIdRequest.cs` |
+| `GetSubscriptionByIdError` | `src/WalmartApIs/Errors/GetSubscriptionByIdError.cs` |
 
 ### SendTestNotification
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `SendTestNotification(string notificationType, object body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `SendTestNotification(SendTestNotificationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `NotificationType`, `Body`
 - **Returns**: `object`
-- **Error**: `SdkException<SendTestNotificationError>` — **Case A (typed)**
+- **Error**: `ApiException<SendTestNotificationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetNoContent(out RawError)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SendTestNotificationError` | `Errors/SendTestNotificationError.cs` |
+| `SendTestNotificationRequest` | `src/WalmartApIs/Requests/Notifications/SendTestNotificationRequest.cs` |
+| `SendTestNotificationError` | `src/WalmartApIs/Errors/SendTestNotificationError.cs` |
 

@@ -2,7 +2,7 @@
 
 # Settlement — operations
 
-Accessor: `client.Settlement` · Source: `Api/Settlement.cs` · 3 operations
+Accessor: `client.Settlement` · Source: `src/WalmartApIs/Api/Settlement.cs` · 3 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,55 +10,51 @@ Accessor: `client.Settlement` · Source: `Api/Settlement.cs` · 3 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListSettlementDetails(string partnerId, string reportDate, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `nextToken` — nullable, no default → **must pass explicitly**
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `partnerId` ← `partnerId`, `reportDate` ← `reportDate`, `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `ListSettlementDetails(ListSettlementDetailsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PartnerId`, `ReportDate`
+- **Query params (wire ← C#)**: `partnerId` ← `PartnerId`, `reportDate` ← `ReportDate`, `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `SettlementDetailsResponse`
-- **Error**: `SdkException<ListSettlementDetailsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListSettlementDetailsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SettlementDetailsResponse` | `Models/SettlementDetailsResponse.cs` |
-| `ListSettlementDetailsError` | `Errors/ListSettlementDetailsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ListSettlementDetailsRequest` | `src/WalmartApIs/Requests/Settlement/ListSettlementDetailsRequest.cs` |
+| `SettlementDetailsResponse` | `src/WalmartApIs/Models/SettlementDetailsResponse.cs` |
+| `ListSettlementDetailsError` | `src/WalmartApIs/Errors/ListSettlementDetailsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### ListSettlementPeriods
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListSettlementPeriods(string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `nextToken` — nullable, no default → **must pass explicitly**
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `ListSettlementPeriods(ListSettlementPeriodsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `SettlementPeriodsResponse`
-- **Error**: `SdkException<ListSettlementPeriodsError>` — **Case A (typed)**
+- **Error**: `ApiException<ListSettlementPeriodsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SettlementPeriodsResponse` | `Models/SettlementPeriodsResponse.cs` |
-| `ListSettlementPeriodsError` | `Errors/ListSettlementPeriodsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ListSettlementPeriodsRequest` | `src/WalmartApIs/Requests/Settlement/ListSettlementPeriodsRequest.cs` |
+| `SettlementPeriodsResponse` | `src/WalmartApIs/Models/SettlementPeriodsResponse.cs` |
+| `ListSettlementPeriodsError` | `src/WalmartApIs/Errors/ListSettlementPeriodsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### SearchTransactions
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `SearchTransactions(string? nextToken, DateTimeOffset? postedAfter, DateTimeOffset? postedBefore, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `nextToken` — nullable, no default → **must pass explicitly**
-  - `postedAfter` — nullable, no default → **must pass explicitly**
-  - `postedBefore` — nullable, no default → **must pass explicitly**
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `pageSize` ← `pageSize`, `nextToken` ← `nextToken`, `postedAfter` ← `postedAfter`, `postedBefore` ← `postedBefore`
+- **Signature**: `SearchTransactions(SearchTransactionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `pageSize` ← `PageSize`, `nextToken` ← `NextToken`, `postedAfter` ← `PostedAfter`, `postedBefore` ← `PostedBefore`
 - **Returns**: `TransactionSearchResponse`
-- **Error**: `SdkException<SearchTransactionsError>` — **Case A (typed)**
+- **Error**: `ApiException<SearchTransactionsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 401, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `TransactionSearchResponse` | `Models/TransactionSearchResponse.cs` |
-| `SearchTransactionsError` | `Errors/SearchTransactionsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `SearchTransactionsRequest` | `src/WalmartApIs/Requests/Settlement/SearchTransactionsRequest.cs` |
+| `TransactionSearchResponse` | `src/WalmartApIs/Models/TransactionSearchResponse.cs` |
+| `SearchTransactionsError` | `src/WalmartApIs/Errors/SearchTransactionsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

@@ -2,7 +2,7 @@
 
 # Reports — operations
 
-Accessor: `client.Reports` · Source: `Api/Reports.cs` · 7 operations
+Accessor: `client.Reports` · Source: `src/WalmartApIs/Api/Reports.cs` · 7 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,110 +10,121 @@ Accessor: `client.Reports` · Source: `Api/Reports.cs` · 7 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelReport(string reportId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelReport(CancelReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ReportId`
 - **Returns**: `CancelReportResponse`
-- **Error**: `SdkException<CancelReportError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelReportError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelReportResponse` | `Models/CancelReportResponse.cs` |
-| `CancelReportError` | `Errors/CancelReportError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CancelReportRequest` | `src/WalmartApIs/Requests/Reports/CancelReportRequest.cs` |
+| `CancelReportResponse` | `src/WalmartApIs/Models/CancelReportResponse.cs` |
+| `CancelReportError` | `src/WalmartApIs/Errors/CancelReportError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateReport
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateReport(CreateReportSpecification body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateReport(CreateReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateReportResponse`
-- **Error**: `SdkException<CreateReportError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateReportError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateReportSpecification` | `Models/CreateReportSpecification.cs` |
-| `CreateReportResponse` | `Models/CreateReportResponse.cs` |
-| `CreateReportError` | `Errors/CreateReportError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateReportRequest` | `src/WalmartApIs/Requests/Reports/CreateReportRequest.cs` |
+| `CreateReportSpecification` | `src/WalmartApIs/Models/CreateReportSpecification.cs` |
+| `CreateReportResponse` | `src/WalmartApIs/Models/CreateReportResponse.cs` |
+| `CreateReportError` | `src/WalmartApIs/Errors/CreateReportError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### DownloadNewReport
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `DownloadNewReport(string partnerId, string reportDate, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `partnerId` ← `partnerId`, `reportDate` ← `reportDate`
+- **Signature**: `DownloadNewReport(DownloadNewReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PartnerId`, `ReportDate`
+- **Query params (wire ← C#)**: `partnerId` ← `PartnerId`, `reportDate` ← `ReportDate`
 - **Returns**: `BinaryContent`
-- **Error**: `SdkException<DownloadNewReportError>` — **Case A (typed)**
+- **Error**: `ApiException<DownloadNewReportError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 404, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `DownloadNewReportError` | `Errors/DownloadNewReportError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `DownloadNewReportRequest` | `src/WalmartApIs/Requests/Reports/DownloadNewReportRequest.cs` |
+| `DownloadNewReportError` | `src/WalmartApIs/Errors/DownloadNewReportError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### DownloadOldReport
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `DownloadOldReport(string partnerId, string reportDate, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `partnerId` ← `partnerId`, `reportDate` ← `reportDate`
+- **Signature**: `DownloadOldReport(DownloadOldReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PartnerId`, `ReportDate`
+- **Query params (wire ← C#)**: `partnerId` ← `PartnerId`, `reportDate` ← `ReportDate`
 - **Returns**: `BinaryContent`
-- **Error**: `SdkException<DownloadOldReportError>` — **Case A (typed)**
+- **Error**: `ApiException<DownloadOldReportError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 404, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `DownloadOldReportError` | `Errors/DownloadOldReportError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `DownloadOldReportRequest` | `src/WalmartApIs/Requests/Reports/DownloadOldReportRequest.cs` |
+| `DownloadOldReportError` | `src/WalmartApIs/Errors/DownloadOldReportError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetReport
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetReport(string reportId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetReport(GetReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ReportId`
 - **Returns**: `Report`
-- **Error**: `SdkException<GetReportError>` — **Case A (typed)**
+- **Error**: `ApiException<GetReportError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Report` | `Models/Report.cs` |
-| `GetReportError` | `Errors/GetReportError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetReportRequest` | `src/WalmartApIs/Requests/Reports/GetReportRequest.cs` |
+| `Report` | `src/WalmartApIs/Models/Report.cs` |
+| `GetReportError` | `src/WalmartApIs/Errors/GetReportError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetReportDocument
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetReportDocument(string reportDocumentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetReportDocument(GetReportDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ReportDocumentId`
 - **Returns**: `ReportDocument`
-- **Error**: `SdkException<GetReportDocumentError>` — **Case A (typed)**
+- **Error**: `ApiException<GetReportDocumentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ReportDocument` | `Models/ReportDocument.cs` |
-| `GetReportDocumentError` | `Errors/GetReportDocumentError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetReportDocumentRequest` | `src/WalmartApIs/Requests/Reports/GetReportDocumentRequest.cs` |
+| `ReportDocument` | `src/WalmartApIs/Models/ReportDocument.cs` |
+| `GetReportDocumentError` | `src/WalmartApIs/Errors/GetReportDocumentError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetReports
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetReports(IReadOnlyList<ReportType1>? reportTypes, IReadOnlyList<ProcessingStatus>? processingStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 5 params (`reportTypes` … `nextToken`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `reportTypes` ← `reportTypes`, `processingStatuses` ← `processingStatuses`, `createdSince` ← `createdSince`, `createdUntil` ← `createdUntil`, `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `GetReports(GetReportsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `reportTypes` ← `ReportTypes`, `processingStatuses` ← `ProcessingStatuses`, `createdSince` ← `CreatedSince`, `createdUntil` ← `CreatedUntil`, `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `GetReportsResponse`
-- **Error**: `SdkException<GetReportsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetReportsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ReportType1` | `Models/Enums/ReportType1.cs` |
-| `ProcessingStatus` | `Models/Enums/ProcessingStatus.cs` |
-| `GetReportsResponse` | `Models/GetReportsResponse.cs` |
-| `GetReportsError` | `Errors/GetReportsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetReportsRequest` | `src/WalmartApIs/Requests/Reports/GetReportsRequest.cs` |
+| `ReportType1` | `src/WalmartApIs/Models/Enums/ReportType1.cs` |
+| `ProcessingStatus` | `src/WalmartApIs/Models/Enums/ProcessingStatus.cs` |
+| `GetReportsResponse` | `src/WalmartApIs/Models/GetReportsResponse.cs` |
+| `GetReportsError` | `src/WalmartApIs/Errors/GetReportsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

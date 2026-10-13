@@ -2,7 +2,7 @@
 
 # MerchantFulfillment — operations
 
-Accessor: `client.MerchantFulfillment` · Source: `Api/MerchantFulfillment.cs` · 5 operations
+Accessor: `client.MerchantFulfillment` · Source: `src/WalmartApIs/Api/MerchantFulfillment.cs` · 5 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,79 +10,88 @@ Accessor: `client.MerchantFulfillment` · Source: `Api/MerchantFulfillment.cs` �
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelShipment(string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelShipment(CancelShipmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ShipmentId`
 - **Returns**: `CancelShipmentResponse`
-- **Error**: `SdkException<CancelShipmentError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelShipmentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelShipmentResponse` | `Models/CancelShipmentResponse.cs` |
-| `CancelShipmentError` | `Errors/CancelShipmentError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CancelShipmentRequest` | `src/WalmartApIs/Requests/MerchantFulfillment/CancelShipmentRequest.cs` |
+| `CancelShipmentResponse` | `src/WalmartApIs/Models/CancelShipmentResponse.cs` |
+| `CancelShipmentError` | `src/WalmartApIs/Errors/CancelShipmentError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateShipment
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateShipment(CreateShipmentRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateShipment(CreateShipmentOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateShipmentResponse`
-- **Error**: `SdkException<CreateShipmentError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateShipmentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateShipmentRequest` | `Models/CreateShipmentRequest.cs` |
-| `CreateShipmentResponse` | `Models/CreateShipmentResponse.cs` |
-| `CreateShipmentError` | `Errors/CreateShipmentError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateShipmentOperationRequest` | `src/WalmartApIs/Requests/MerchantFulfillment/CreateShipmentOperationRequest.cs` |
+| `CreateShipmentRequest` | `src/WalmartApIs/Models/CreateShipmentRequest.cs` |
+| `CreateShipmentResponse` | `src/WalmartApIs/Models/CreateShipmentResponse.cs` |
+| `CreateShipmentError` | `src/WalmartApIs/Errors/CreateShipmentError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetEligibleShippingServices
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetEligibleShippingServices(GetEligibleShippingServicesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetEligibleShippingServices(GetEligibleShippingServicesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `GetEligibleShippingServicesResponse`
-- **Error**: `SdkException<GetEligibleShippingServicesError>` — **Case A (typed)**
+- **Error**: `ApiException<GetEligibleShippingServicesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetEligibleShippingServicesRequest` | `Models/GetEligibleShippingServicesRequest.cs` |
-| `GetEligibleShippingServicesResponse` | `Models/GetEligibleShippingServicesResponse.cs` |
-| `GetEligibleShippingServicesError` | `Errors/GetEligibleShippingServicesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetEligibleShippingServicesOperationRequest` | `src/WalmartApIs/Requests/MerchantFulfillment/GetEligibleShippingServicesOperationRequest.cs` |
+| `GetEligibleShippingServicesRequest` | `src/WalmartApIs/Models/GetEligibleShippingServicesRequest.cs` |
+| `GetEligibleShippingServicesResponse` | `src/WalmartApIs/Models/GetEligibleShippingServicesResponse.cs` |
+| `GetEligibleShippingServicesError` | `src/WalmartApIs/Errors/GetEligibleShippingServicesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetLabel
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetLabel(string shipmentId, Format? format, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `format` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `format` ← `format`
+- **Signature**: `GetLabel(GetLabelRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ShipmentId`
+- **Query params (wire ← C#)**: `format` ← `Format`
 - **Returns**: `Label`
-- **Error**: `SdkException<GetLabelError>` — **Case A (typed)**
+- **Error**: `ApiException<GetLabelError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Format` | `Models/Enums/Format.cs` |
-| `Label` | `Models/Label.cs` |
-| `GetLabelError` | `Errors/GetLabelError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetLabelRequest` | `src/WalmartApIs/Requests/MerchantFulfillment/GetLabelRequest.cs` |
+| `Format` | `src/WalmartApIs/Models/Enums/Format.cs` |
+| `Label` | `src/WalmartApIs/Models/Label.cs` |
+| `GetLabelError` | `src/WalmartApIs/Errors/GetLabelError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetShipment2
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetShipment2(string shipmentId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetShipment2(GetShipment2Request request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ShipmentId`
 - **Returns**: `GetShipmentResponse`
-- **Error**: `SdkException<GetShipment2Error>` — **Case A (typed)**
+- **Error**: `ApiException<GetShipment2Error>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetShipmentResponse` | `Models/GetShipmentResponse.cs` |
-| `GetShipment2Error` | `Errors/GetShipment2Error.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetShipment2Request` | `src/WalmartApIs/Requests/MerchantFulfillment/GetShipment2Request.cs` |
+| `GetShipmentResponse` | `src/WalmartApIs/Models/GetShipmentResponse.cs` |
+| `GetShipment2Error` | `src/WalmartApIs/Errors/GetShipment2Error.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

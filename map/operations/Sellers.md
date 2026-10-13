@@ -2,7 +2,7 @@
 
 # Sellers — operations
 
-Accessor: `client.Sellers` · Source: `Api/Sellers.cs` · 2 operations
+Accessor: `client.Sellers` · Source: `src/WalmartApIs/Api/Sellers.cs` · 2 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,29 +10,29 @@ Accessor: `client.Sellers` · Source: `Api/Sellers.cs` · 2 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetAccount(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetAccount(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `SellerAccount`
-- **Error**: `SdkException<GetAccountError>` — **Case A (typed)**
+- **Error**: `ApiException<GetAccountError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `SellerAccount` | `Models/SellerAccount.cs` |
-| `GetAccountError` | `Errors/GetAccountError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `SellerAccount` | `src/WalmartApIs/Models/SellerAccount.cs` |
+| `GetAccountError` | `src/WalmartApIs/Errors/GetAccountError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetMarketplaceParticipations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetMarketplaceParticipations(RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetMarketplaceParticipations(RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
 - **Returns**: `GetMarketplaceParticipationsResponse`
-- **Error**: `SdkException<GetMarketplaceParticipationsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetMarketplaceParticipationsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetMarketplaceParticipationsResponse` | `Models/GetMarketplaceParticipationsResponse.cs` |
-| `GetMarketplaceParticipationsError` | `Errors/GetMarketplaceParticipationsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetMarketplaceParticipationsResponse` | `src/WalmartApIs/Models/GetMarketplaceParticipationsResponse.cs` |
+| `GetMarketplaceParticipationsError` | `src/WalmartApIs/Errors/GetMarketplaceParticipationsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

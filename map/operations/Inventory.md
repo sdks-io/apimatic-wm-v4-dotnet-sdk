@@ -2,7 +2,7 @@
 
 # Inventory — operations
 
-Accessor: `client.Inventory` · Source: `Api/Inventory.cs` · 4 operations
+Accessor: `client.Inventory` · Source: `src/WalmartApIs/Api/Inventory.cs` · 4 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,68 +10,70 @@ Accessor: `client.Inventory` · Source: `Api/Inventory.cs` · 4 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `BulkUpdateInventory(BulkUpdateInventoryRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `BulkUpdateInventory(BulkUpdateInventoryOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `BulkUpdateInventoryResponse`
-- **Error**: `SdkException<BulkUpdateInventoryError>` — **Case A (typed)**
+- **Error**: `ApiException<BulkUpdateInventoryError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `BulkUpdateInventoryRequest` | `Models/BulkUpdateInventoryRequest.cs` |
-| `BulkUpdateInventoryResponse` | `Models/BulkUpdateInventoryResponse.cs` |
-| `BulkUpdateInventoryError` | `Errors/BulkUpdateInventoryError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `BulkUpdateInventoryOperationRequest` | `src/WalmartApIs/Requests/Inventory/BulkUpdateInventoryOperationRequest.cs` |
+| `BulkUpdateInventoryRequest` | `src/WalmartApIs/Models/BulkUpdateInventoryRequest.cs` |
+| `BulkUpdateInventoryResponse` | `src/WalmartApIs/Models/BulkUpdateInventoryResponse.cs` |
+| `BulkUpdateInventoryError` | `src/WalmartApIs/Errors/BulkUpdateInventoryError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetInventoryForSku
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetInventoryForSku(string sku, string? shipNode, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `shipNode` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `shipNode` ← `shipNode`
+- **Signature**: `GetInventoryForSku(GetInventoryForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Sku`
+- **Query params (wire ← C#)**: `shipNode` ← `ShipNode`
 - **Returns**: `InventorySummary`
-- **Error**: `SdkException<GetInventoryForSkuError>` — **Case A (typed)**
+- **Error**: `ApiException<GetInventoryForSkuError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `InventorySummary` | `Models/InventorySummary.cs` |
-| `GetInventoryForSkuError` | `Errors/GetInventoryForSkuError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetInventoryForSkuRequest` | `src/WalmartApIs/Requests/Inventory/GetInventoryForSkuRequest.cs` |
+| `InventorySummary` | `src/WalmartApIs/Models/InventorySummary.cs` |
+| `GetInventoryForSkuError` | `src/WalmartApIs/Errors/GetInventoryForSkuError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetInventorySummaries
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetInventorySummaries(string? skus, string? shipNode, string? nextToken, int? pageSize = 100, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `skus` — nullable, no default → **must pass explicitly**
-  - `shipNode` — nullable, no default → **must pass explicitly**
-  - `nextToken` — nullable, no default → **must pass explicitly**
-  - defaults: `pageSize` = `100`
-- **Query params (wire ← C#)**: `skus` ← `skus`, `shipNode` ← `shipNode`, `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `GetInventorySummaries(GetInventorySummariesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `skus` ← `Skus`, `shipNode` ← `ShipNode`, `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `GetInventorySummariesResponse`
-- **Error**: `SdkException<GetInventorySummariesError>` — **Case A (typed)**
+- **Error**: `ApiException<GetInventorySummariesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetInventorySummariesResponse` | `Models/GetInventorySummariesResponse.cs` |
-| `GetInventorySummariesError` | `Errors/GetInventorySummariesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetInventorySummariesRequest` | `src/WalmartApIs/Requests/Inventory/GetInventorySummariesRequest.cs` |
+| `GetInventorySummariesResponse` | `src/WalmartApIs/Models/GetInventorySummariesResponse.cs` |
+| `GetInventorySummariesError` | `src/WalmartApIs/Errors/GetInventorySummariesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### UpdateInventoryForSku
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateInventoryForSku(string sku, UpdateInventoryRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateInventoryForSku(UpdateInventoryForSkuRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Sku`, `Body`
 - **Returns**: `UpdateInventoryResponse`
-- **Error**: `SdkException<UpdateInventoryForSkuError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateInventoryForSkuError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateInventoryRequest` | `Models/UpdateInventoryRequest.cs` |
-| `UpdateInventoryResponse` | `Models/UpdateInventoryResponse.cs` |
-| `UpdateInventoryForSkuError` | `Errors/UpdateInventoryForSkuError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `UpdateInventoryForSkuRequest` | `src/WalmartApIs/Requests/Inventory/UpdateInventoryForSkuRequest.cs` |
+| `UpdateInventoryRequest` | `src/WalmartApIs/Models/UpdateInventoryRequest.cs` |
+| `UpdateInventoryResponse` | `src/WalmartApIs/Models/UpdateInventoryResponse.cs` |
+| `UpdateInventoryForSkuError` | `src/WalmartApIs/Errors/UpdateInventoryForSkuError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

@@ -2,7 +2,7 @@
 
 # Feeds — operations
 
-Accessor: `client.Feeds` · Source: `Api/Feeds.cs` · 5 operations
+Accessor: `client.Feeds` · Source: `src/WalmartApIs/Api/Feeds.cs` · 5 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,83 +10,88 @@ Accessor: `client.Feeds` · Source: `Api/Feeds.cs` · 5 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelFeed(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelFeed(CancelFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `FeedId`
 - **Returns**: `CancelFeedResponse`
-- **Error**: `SdkException<CancelFeedError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelFeedError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList1(out ErrorList1)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelFeedResponse` | `Models/CancelFeedResponse.cs` |
-| `CancelFeedError` | `Errors/CancelFeedError.cs` |
-| `ErrorList1` | `Models/ErrorList1.cs` |
+| `CancelFeedRequest` | `src/WalmartApIs/Requests/Feeds/CancelFeedRequest.cs` |
+| `CancelFeedResponse` | `src/WalmartApIs/Models/CancelFeedResponse.cs` |
+| `CancelFeedError` | `src/WalmartApIs/Errors/CancelFeedError.cs` |
+| `ErrorList1` | `src/WalmartApIs/Models/ErrorList1.cs` |
 
 ### CreateFeed
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateFeed(FeedType feedType, string? marketplaceId, BinaryContent file, ContentType? contentType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `marketplaceId` — nullable, no default → **must pass explicitly**
-  - `contentType` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `feedType` ← `feedType`, `marketplaceId` ← `marketplaceId`
+- **Signature**: `CreateFeed(CreateFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `FeedType`, `File`
+- **Query params (wire ← C#)**: `feedType` ← `FeedType`, `marketplaceId` ← `MarketplaceId`
 - **Returns**: `CreateFeedResponse`
-- **Error**: `SdkException<CreateFeedError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateFeedError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList1(out ErrorList1)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `FeedType` | `Models/Enums/FeedType.cs` |
-| `ContentType` | `Models/Enums/ContentType.cs` |
-| `CreateFeedResponse` | `Models/CreateFeedResponse.cs` |
-| `CreateFeedError` | `Errors/CreateFeedError.cs` |
-| `ErrorList1` | `Models/ErrorList1.cs` |
+| `CreateFeedRequest` | `src/WalmartApIs/Requests/Feeds/CreateFeedRequest.cs` |
+| `FeedType` | `src/WalmartApIs/Models/Enums/FeedType.cs` |
+| `ContentType` | `src/WalmartApIs/Models/Enums/ContentType.cs` |
+| `CreateFeedResponse` | `src/WalmartApIs/Models/CreateFeedResponse.cs` |
+| `CreateFeedError` | `src/WalmartApIs/Errors/CreateFeedError.cs` |
+| `ErrorList1` | `src/WalmartApIs/Models/ErrorList1.cs` |
 
 ### GetFeed
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFeed(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFeed(GetFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `FeedId`
 - **Returns**: `Feed`
-- **Error**: `SdkException<GetFeedError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFeedError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList1(out ErrorList1)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `Feed` | `Models/Feed.cs` |
-| `GetFeedError` | `Errors/GetFeedError.cs` |
-| `ErrorList1` | `Models/ErrorList1.cs` |
+| `GetFeedRequest` | `src/WalmartApIs/Requests/Feeds/GetFeedRequest.cs` |
+| `Feed` | `src/WalmartApIs/Models/Feed.cs` |
+| `GetFeedError` | `src/WalmartApIs/Errors/GetFeedError.cs` |
+| `ErrorList1` | `src/WalmartApIs/Models/ErrorList1.cs` |
 
 ### GetFeedDocument
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFeedDocument(string feedId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFeedDocument(GetFeedDocumentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `FeedId`
 - **Returns**: `BinaryContent`
-- **Error**: `SdkException<GetFeedDocumentError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFeedDocumentError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList1(out ErrorList1)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFeedDocumentError` | `Errors/GetFeedDocumentError.cs` |
-| `ErrorList1` | `Models/ErrorList1.cs` |
+| `GetFeedDocumentRequest` | `src/WalmartApIs/Requests/Feeds/GetFeedDocumentRequest.cs` |
+| `GetFeedDocumentError` | `src/WalmartApIs/Errors/GetFeedDocumentError.cs` |
+| `ErrorList1` | `src/WalmartApIs/Models/ErrorList1.cs` |
 
 ### GetFeeds
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFeeds(IReadOnlyList<FeedType>? feedTypes, IReadOnlyList<FeedStatus>? feedStatuses, DateTimeOffset? createdSince, DateTimeOffset? createdUntil, string? nextToken, int? pageSize = 10, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 5 params (`feedTypes` … `nextToken`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-  - defaults: `pageSize` = `10`
-- **Query params (wire ← C#)**: `feedTypes` ← `feedTypes`, `feedStatuses` ← `feedStatuses`, `createdSince` ← `createdSince`, `createdUntil` ← `createdUntil`, `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `GetFeeds(GetFeedsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `feedTypes` ← `FeedTypes`, `feedStatuses` ← `FeedStatuses`, `createdSince` ← `CreatedSince`, `createdUntil` ← `CreatedUntil`, `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `GetFeedsResponse`
-- **Error**: `SdkException<GetFeedsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFeedsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList1(out ErrorList1)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `FeedType` | `Models/Enums/FeedType.cs` |
-| `FeedStatus` | `Models/Enums/FeedStatus.cs` |
-| `GetFeedsResponse` | `Models/GetFeedsResponse.cs` |
-| `GetFeedsError` | `Errors/GetFeedsError.cs` |
-| `ErrorList1` | `Models/ErrorList1.cs` |
+| `GetFeedsRequest` | `src/WalmartApIs/Requests/Feeds/GetFeedsRequest.cs` |
+| `FeedType` | `src/WalmartApIs/Models/Enums/FeedType.cs` |
+| `FeedStatus` | `src/WalmartApIs/Models/Enums/FeedStatus.cs` |
+| `GetFeedsResponse` | `src/WalmartApIs/Models/GetFeedsResponse.cs` |
+| `GetFeedsError` | `src/WalmartApIs/Errors/GetFeedsError.cs` |
+| `ErrorList1` | `src/WalmartApIs/Models/ErrorList1.cs` |
 

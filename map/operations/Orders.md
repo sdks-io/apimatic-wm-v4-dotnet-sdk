@@ -2,7 +2,7 @@
 
 # Orders — operations
 
-Accessor: `client.Orders` · Source: `Api/Orders.cs` · 14 operations
+Accessor: `client.Orders` · Source: `src/WalmartApIs/Api/Orders.cs` · 14 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,222 +10,247 @@ Accessor: `client.Orders` · Source: `Api/Orders.cs` · 14 operations
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `AcknowledgeOrder(string purchaseOrderId, AcknowledgeOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `AcknowledgeOrder(AcknowledgeOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `AcknowledgeOrderResponse`
-- **Error**: `SdkException<AcknowledgeOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<AcknowledgeOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `AcknowledgeOrderRequest` | `Models/AcknowledgeOrderRequest.cs` |
-| `AcknowledgeOrderResponse` | `Models/AcknowledgeOrderResponse.cs` |
-| `AcknowledgeOrderError` | `Errors/AcknowledgeOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `AcknowledgeOrderOperationRequest` | `src/WalmartApIs/Requests/Orders/AcknowledgeOrderOperationRequest.cs` |
+| `AcknowledgeOrderRequest` | `src/WalmartApIs/Models/AcknowledgeOrderRequest.cs` |
+| `AcknowledgeOrderResponse` | `src/WalmartApIs/Models/AcknowledgeOrderResponse.cs` |
+| `AcknowledgeOrderError` | `src/WalmartApIs/Errors/AcknowledgeOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CancelOrderLines
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelOrderLines(string purchaseOrderId, CancelOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelOrderLines(CancelOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `CancelOrderLinesResponse`
-- **Error**: `SdkException<CancelOrderLinesError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelOrderLinesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelOrderLinesRequest` | `Models/CancelOrderLinesRequest.cs` |
-| `CancelOrderLinesResponse` | `Models/CancelOrderLinesResponse.cs` |
-| `CancelOrderLinesError` | `Errors/CancelOrderLinesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CancelOrderLinesOperationRequest` | `src/WalmartApIs/Requests/Orders/CancelOrderLinesOperationRequest.cs` |
+| `CancelOrderLinesRequest` | `src/WalmartApIs/Models/CancelOrderLinesRequest.cs` |
+| `CancelOrderLinesResponse` | `src/WalmartApIs/Models/CancelOrderLinesResponse.cs` |
+| `CancelOrderLinesError` | `src/WalmartApIs/Errors/CancelOrderLinesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### DeliverOrderLines
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `DeliverOrderLines(string purchaseOrderId, DeliverOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `DeliverOrderLines(DeliverOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `DeliverOrderLinesResponse`
-- **Error**: `SdkException<DeliverOrderLinesError>` — **Case A (typed)**
+- **Error**: `ApiException<DeliverOrderLinesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `DeliverOrderLinesRequest` | `Models/DeliverOrderLinesRequest.cs` |
-| `DeliverOrderLinesResponse` | `Models/DeliverOrderLinesResponse.cs` |
-| `DeliverOrderLinesError` | `Errors/DeliverOrderLinesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `DeliverOrderLinesOperationRequest` | `src/WalmartApIs/Requests/Orders/DeliverOrderLinesOperationRequest.cs` |
+| `DeliverOrderLinesRequest` | `src/WalmartApIs/Models/DeliverOrderLinesRequest.cs` |
+| `DeliverOrderLinesResponse` | `src/WalmartApIs/Models/DeliverOrderLinesResponse.cs` |
+| `DeliverOrderLinesError` | `src/WalmartApIs/Errors/DeliverOrderLinesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrder(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetOrder(GetOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`
 - **Returns**: `GetOrderResponse`
-- **Error**: `SdkException<GetOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetOrderResponse` | `Models/GetOrderResponse.cs` |
-| `GetOrderError` | `Errors/GetOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrderRequest` | `src/WalmartApIs/Requests/Orders/GetOrderRequest.cs` |
+| `GetOrderResponse` | `src/WalmartApIs/Models/GetOrderResponse.cs` |
+| `GetOrderError` | `src/WalmartApIs/Errors/GetOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrderAddress
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrderAddress(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetOrderAddress(GetOrderAddressRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`
 - **Returns**: `GetOrderAddressResponse`
-- **Error**: `SdkException<GetOrderAddressError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrderAddressError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetOrderAddressResponse` | `Models/GetOrderAddressResponse.cs` |
-| `GetOrderAddressError` | `Errors/GetOrderAddressError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrderAddressRequest` | `src/WalmartApIs/Requests/Orders/GetOrderAddressRequest.cs` |
+| `GetOrderAddressResponse` | `src/WalmartApIs/Models/GetOrderAddressResponse.cs` |
+| `GetOrderAddressError` | `src/WalmartApIs/Errors/GetOrderAddressError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrderBuyerInfo
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrderBuyerInfo(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetOrderBuyerInfo(GetOrderBuyerInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`
 - **Returns**: `GetOrderBuyerInfoResponse`
-- **Error**: `SdkException<GetOrderBuyerInfoError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrderBuyerInfoError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetOrderBuyerInfoResponse` | `Models/GetOrderBuyerInfoResponse.cs` |
-| `GetOrderBuyerInfoError` | `Errors/GetOrderBuyerInfoError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrderBuyerInfoRequest` | `src/WalmartApIs/Requests/Orders/GetOrderBuyerInfoRequest.cs` |
+| `GetOrderBuyerInfoResponse` | `src/WalmartApIs/Models/GetOrderBuyerInfoResponse.cs` |
+| `GetOrderBuyerInfoError` | `src/WalmartApIs/Errors/GetOrderBuyerInfoError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrderItems
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrderItems(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetOrderItems(GetOrderItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`
 - **Returns**: `GetFulfillmentOrderShipmentsResponse`
-- **Error**: `SdkException<GetOrderItemsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrderItemsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFulfillmentOrderShipmentsResponse` | `Models/GetFulfillmentOrderShipmentsResponse.cs` |
-| `GetOrderItemsError` | `Errors/GetOrderItemsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrderItemsRequest` | `src/WalmartApIs/Requests/Orders/GetOrderItemsRequest.cs` |
+| `GetFulfillmentOrderShipmentsResponse` | `src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs` |
+| `GetOrderItemsError` | `src/WalmartApIs/Errors/GetOrderItemsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrderRegulatedInfo
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrderRegulatedInfo(string purchaseOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetOrderRegulatedInfo(GetOrderRegulatedInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`
 - **Returns**: `GetOrderRegulatedInfoResponse`
-- **Error**: `SdkException<GetOrderRegulatedInfoError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrderRegulatedInfoError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetOrderRegulatedInfoResponse` | `Models/GetOrderRegulatedInfoResponse.cs` |
-| `GetOrderRegulatedInfoError` | `Errors/GetOrderRegulatedInfoError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrderRegulatedInfoRequest` | `src/WalmartApIs/Requests/Orders/GetOrderRegulatedInfoRequest.cs` |
+| `GetOrderRegulatedInfoResponse` | `src/WalmartApIs/Models/GetOrderRegulatedInfoResponse.cs` |
+| `GetOrderRegulatedInfoError` | `src/WalmartApIs/Errors/GetOrderRegulatedInfoError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetOrders
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetOrders(DateTimeOffset? createdAfter, DateTimeOffset? createdBefore, DateTimeOffset? lastUpdatedAfter, IReadOnlyList<OrderStatus>? orderStatuses, IReadOnlyList<FulfillmentType>? fulfillmentTypes, string? nextToken, int? pageSize = 100, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 6 params (`createdAfter` … `nextToken`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-  - defaults: `pageSize` = `100`
-- **Query params (wire ← C#)**: `createdAfter` ← `createdAfter`, `createdBefore` ← `createdBefore`, `lastUpdatedAfter` ← `lastUpdatedAfter`, `orderStatuses` ← `orderStatuses`, `fulfillmentTypes` ← `fulfillmentTypes`, `pageSize` ← `pageSize`, `nextToken` ← `nextToken`
+- **Signature**: `GetOrders(GetOrdersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `createdAfter` ← `CreatedAfter`, `createdBefore` ← `CreatedBefore`, `lastUpdatedAfter` ← `LastUpdatedAfter`, `orderStatuses` ← `OrderStatuses`, `fulfillmentTypes` ← `FulfillmentTypes`, `pageSize` ← `PageSize`, `nextToken` ← `NextToken`
 - **Returns**: `GetFulfillmentOrderResponse`
-- **Error**: `SdkException<GetOrdersError>` — **Case A (typed)**
+- **Error**: `ApiException<GetOrdersError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `OrderStatus` | `Models/Enums/OrderStatus.cs` |
-| `FulfillmentType` | `Models/Enums/FulfillmentType.cs` |
-| `GetFulfillmentOrderResponse` | `Models/GetFulfillmentOrderResponse.cs` |
-| `GetOrdersError` | `Errors/GetOrdersError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetOrdersRequest` | `src/WalmartApIs/Requests/Orders/GetOrdersRequest.cs` |
+| `OrderStatus` | `src/WalmartApIs/Models/Enums/OrderStatus.cs` |
+| `FulfillmentType` | `src/WalmartApIs/Models/Enums/FulfillmentType.cs` |
+| `GetFulfillmentOrderResponse` | `src/WalmartApIs/Models/GetFulfillmentOrderResponse.cs` |
+| `GetOrdersError` | `src/WalmartApIs/Errors/GetOrdersError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### RefundOrderLines
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `RefundOrderLines(string purchaseOrderId, RefundOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `RefundOrderLines(RefundOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `RefundOrderLinesResponse`
-- **Error**: `SdkException<RefundOrderLinesError>` — **Case A (typed)**
+- **Error**: `ApiException<RefundOrderLinesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `RefundOrderLinesRequest` | `Models/RefundOrderLinesRequest.cs` |
-| `RefundOrderLinesResponse` | `Models/RefundOrderLinesResponse.cs` |
-| `RefundOrderLinesError` | `Errors/RefundOrderLinesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `RefundOrderLinesOperationRequest` | `src/WalmartApIs/Requests/Orders/RefundOrderLinesOperationRequest.cs` |
+| `RefundOrderLinesRequest` | `src/WalmartApIs/Models/RefundOrderLinesRequest.cs` |
+| `RefundOrderLinesResponse` | `src/WalmartApIs/Models/RefundOrderLinesResponse.cs` |
+| `RefundOrderLinesError` | `src/WalmartApIs/Errors/RefundOrderLinesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### ShipOrderLines
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ShipOrderLines(string purchaseOrderId, ShipOrderLinesRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ShipOrderLines(ShipOrderLinesOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `ShipOrderLinesResponse`
-- **Error**: `SdkException<ShipOrderLinesError>` — **Case A (typed)**
+- **Error**: `ApiException<ShipOrderLinesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ShipOrderLinesRequest` | `Models/ShipOrderLinesRequest.cs` |
-| `ShipOrderLinesResponse` | `Models/ShipOrderLinesResponse.cs` |
-| `ShipOrderLinesError` | `Errors/ShipOrderLinesError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ShipOrderLinesOperationRequest` | `src/WalmartApIs/Requests/Orders/ShipOrderLinesOperationRequest.cs` |
+| `ShipOrderLinesRequest` | `src/WalmartApIs/Models/ShipOrderLinesRequest.cs` |
+| `ShipOrderLinesResponse` | `src/WalmartApIs/Models/ShipOrderLinesResponse.cs` |
+| `ShipOrderLinesError` | `src/WalmartApIs/Errors/ShipOrderLinesError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### ShipOrderMultiPackage
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ShipOrderMultiPackage(string purchaseOrderId, MultiPackageShipRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `ShipOrderMultiPackage(ShipOrderMultiPackageRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `MultiPackageShipResponse`
-- **Error**: `SdkException<ShipOrderMultiPackageError>` — **Case A (typed)**
+- **Error**: `ApiException<ShipOrderMultiPackageError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `MultiPackageShipRequest` | `Models/MultiPackageShipRequest.cs` |
-| `MultiPackageShipResponse` | `Models/MultiPackageShipResponse.cs` |
-| `ShipOrderMultiPackageError` | `Errors/ShipOrderMultiPackageError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ShipOrderMultiPackageRequest` | `src/WalmartApIs/Requests/Orders/ShipOrderMultiPackageRequest.cs` |
+| `MultiPackageShipRequest` | `src/WalmartApIs/Models/MultiPackageShipRequest.cs` |
+| `MultiPackageShipResponse` | `src/WalmartApIs/Models/MultiPackageShipResponse.cs` |
+| `ShipOrderMultiPackageError` | `src/WalmartApIs/Errors/ShipOrderMultiPackageError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### UpdateShipmentStatus
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateShipmentStatus(string purchaseOrderId, UpdateShipmentStatusRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateShipmentStatus(UpdateShipmentStatusOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `UpdateShipmentStatusResponse`
-- **Error**: `SdkException<UpdateShipmentStatusError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateShipmentStatusError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateShipmentStatusRequest` | `Models/UpdateShipmentStatusRequest.cs` |
-| `UpdateShipmentStatusResponse` | `Models/UpdateShipmentStatusResponse.cs` |
-| `UpdateShipmentStatusError` | `Errors/UpdateShipmentStatusError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `UpdateShipmentStatusOperationRequest` | `src/WalmartApIs/Requests/Orders/UpdateShipmentStatusOperationRequest.cs` |
+| `UpdateShipmentStatusRequest` | `src/WalmartApIs/Models/UpdateShipmentStatusRequest.cs` |
+| `UpdateShipmentStatusResponse` | `src/WalmartApIs/Models/UpdateShipmentStatusResponse.cs` |
+| `UpdateShipmentStatusError` | `src/WalmartApIs/Errors/UpdateShipmentStatusError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### UpdateVerificationStatus
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateVerificationStatus(string purchaseOrderId, UpdateVerificationStatusRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateVerificationStatus(UpdateVerificationStatusOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `PurchaseOrderId`, `Body`
 - **Returns**: `UpdateVerificationStatusResponse`
-- **Error**: `SdkException<UpdateVerificationStatusError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateVerificationStatusError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500, 503] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateVerificationStatusRequest` | `Models/UpdateVerificationStatusRequest.cs` |
-| `UpdateVerificationStatusResponse` | `Models/UpdateVerificationStatusResponse.cs` |
-| `UpdateVerificationStatusError` | `Errors/UpdateVerificationStatusError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `UpdateVerificationStatusOperationRequest` | `src/WalmartApIs/Requests/Orders/UpdateVerificationStatusOperationRequest.cs` |
+| `UpdateVerificationStatusRequest` | `src/WalmartApIs/Models/UpdateVerificationStatusRequest.cs` |
+| `UpdateVerificationStatusResponse` | `src/WalmartApIs/Models/UpdateVerificationStatusResponse.cs` |
+| `UpdateVerificationStatusError` | `src/WalmartApIs/Errors/UpdateVerificationStatusError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

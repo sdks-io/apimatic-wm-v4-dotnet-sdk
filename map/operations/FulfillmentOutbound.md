@@ -2,7 +2,7 @@
 
 # FulfillmentOutbound — operations
 
-Accessor: `client.FulfillmentOutbound` · Source: `Api/FulfillmentOutbound.cs` · 7 operations
+Accessor: `client.FulfillmentOutbound` · Source: `src/WalmartApIs/Api/FulfillmentOutbound.cs` · 7 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,110 +10,121 @@ Accessor: `client.FulfillmentOutbound` · Source: `Api/FulfillmentOutbound.cs` �
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CancelFulfillmentOrder(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CancelFulfillmentOrder(CancelFulfillmentOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerFulfillmentOrderId`
 - **Returns**: `CancelFulfillmentOrderResponse`
-- **Error**: `SdkException<CancelFulfillmentOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<CancelFulfillmentOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CancelFulfillmentOrderResponse` | `Models/CancelFulfillmentOrderResponse.cs` |
-| `CancelFulfillmentOrderError` | `Errors/CancelFulfillmentOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CancelFulfillmentOrderRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/CancelFulfillmentOrderRequest.cs` |
+| `CancelFulfillmentOrderResponse` | `src/WalmartApIs/Models/CancelFulfillmentOrderResponse.cs` |
+| `CancelFulfillmentOrderError` | `src/WalmartApIs/Errors/CancelFulfillmentOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### CreateFulfillmentOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateFulfillmentOrder(CreateFulfillmentOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `CreateFulfillmentOrder(CreateFulfillmentOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CreateFulfillmentOrderResponse`
-- **Error**: `SdkException<CreateFulfillmentOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateFulfillmentOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateFulfillmentOrderRequest` | `Models/CreateFulfillmentOrderRequest.cs` |
-| `CreateFulfillmentOrderResponse` | `Models/CreateFulfillmentOrderResponse.cs` |
-| `CreateFulfillmentOrderError` | `Errors/CreateFulfillmentOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateFulfillmentOrderOperationRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/CreateFulfillmentOrderOperationRequest.cs` |
+| `CreateFulfillmentOrderRequest` | `src/WalmartApIs/Models/CreateFulfillmentOrderRequest.cs` |
+| `CreateFulfillmentOrderResponse` | `src/WalmartApIs/Models/CreateFulfillmentOrderResponse.cs` |
+| `CreateFulfillmentOrderError` | `src/WalmartApIs/Errors/CreateFulfillmentOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetFulfillmentOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFulfillmentOrder(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFulfillmentOrder(GetFulfillmentOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerFulfillmentOrderId`
 - **Returns**: `GetFulfillmentOrderResponse`
-- **Error**: `SdkException<GetFulfillmentOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFulfillmentOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFulfillmentOrderResponse` | `Models/GetFulfillmentOrderResponse.cs` |
-| `GetFulfillmentOrderError` | `Errors/GetFulfillmentOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetFulfillmentOrderRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentOrderRequest.cs` |
+| `GetFulfillmentOrderResponse` | `src/WalmartApIs/Models/GetFulfillmentOrderResponse.cs` |
+| `GetFulfillmentOrderError` | `src/WalmartApIs/Errors/GetFulfillmentOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetFulfillmentOrderShipments
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFulfillmentOrderShipments(string sellerFulfillmentOrderId, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFulfillmentOrderShipments(GetFulfillmentOrderShipmentsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerFulfillmentOrderId`
 - **Returns**: `GetFulfillmentOrderShipmentsResponse`
-- **Error**: `SdkException<GetFulfillmentOrderShipmentsError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFulfillmentOrderShipmentsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFulfillmentOrderShipmentsResponse` | `Models/GetFulfillmentOrderShipmentsResponse.cs` |
-| `GetFulfillmentOrderShipmentsError` | `Errors/GetFulfillmentOrderShipmentsError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetFulfillmentOrderShipmentsRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentOrderShipmentsRequest.cs` |
+| `GetFulfillmentOrderShipmentsResponse` | `src/WalmartApIs/Models/GetFulfillmentOrderShipmentsResponse.cs` |
+| `GetFulfillmentOrderShipmentsError` | `src/WalmartApIs/Errors/GetFulfillmentOrderShipmentsError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetFulfillmentPreview
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFulfillmentPreview(GetFulfillmentPreviewRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFulfillmentPreview(GetFulfillmentPreviewOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `GetFulfillmentPreviewResponse`
-- **Error**: `SdkException<GetFulfillmentPreviewError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFulfillmentPreviewError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFulfillmentPreviewRequest` | `Models/GetFulfillmentPreviewRequest.cs` |
-| `GetFulfillmentPreviewResponse` | `Models/GetFulfillmentPreviewResponse.cs` |
-| `GetFulfillmentPreviewError` | `Errors/GetFulfillmentPreviewError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetFulfillmentPreviewOperationRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/GetFulfillmentPreviewOperationRequest.cs` |
+| `GetFulfillmentPreviewRequest` | `src/WalmartApIs/Models/GetFulfillmentPreviewRequest.cs` |
+| `GetFulfillmentPreviewResponse` | `src/WalmartApIs/Models/GetFulfillmentPreviewResponse.cs` |
+| `GetFulfillmentPreviewError` | `src/WalmartApIs/Errors/GetFulfillmentPreviewError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### ListAllFulfillmentOrders
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `ListAllFulfillmentOrders(DateTimeOffset? queryStartDate, string? nextToken, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `queryStartDate` — nullable, no default → **must pass explicitly**
-  - `nextToken` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `queryStartDate` ← `queryStartDate`, `nextToken` ← `nextToken`
+- **Signature**: `ListAllFulfillmentOrders(ListAllFulfillmentOrdersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+- **Query params (wire ← C#)**: `queryStartDate` ← `QueryStartDate`, `nextToken` ← `NextToken`
 - **Returns**: `ListAllFulfillmentOrdersResponse`
-- **Error**: `SdkException<ListAllFulfillmentOrdersError>` — **Case A (typed)**
+- **Error**: `ApiException<ListAllFulfillmentOrdersError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ListAllFulfillmentOrdersResponse` | `Models/ListAllFulfillmentOrdersResponse.cs` |
-| `ListAllFulfillmentOrdersError` | `Errors/ListAllFulfillmentOrdersError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `ListAllFulfillmentOrdersRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/ListAllFulfillmentOrdersRequest.cs` |
+| `ListAllFulfillmentOrdersResponse` | `src/WalmartApIs/Models/ListAllFulfillmentOrdersResponse.cs` |
+| `ListAllFulfillmentOrdersError` | `src/WalmartApIs/Errors/ListAllFulfillmentOrdersError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### UpdateFulfillmentOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `UpdateFulfillmentOrder(string sellerFulfillmentOrderId, UpdateFulfillmentOrderRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `UpdateFulfillmentOrder(UpdateFulfillmentOrderOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerFulfillmentOrderId`, `Body`
 - **Returns**: `UpdateFulfillmentOrderResponse`
-- **Error**: `SdkException<UpdateFulfillmentOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<UpdateFulfillmentOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `UpdateFulfillmentOrderRequest` | `Models/UpdateFulfillmentOrderRequest.cs` |
-| `UpdateFulfillmentOrderResponse` | `Models/UpdateFulfillmentOrderResponse.cs` |
-| `UpdateFulfillmentOrderError` | `Errors/UpdateFulfillmentOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `UpdateFulfillmentOrderOperationRequest` | `src/WalmartApIs/Requests/FulfillmentOutbound/UpdateFulfillmentOrderOperationRequest.cs` |
+| `UpdateFulfillmentOrderRequest` | `src/WalmartApIs/Models/UpdateFulfillmentOrderRequest.cs` |
+| `UpdateFulfillmentOrderResponse` | `src/WalmartApIs/Models/UpdateFulfillmentOrderResponse.cs` |
+| `UpdateFulfillmentOrderError` | `src/WalmartApIs/Errors/UpdateFulfillmentOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 

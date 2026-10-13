@@ -2,7 +2,7 @@
 
 # ProductPricing — operations
 
-Accessor: `client.ProductPricing` · Source: `Api/ProductPricing.cs` · 8 operations
+Accessor: `client.ProductPricing` · Source: `src/WalmartApIs/Api/ProductPricing.cs` · 8 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,143 +10,153 @@ Accessor: `client.ProductPricing` · Source: `Api/ProductPricing.cs` · 8 operat
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetCompetitivePricing(string marketplaceId, ItemType itemType, IReadOnlyList<string>? skus, IReadOnlyList<string>? walmartItemIds, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `skus` — nullable, no default → **must pass explicitly**
-  - `walmartItemIds` — nullable, no default → **must pass explicitly**
-  - `customerType` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `MarketplaceId` ← `marketplaceId`, `ItemType` ← `itemType`, `Skus` ← `skus`, `walmartItemIds` ← `walmartItemIds`, `CustomerType` ← `customerType`
+- **Signature**: `GetCompetitivePricing(GetCompetitivePricingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `MarketplaceId`
+- **Query params (wire ← C#)**: `MarketplaceId` ← `MarketplaceId`, `ItemType` ← `ItemType`, `Skus` ← `Skus`, `walmartItemIds` ← `WalmartItemIds`, `CustomerType` ← `CustomerType`
 - **Returns**: `GetPricingResponse`
-- **Error**: `SdkException<GetCompetitivePricingError>` — **Case A (typed)**
+- **Error**: `ApiException<GetCompetitivePricingError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ItemType` | `Models/Enums/ItemType.cs` |
-| `CustomerType` | `Models/Enums/CustomerType.cs` |
-| `GetPricingResponse` | `Models/GetPricingResponse.cs` |
-| `GetCompetitivePricingError` | `Errors/GetCompetitivePricingError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetCompetitivePricingRequest` | `src/WalmartApIs/Requests/ProductPricing/GetCompetitivePricingRequest.cs` |
+| `ItemType` | `src/WalmartApIs/Models/Enums/ItemType.cs` |
+| `CustomerType` | `src/WalmartApIs/Models/Enums/CustomerType.cs` |
+| `GetPricingResponse` | `src/WalmartApIs/Models/GetPricingResponse.cs` |
+| `GetCompetitivePricingError` | `src/WalmartApIs/Errors/GetCompetitivePricingError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetCompetitiveSummary
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetCompetitiveSummary(CompetitiveSummaryBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetCompetitiveSummary(GetCompetitiveSummaryRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `CompetitiveSummaryBatchResponse`
-- **Error**: `SdkException<GetCompetitiveSummaryError>` — **Case A (typed)**
+- **Error**: `ApiException<GetCompetitiveSummaryError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CompetitiveSummaryBatchRequest` | `Models/CompetitiveSummaryBatchRequest.cs` |
-| `CompetitiveSummaryBatchResponse` | `Models/CompetitiveSummaryBatchResponse.cs` |
-| `GetCompetitiveSummaryError` | `Errors/GetCompetitiveSummaryError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetCompetitiveSummaryRequest` | `src/WalmartApIs/Requests/ProductPricing/GetCompetitiveSummaryRequest.cs` |
+| `CompetitiveSummaryBatchRequest` | `src/WalmartApIs/Models/CompetitiveSummaryBatchRequest.cs` |
+| `CompetitiveSummaryBatchResponse` | `src/WalmartApIs/Models/CompetitiveSummaryBatchResponse.cs` |
+| `GetCompetitiveSummaryError` | `src/WalmartApIs/Errors/GetCompetitiveSummaryError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetFeaturedOfferExpectedPriceBatch
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetFeaturedOfferExpectedPriceBatch(GetFeaturedOfferExpectedPriceBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetFeaturedOfferExpectedPriceBatch(GetFeaturedOfferExpectedPriceBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `GetFeaturedOfferExpectedPriceBatchResponse`
-- **Error**: `SdkException<GetFeaturedOfferExpectedPriceBatchError>` — **Case A (typed)**
+- **Error**: `ApiException<GetFeaturedOfferExpectedPriceBatchError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetFeaturedOfferExpectedPriceBatchRequest` | `Models/GetFeaturedOfferExpectedPriceBatchRequest.cs` |
-| `GetFeaturedOfferExpectedPriceBatchResponse` | `Models/GetFeaturedOfferExpectedPriceBatchResponse.cs` |
-| `GetFeaturedOfferExpectedPriceBatchError` | `Errors/GetFeaturedOfferExpectedPriceBatchError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetFeaturedOfferExpectedPriceBatchOperationRequest` | `src/WalmartApIs/Requests/ProductPricing/GetFeaturedOfferExpectedPriceBatchOperationRequest.cs` |
+| `GetFeaturedOfferExpectedPriceBatchRequest` | `src/WalmartApIs/Models/GetFeaturedOfferExpectedPriceBatchRequest.cs` |
+| `GetFeaturedOfferExpectedPriceBatchResponse` | `src/WalmartApIs/Models/GetFeaturedOfferExpectedPriceBatchResponse.cs` |
+| `GetFeaturedOfferExpectedPriceBatchError` | `src/WalmartApIs/Errors/GetFeaturedOfferExpectedPriceBatchError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetItemOffers
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetItemOffers(string itemId, string marketplaceId, ConditionType2 itemCondition, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `customerType` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `MarketplaceId` ← `marketplaceId`, `ItemCondition` ← `itemCondition`, `CustomerType` ← `customerType`
+- **Signature**: `GetItemOffers(GetItemOffersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `ItemId`, `MarketplaceId`, `ItemCondition`
+- **Query params (wire ← C#)**: `MarketplaceId` ← `MarketplaceId`, `ItemCondition` ← `ItemCondition`, `CustomerType` ← `CustomerType`
 - **Returns**: `GetOffersResponse`
-- **Error**: `SdkException<GetItemOffersError>` — **Case A (typed)**
+- **Error**: `ApiException<GetItemOffersError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ConditionType2` | `Models/Enums/ConditionType2.cs` |
-| `CustomerType` | `Models/Enums/CustomerType.cs` |
-| `GetOffersResponse` | `Models/GetOffersResponse.cs` |
-| `GetItemOffersError` | `Errors/GetItemOffersError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetItemOffersRequest` | `src/WalmartApIs/Requests/ProductPricing/GetItemOffersRequest.cs` |
+| `ConditionType2` | `src/WalmartApIs/Models/Enums/ConditionType2.cs` |
+| `CustomerType` | `src/WalmartApIs/Models/Enums/CustomerType.cs` |
+| `GetOffersResponse` | `src/WalmartApIs/Models/GetOffersResponse.cs` |
+| `GetItemOffersError` | `src/WalmartApIs/Errors/GetItemOffersError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetItemOffersBatch
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetItemOffersBatch(GetItemOffersBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetItemOffersBatch(GetItemOffersBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `GetItemOffersBatchResponse`
-- **Error**: `SdkException<GetItemOffersBatchError>` — **Case A (typed)**
+- **Error**: `ApiException<GetItemOffersBatchError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetItemOffersBatchRequest` | `Models/GetItemOffersBatchRequest.cs` |
-| `GetItemOffersBatchResponse` | `Models/GetItemOffersBatchResponse.cs` |
-| `GetItemOffersBatchError` | `Errors/GetItemOffersBatchError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetItemOffersBatchOperationRequest` | `src/WalmartApIs/Requests/ProductPricing/GetItemOffersBatchOperationRequest.cs` |
+| `GetItemOffersBatchRequest` | `src/WalmartApIs/Models/GetItemOffersBatchRequest.cs` |
+| `GetItemOffersBatchResponse` | `src/WalmartApIs/Models/GetItemOffersBatchResponse.cs` |
+| `GetItemOffersBatchError` | `src/WalmartApIs/Errors/GetItemOffersBatchError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetListingOffers
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetListingOffers(string sellerSku, string marketplaceId, ConditionType2 itemCondition, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - `customerType` — nullable, no default → **must pass explicitly**
-- **Query params (wire ← C#)**: `MarketplaceId` ← `marketplaceId`, `ItemCondition` ← `itemCondition`, `CustomerType` ← `customerType`
+- **Signature**: `GetListingOffers(GetListingOffersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SellerSku`, `MarketplaceId`, `ItemCondition`
+- **Query params (wire ← C#)**: `MarketplaceId` ← `MarketplaceId`, `ItemCondition` ← `ItemCondition`, `CustomerType` ← `CustomerType`
 - **Returns**: `GetOffersResponse`
-- **Error**: `SdkException<GetListingOffersError>` — **Case A (typed)**
+- **Error**: `ApiException<GetListingOffersError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ConditionType2` | `Models/Enums/ConditionType2.cs` |
-| `CustomerType` | `Models/Enums/CustomerType.cs` |
-| `GetOffersResponse` | `Models/GetOffersResponse.cs` |
-| `GetListingOffersError` | `Errors/GetListingOffersError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetListingOffersRequest` | `src/WalmartApIs/Requests/ProductPricing/GetListingOffersRequest.cs` |
+| `ConditionType2` | `src/WalmartApIs/Models/Enums/ConditionType2.cs` |
+| `CustomerType` | `src/WalmartApIs/Models/Enums/CustomerType.cs` |
+| `GetOffersResponse` | `src/WalmartApIs/Models/GetOffersResponse.cs` |
+| `GetListingOffersError` | `src/WalmartApIs/Errors/GetListingOffersError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetListingOffersBatch
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetListingOffersBatch(GetListingOffersBatchRequest body, RequestOptions? requestOptions = null, CancellationToken ct = default)`
+- **Signature**: `GetListingOffersBatch(GetListingOffersBatchOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `Body`
 - **Returns**: `GetListingOffersBatchResponse`
-- **Error**: `SdkException<GetListingOffersBatchError>` — **Case A (typed)**
+- **Error**: `ApiException<GetListingOffersBatchError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetListingOffersBatchRequest` | `Models/GetListingOffersBatchRequest.cs` |
-| `GetListingOffersBatchResponse` | `Models/GetListingOffersBatchResponse.cs` |
-| `GetListingOffersBatchError` | `Errors/GetListingOffersBatchError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetListingOffersBatchOperationRequest` | `src/WalmartApIs/Requests/ProductPricing/GetListingOffersBatchOperationRequest.cs` |
+| `GetListingOffersBatchRequest` | `src/WalmartApIs/Models/GetListingOffersBatchRequest.cs` |
+| `GetListingOffersBatchResponse` | `src/WalmartApIs/Models/GetListingOffersBatchResponse.cs` |
+| `GetListingOffersBatchError` | `src/WalmartApIs/Errors/GetListingOffersBatchError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 
 ### GetPricing
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetPricing(string marketplaceId, ItemType itemType, IReadOnlyList<string>? skus, IReadOnlyList<string>? walmartItemIds, ConditionType2? itemCondition, OfferType? offerType, CustomerType? customerType, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-  - 5 params (`skus` … `customerType`) — nullable, no default → **must pass explicitly** (pass `null` to skip)
-- **Query params (wire ← C#)**: `MarketplaceId` ← `marketplaceId`, `ItemType` ← `itemType`, `Skus` ← `skus`, `walmartItemIds` ← `walmartItemIds`, `ItemCondition` ← `itemCondition`, `OfferType` ← `offerType`, `CustomerType` ← `customerType`
+- **Signature**: `GetPricing(GetPricingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `MarketplaceId`
+- **Query params (wire ← C#)**: `MarketplaceId` ← `MarketplaceId`, `ItemType` ← `ItemType`, `Skus` ← `Skus`, `walmartItemIds` ← `WalmartItemIds`, `ItemCondition` ← `ItemCondition`, `OfferType` ← `OfferType`, `CustomerType` ← `CustomerType`
 - **Returns**: `GetPricingResponse`
-- **Error**: `SdkException<GetPricingError>` — **Case A (typed)**
+- **Error**: `ApiException<GetPricingError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError3(out IReadOnlyList<Error3>)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `ItemType` | `Models/Enums/ItemType.cs` |
-| `ConditionType2` | `Models/Enums/ConditionType2.cs` |
-| `OfferType` | `Models/Enums/OfferType.cs` |
-| `CustomerType` | `Models/Enums/CustomerType.cs` |
-| `GetPricingResponse` | `Models/GetPricingResponse.cs` |
-| `GetPricingError` | `Errors/GetPricingError.cs` |
-| `Error3` | `Models/Error3.cs` |
+| `GetPricingRequest` | `src/WalmartApIs/Requests/ProductPricing/GetPricingRequest.cs` |
+| `ItemType` | `src/WalmartApIs/Models/Enums/ItemType.cs` |
+| `ConditionType2` | `src/WalmartApIs/Models/Enums/ConditionType2.cs` |
+| `OfferType` | `src/WalmartApIs/Models/Enums/OfferType.cs` |
+| `CustomerType` | `src/WalmartApIs/Models/Enums/CustomerType.cs` |
+| `GetPricingResponse` | `src/WalmartApIs/Models/GetPricingResponse.cs` |
+| `GetPricingError` | `src/WalmartApIs/Errors/GetPricingError.cs` |
+| `Error3` | `src/WalmartApIs/Models/Error3.cs` |
 

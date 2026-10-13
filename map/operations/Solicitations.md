@@ -2,7 +2,7 @@
 
 # Solicitations — operations
 
-Accessor: `client.Solicitations` · Source: `Api/Solicitations.cs` · 2 operations
+Accessor: `client.Solicitations` · Source: `src/WalmartApIs/Api/Solicitations.cs` · 2 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
@@ -10,29 +10,33 @@ Accessor: `client.Solicitations` · Source: `Api/Solicitations.cs` · 2 operatio
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `CreateProductReviewAndSellerFeedbackSolicitation(string spApiOrderId, IReadOnlyList<string> marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `CreateProductReviewAndSellerFeedbackSolicitation(CreateProductReviewAndSellerFeedbackSolicitationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<CreateProductReviewAndSellerFeedbackSolicitationError>` — **Case A (typed)**
+- **Error**: `ApiException<CreateProductReviewAndSellerFeedbackSolicitationError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateProductReviewAndSellerFeedbackSolicitationError` | `Errors/CreateProductReviewAndSellerFeedbackSolicitationError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `CreateProductReviewAndSellerFeedbackSolicitationRequest` | `src/WalmartApIs/Requests/Solicitations/CreateProductReviewAndSellerFeedbackSolicitationRequest.cs` |
+| `CreateProductReviewAndSellerFeedbackSolicitationError` | `src/WalmartApIs/Errors/CreateProductReviewAndSellerFeedbackSolicitationError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
 ### GetSolicitationActionsForOrder
 
 - **Server group**: `Default1`
 - **Auth**: `options.WalletAuth`
-- **Signature**: `GetSolicitationActionsForOrder(string spApiOrderId, IReadOnlyList<string> marketplaceIds, RequestOptions? requestOptions = null, CancellationToken ct = default)`
-- **Query params (wire ← C#)**: `marketplaceIds` ← `marketplaceIds`
+- **Signature**: `GetSolicitationActionsForOrder(GetSolicitationActionsForOrderRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `SpApiOrderId`, `MarketplaceIds`
+- **Query params (wire ← C#)**: `marketplaceIds` ← `MarketplaceIds`
 - **Returns**: `object`
-- **Error**: `SdkException<GetSolicitationActionsForOrderError>` — **Case A (typed)**
+- **Error**: `ApiException<GetSolicitationActionsForOrderError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorList(out ErrorList)` [400, 403, 404, 429, 500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `GetSolicitationActionsForOrderError` | `Errors/GetSolicitationActionsForOrderError.cs` |
-| `ErrorList` | `Models/ErrorList.cs` |
+| `GetSolicitationActionsForOrderRequest` | `src/WalmartApIs/Requests/Solicitations/GetSolicitationActionsForOrderRequest.cs` |
+| `GetSolicitationActionsForOrderError` | `src/WalmartApIs/Errors/GetSolicitationActionsForOrderError.cs` |
+| `ErrorList` | `src/WalmartApIs/Models/ErrorList.cs` |
 
