@@ -20,8 +20,9 @@ Accessor: `client.Authorization` · Source: `src/WalmartApIs/Api/Authorization.c
 
 ### TokenApi
 
+- **Auth**: `options.BasicAuth`
 - **Signature**: `TokenApi(TokenApiRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmMarket`, `Authorization`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `WmMarket`, `WmQosCorrelationId`, `WmSvcName`
 - **Returns**: `OAuthTokenModel`
 - **Error**: `ApiException<TokenApiError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3Token400Error1(out V3Token400Error1)` [400] · `TryGetV3Token401Error1(out V3Token401Error1)` [401] · `TryGetV3Token500Error1(out V3Token500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]

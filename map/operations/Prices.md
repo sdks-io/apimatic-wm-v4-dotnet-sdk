@@ -10,7 +10,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `CreateStrategy(CreateStrategyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3RepricerStrategyResponse2`
 - **Error**: `ApiException<CreateStrategyError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3RepricerStrategy400Error1(out V3RepricerStrategy400Error1)` [400] · `TryGetV3Token400Error1(out V3Token400Error1)` [403, 500] · `TryGetRawError(out RawError)` [fallback]
@@ -30,7 +30,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DeleteStrategy(DeleteStrategyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `StrategyCollectionId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `StrategyCollectionId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `RejectRecommendationsResponsePayload`
 - **Error**: `ApiException<DeleteStrategyError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3RepricerStrategy400Error1(out V3RepricerStrategy400Error1)` [400] · `TryGetV3Token400Error1(out V3Token400Error1)` [403, 500] · `TryGetRawError(out RawError)` [fallback]
@@ -49,7 +49,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAllIncentives(GetAllIncentivesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `incentiveStatus` ← `IncentiveStatus`, `limit` ← `Limit`, `offset` ← `Offset`, `sortBy` ← `SortBy`, `sortOrder` ← `SortOrder`, `incentiveType` ← `IncentiveType`
 - **Returns**: `V3PriceIncentivesResponse`
 - **Error**: `ApiException<GetAllIncentivesError>` — **Case A (typed)**
@@ -73,7 +73,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetRepricerFeed(GetRepricerFeedRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `FeedId1`
 - **Error**: `ApiException<GetRepricerFeedError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3Token400Error1(out V3Token400Error1)` [403, 500] · `TryGetRawError(out RawError)` [fallback]
@@ -92,7 +92,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetStrategies(GetStrategiesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `offset` ← `Offset`, `limit` ← `Limit`
 - **Returns**: `V3RepricerStrategiesResponse`
 - **Error**: `ApiException<GetStrategiesError>` — **Case A (typed)**
@@ -111,7 +111,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `PriceAndPromotionBulkUploads(PriceAndPromotionBulkUploadsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `FeedType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Query params (wire ← C#)**: `feedType` ← `FeedType`
 - **Returns**: `FeedId`
 - **Error**: `ApiException<PriceAndPromotionBulkUploadsError>` — **Case A (typed)**
@@ -132,7 +132,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `ReducedReferralFeeIncentivesEnrollment(ReducedReferralFeeIncentivesEnrollmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `FeedType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Query params (wire ← C#)**: `feedType` ← `FeedType`
 - **Returns**: `V3FeedsFeedTypeIncentiveEnrollmentResponse`
 - **Error**: `ApiException<ReducedReferralFeeIncentivesEnrollmentError>` — **Case A (typed)**
@@ -153,7 +153,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdatePrice(UpdatePriceRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3PriceResponse`
 - **Error**: `ApiException<UpdatePriceError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3Token400Error1(out V3Token400Error1)` [403, 500] · `TryGetRawError(out RawError)` [fallback]
@@ -172,7 +172,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateStrategy(UpdateStrategyRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `StrategyCollectionId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `StrategyCollectionId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3RepricerStrategyResponse`
 - **Error**: `ApiException<UpdateStrategyError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3RepricerStrategy400Error1(out V3RepricerStrategy400Error1)` [400] · `TryGetV3Token400Error1(out V3Token400Error1)` [403, 500] · `TryGetRawError(out RawError)` [fallback]
@@ -192,7 +192,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateWalmartFundedIncentivesEnrollmentStatus(UpdateWalmartFundedIncentivesEnrollmentStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `autoEnrollEnabled` ← `AutoEnrollEnabled`
 - **Returns**: `V3PriceIncentivesWfpreferenceResponse`
 - **Error**: `ApiException<UpdateWalmartFundedIncentivesEnrollmentStatusError>` — **Case A (typed)**
@@ -211,7 +211,7 @@ Accessor: `client.Prices` · Source: `src/WalmartApIs/Api/Prices.cs` · 11 opera
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `WalmartFundedIncentivesEnrollment(WalmartFundedIncentivesEnrollmentRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `FeedType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Query params (wire ← C#)**: `feedType` ← `FeedType`
 - **Returns**: `FeedId`
 - **Error**: `ApiException<WalmartFundedIncentivesEnrollmentError>` — **Case A (typed)**

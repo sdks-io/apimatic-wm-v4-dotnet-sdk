@@ -16,14 +16,6 @@ public sealed record TokenApiRequest
     public required string WmMarket { get; init; }
 
     /// <summary>
-    /// Basic authorization header. Base 64 encodes the Client ID and Client Secret retrieved in step two of the integration steps.
-    /// <para>
-    /// &lt;strong style="color: green;"&gt;<b>Market availability: Global</b>&lt;/strong&gt;
-    /// </para>
-    /// </summary>
-    public required string Authorization { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and used to track and debug issues; use a random generated GUID for this ID
     /// <para>
     /// &lt;strong style="color: green;"&gt;<b>Market availability: Global</b>&lt;/strong&gt;
@@ -69,7 +61,7 @@ public sealed record TokenApiRequest
     /// &lt;strong style="color: green;"&gt;<b>Market availability: Global</b>&lt;/strong&gt;
     /// </para>
     /// </summary>
-    public string Code { get; init; } = "65CA5DA313A549D49D15D3119D9AD85D";
+    public string? Code { get; init; }
 
     /// <summary>
     /// This should be same as one of your client app URIs provided while registering the app. &lt;br /&gt; This field is required when <b>grant_type: authorization_code</b>
@@ -77,7 +69,7 @@ public sealed record TokenApiRequest
     /// &lt;strong style="color: green;"&gt;<b>Market availability: Global</b>&lt;/strong&gt;
     /// </para>
     /// </summary>
-    public string RedirectUri { get; init; } = "https://example-client-app.com";
+    public string? RedirectUri { get; init; }
 
     /// <summary>
     /// Refresh token received as response of Authentication API with authorization_code grant type, to be used to refresh the access token. The token lifetime is 1 year.
@@ -85,5 +77,5 @@ public sealed record TokenApiRequest
     /// &lt;strong style="color: green;"&gt;<b>Market availability: Global</b>&lt;/strong&gt;
     /// </para>
     /// </summary>
-    public string RefreshToken { get; init; } = "APXcIoTpKMH9OQN.....";
+    public string? RefreshToken { get; init; }
 }

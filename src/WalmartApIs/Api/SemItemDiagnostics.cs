@@ -95,7 +95,6 @@ public sealed class SemItemDiagnostics
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
@@ -177,7 +176,6 @@ public sealed class SemItemDiagnostics
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),

@@ -54,7 +54,6 @@ public sealed class InsightApi
             ],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -88,7 +87,6 @@ public sealed class InsightApi
             [new Param("viewTrendingItems", request.ViewTrendingItems), new Param("wfsFlag", request.WfsFlag)],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -122,7 +120,6 @@ public sealed class InsightApi
             [],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -156,7 +153,6 @@ public sealed class InsightApi
             [],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -190,7 +186,6 @@ public sealed class InsightApi
             [new Param("fromDate", request.FromDate)],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -232,7 +227,6 @@ public sealed class InsightApi
             ],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -270,7 +264,6 @@ public sealed class InsightApi
             ],
             [
                 new HeaderParam("WM_GLOBAL_VERSION", request.WmGlobalVersion),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

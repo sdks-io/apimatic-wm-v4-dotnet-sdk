@@ -10,7 +10,7 @@ Accessor: `client.SemItemDiagnostics` · Source: `src/WalmartApIs/Api/SemItemDia
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetIssueTypes(GetIssueTypesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmSvcName`, `WmQosCorrelationId`
+  - required: `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `IReadOnlyDictionary<string, IssueMetadata>`
 - **Error**: `ApiException<GetIssueTypesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorResponseModel(out ErrorResponseModel)` [401, 403, 500, 503] · `TryGetErrorResponse429(out ErrorResponse429)` [429] · `TryGetRawError(out RawError)` [fallback]
@@ -29,7 +29,7 @@ Accessor: `client.SemItemDiagnostics` · Source: `src/WalmartApIs/Api/SemItemDia
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `SearchItemIssues(SearchItemIssuesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmSvcName`, `WmQosCorrelationId`
+  - required: `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `ItemDiagnosticSearchResponse`
 - **Error**: `ApiException<SearchItemIssuesError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorResponseModel(out ErrorResponseModel)` [400, 401, 403, 422, 500, 503] · `TryGetErrorResponse429(out ErrorResponse429)` [429] · `TryGetRawError(out RawError)` [fallback]

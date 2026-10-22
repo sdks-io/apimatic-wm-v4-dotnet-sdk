@@ -8,14 +8,6 @@ namespace WalmartApIs.Requests.ShipWithWalmart;
 public sealed record GetCarriersRequest
 {
     /// <summary>
-    /// The access token retrieved in the Token API call
-    /// <para>
-    /// &lt;b style="color: green;"&gt;Market availability:Global&lt;/b&gt;
-    /// </para>
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and is used to track and debug issues. Use a randomly generated GUID for this ID.
     /// <para>
     /// &lt;b style="color: green;"&gt;Market availability: Global&lt;/b&gt;

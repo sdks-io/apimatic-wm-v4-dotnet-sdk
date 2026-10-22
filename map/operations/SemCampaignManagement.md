@@ -59,7 +59,7 @@ Accessor: `client.SemCampaignManagement` · Source: `src/WalmartApIs/Api/SemCamp
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `SearchCampaignRecommendations(SearchCampaignRecommendationsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmSvcName`, `WmQosCorrelationId`
+  - required: `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `CampaignRecommendationsSearchResponse`
 - **Error**: `ApiException<SearchCampaignRecommendationsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetErrorResponseModel(out ErrorResponseModel)` [400, 401, 403, 422, 500, 503] · `TryGetErrorResponse429(out ErrorResponse429)` [429] · `TryGetRawError(out RawError)` [fallback]

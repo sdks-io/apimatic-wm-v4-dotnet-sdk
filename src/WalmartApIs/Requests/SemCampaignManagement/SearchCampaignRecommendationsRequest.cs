@@ -9,11 +9,6 @@ namespace WalmartApIs.Requests.SemCampaignManagement;
 public sealed record SearchCampaignRecommendationsRequest
 {
     /// <summary>
-    /// Access token obtained from the Token API. This is required for authenticating requests to Walmart Marketplace APIs.
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// Specifies the name of the Walmart service being called.
     /// </summary>
     public required string WmSvcName { get; init; }

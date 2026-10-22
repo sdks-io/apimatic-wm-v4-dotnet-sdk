@@ -11,7 +11,7 @@ public record PromotionalPriceResponse
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("header")]
-    public Header? Header { get; init; }
+    public Header1? Header { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("status")]

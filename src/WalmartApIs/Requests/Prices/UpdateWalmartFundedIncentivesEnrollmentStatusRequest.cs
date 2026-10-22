@@ -13,11 +13,6 @@ public sealed record UpdateWalmartFundedIncentivesEnrollmentStatusRequest
     public bool AutoEnrollEnabled { get; init; } = true;
 
     /// <summary>
-    /// Access token obtained from the Token API. Required for authenticating requests to Walmart Marketplace APIs.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and is used to track and debug issues. Use a randomly generated GUID for this ID.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;
     /// </summary>
     public required string WmQosCorrelationId { get; init; }

@@ -47,7 +47,6 @@ public sealed class InventoryApi
             [],
             [new Param("sku", request.Sku), new Param("shipNode", request.ShipNode)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -82,7 +81,6 @@ public sealed class InventoryApi
             [],
             [new Param("limit", request.Limit), new Param("nextCursor", request.NextCursor)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -117,7 +115,6 @@ public sealed class InventoryApi
             [new TemplateParam("sku", request.Sku)],
             [new Param("shipNode", request.ShipNode)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -159,7 +156,6 @@ public sealed class InventoryApi
                 new Param("shipNodeType", request.ShipNodeType),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -212,7 +208,6 @@ public sealed class InventoryApi
             [],
             [new Param("feedType", request.FeedType), new Param("shipNode", request.ShipNode)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -248,7 +243,6 @@ public sealed class InventoryApi
             [],
             [new Param("sku", request.Sku), new Param("shipNode", request.ShipNode)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -284,7 +278,6 @@ public sealed class InventoryApi
             [new TemplateParam("sku", request.Sku)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

@@ -10,7 +10,7 @@ Accessor: `client.FeedsApi` · Source: `src/WalmartApIs/Api/FeedsApi.cs` · 3 op
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAllFeedStatuses(GetAllFeedStatusesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `feedId` ← `FeedId`, `feedType` ← `FeedType`, `feedStatus` ← `FeedStatus`, `offset` ← `Offset`, `limit` ← `Limit`
 - **Returns**: `FeedRecordResponse`
 - **Error**: `ApiException<GetAllFeedStatusesError>` — **Case A (typed)**
@@ -29,7 +29,7 @@ Accessor: `client.FeedsApi` · Source: `src/WalmartApIs/Api/FeedsApi.cs` · 3 op
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetFeedErrorReport(GetFeedErrorReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedId`, `FeedType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `FeedId`, `FeedType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `feedType` ← `FeedType`
 - **Returns**: `BinaryContent`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -45,7 +45,7 @@ Accessor: `client.FeedsApi` · Source: `src/WalmartApIs/Api/FeedsApi.cs` · 3 op
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetFeedItemStatus(GetFeedItemStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `FeedId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `includeDetails` ← `IncludeDetails`, `offset` ← `Offset`, `limit` ← `Limit`
 - **Returns**: `V3FeedsResponse1`
 - **Error**: `ApiException<GetFeedItemStatusError>` — **Case A (typed)**

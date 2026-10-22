@@ -10,7 +10,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `CreateLabel(CreateLabelRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `Accept`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `Accept`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3ShippingLabelsResponse`
 - **Error**: `ApiException<CreateLabelError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3ShippingLabels500Error1(out V3ShippingLabels500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]
@@ -29,7 +29,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `CreateLabelMps(CreateLabelMpsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`, `Body`
 - **Returns**: `V3ShippingMultiPackageLabelsResponse`
 - **Error**: `ApiException<CreateLabelMpsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfError5(out IReadOnlyList<Error5>)` [400] · `TryGetV3ShippingMultiPackageLabels500Error1(out V3ShippingMultiPackageLabels500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]
@@ -49,7 +49,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DiscardLabel(DiscardLabelRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `CarrierShortName`, `TrackingNo`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `CarrierShortName`, `TrackingNo`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3ShippingLabelsCarriersTrackingsResponse`
 - **Error**: `ApiException<DiscardLabelError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfV3ShippingLabelsCarriersTrackings400Error1(out IReadOnlyList<V3ShippingLabelsCarriersTrackings400Error1>)` [400] · `TryGetRawError(out RawError)` [fallback]
@@ -67,7 +67,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetCarrierPackageTypes(GetCarrierPackageTypesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `CarrierShortName`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `CarrierShortName`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3ShippingLabelsCarriersPackageTypesResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -82,7 +82,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetCarriers(GetCarriersRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3ShippingLabelsCarriersResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -97,7 +97,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetLabel(GetLabelRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `PurchaseOrderId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `PurchaseOrderId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3ShippingLabelsPurchaseOrdersResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -112,7 +112,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetLabelByTrackingAndCarrier(GetLabelByTrackingAndCarrierRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `CarrierShortName`, `TrackingNo`, `Accept`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `CarrierShortName`, `TrackingNo`, `Accept`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `void` (Task)
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -141,7 +141,7 @@ Accessor: `client.ShipWithWalmart` · Source: `src/WalmartApIs/Api/ShipWithWalma
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetShippingEstimate(GetShippingEstimateRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `Accept`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `Accept`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3ShippingLabelsShippingEstimatesResponse`
 - **Error**: `ApiException<GetShippingEstimateError>` — **Case A (typed)**
 - **Error accessors**: `TryGetListOfV3ShippingLabelsShippingEstimates400Error1(out IReadOnlyList<V3ShippingLabelsShippingEstimates400Error1>)` [400] · `TryGetRawError(out RawError)` [fallback]

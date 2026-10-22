@@ -18,7 +18,7 @@ public record V3FeedsFeedTypeProgramActionsRequestTypeWalmartPlusSffResponse
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("header")]
-    public Header? Header { get; init; }
+    public Header1? Header { get; init; }
 
     /// <summary>
     /// Contains a list of high-level errors encountered during the operation.

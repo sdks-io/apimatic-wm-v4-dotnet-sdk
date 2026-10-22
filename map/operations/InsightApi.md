@@ -10,7 +10,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetCategoriesList(GetCategoriesListRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Query params (wire ← C#)**: `viewTrendingItems` ← `ViewTrendingItems`, `wfsFlag` ← `WfsFlag`, `hasIssue` ← `HasIssue`, `type` ← `Type`, `inDemandIndicator` ← `InDemandIndicator`, `limit` ← `Limit`, `offset` ← `Offset`
 - **Returns**: `V3InsightsItemsListingQualityCountResponse`
 - **Error**: `ApiException<GetCategoriesListError>` — **Case A (typed)**
@@ -32,7 +32,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetListingQualityScore(GetListingQualityScoreRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Query params (wire ← C#)**: `viewTrendingItems` ← `ViewTrendingItems`, `wfsFlag` ← `WfsFlag`
 - **Returns**: `V3InsightsItemsListingQualityScoreResponse`
 - **Error**: `ApiException<GetListingQualityScoreError>` — **Case A (typed)**
@@ -53,7 +53,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetProSellerBadgeInfo(GetProSellerBadgeInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Returns**: `V3InsightsProsellerbadgeResponse`
 - **Error**: `ApiException<GetProSellerBadgeInfoError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3InsightsProsellerbadge400Error1(out V3InsightsProsellerbadge400Error1)` [400] · `TryGetV3Token400Error1(out V3Token400Error1)` [401, 403] · `TryGetV3InsightsProsellerbadge500Error1(out V3InsightsProsellerbadge500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]
@@ -73,7 +73,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetSellerIncentivesInfo(GetSellerIncentivesInfoRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Returns**: `V3InsightsSellerIncentivesResponse`
 - **Error**: `ApiException<GetSellerIncentivesInfoError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3Token400Error1(out V3Token400Error1)` [401, 403] · `TryGetV3InsightsSellerIncentives500Error1(out V3InsightsSellerIncentives500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]
@@ -92,7 +92,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetUnpublishedItemCount(GetUnpublishedItemCountRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FromDate`, `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `FromDate`, `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Query params (wire ← C#)**: `fromDate` ← `FromDate`
 - **Returns**: `V3InsightsItemsUnpublishedCountsResponse`
 - **Error**: `ApiException<GetUnpublishedItemCountError>` — **Case A (typed)**
@@ -112,7 +112,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetUnpublishedItems(GetUnpublishedItemsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FromDate`, `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
+  - required: `FromDate`, `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`
 - **Query params (wire ← C#)**: `fromDate` ← `FromDate`, `unpublishedReasonCode` ← `UnpublishedReasonCode`, `limit` ← `Limit`, `offerLifecycleStatus` ← `OfferLifecycleStatus`, `marketTrending` ← `MarketTrending`, `itemsWithInventory` ← `ItemsWithInventory`, `isCustomerFavorite` ← `IsCustomerFavorite`
 - **Returns**: `V3InsightsItemsUnpublishedItemsResponse`
 - **Error**: `ApiException<GetUnpublishedItemsError>` — **Case A (typed)**
@@ -132,7 +132,7 @@ Accessor: `client.InsightApi` · Source: `src/WalmartApIs/Api/InsightApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `ItemsDetailsForListing(ItemsDetailsForListingRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmGlobalVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `Body`
+  - required: `WmGlobalVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `Body`
 - **Query params (wire ← C#)**: `limit` ← `Limit`, `nextCursor` ← `NextCursor`, `offset` ← `Offset`
 - **Returns**: `V3InsightsItemsListingQualityItemsResponse`
 - **Error**: `ApiException<ItemsDetailsForListingError>` — **Case A (typed)**

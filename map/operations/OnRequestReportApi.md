@@ -10,7 +10,7 @@ Accessor: `client.OnRequestReportApi` · Source: `src/WalmartApIs/Api/OnRequestR
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DownloadReport(DownloadReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `RequestId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
+  - required: `RequestId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
 - **Query params (wire ← C#)**: `requestId` ← `RequestId`
 - **Returns**: `DownloadReportResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -26,7 +26,7 @@ Accessor: `client.OnRequestReportApi` · Source: `src/WalmartApIs/Api/OnRequestR
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetRequestsStatus(GetRequestsStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
+  - required: `ReportType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
 - **Query params (wire ← C#)**: `reportType` ← `ReportType`, `reportVersion` ← `ReportVersion`, `requestStatus` ← `RequestStatus`, `requestSubmissionStartDate` ← `RequestSubmissionStartDate`, `requestSubmissionEndDate` ← `RequestSubmissionEndDate`
 - **Returns**: `RequestsStatusResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -44,7 +44,7 @@ Accessor: `client.OnRequestReportApi` · Source: `src/WalmartApIs/Api/OnRequestR
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetSingleRequestStatus(GetSingleRequestStatusRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `RequestId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
+  - required: `RequestId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
 - **Returns**: `RequestStatusResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 

@@ -10,7 +10,7 @@ Accessor: `client.LagTimeApi` · Source: `src/WalmartApIs/Api/LagTimeApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetLagTime(GetLagTimeRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `Sku`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `Sku`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `sku` ← `Sku`
 - **Returns**: `LagTimeResponse`
 - **Error**: `ApiException<GetLagTimeError>` — **Case A (typed)**
@@ -31,7 +31,7 @@ Accessor: `client.LagTimeApi` · Source: `src/WalmartApIs/Api/LagTimeApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateLagTimeBulk(UpdateLagTimeBulkRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `FeedType`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `FeedType`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Query params (wire ← C#)**: `feedType` ← `FeedType`
 - **Returns**: `FeedId1`
 - **Error**: `ApiException<RawError>` — **Case B**

@@ -10,7 +10,7 @@ Accessor: `client.SeoRecommendations` · Source: `src/WalmartApIs/Api/SeoRecomme
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetSeoRecommendations(GetSeoRecommendationsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `Accept`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `Accept`
 - **Query params (wire ← C#)**: `status` ← `Status`, `limit` ← `Limit`, `next_cursor` ← `NextCursor`, `previous_cursor` ← `PreviousCursor`
 - **Returns**: `V3SeoRecommendationGetItemsResponse`
 - **Error**: `ApiException<GetSeoRecommendationsError>` — **Case A (typed)**
@@ -30,7 +30,7 @@ Accessor: `client.SeoRecommendations` · Source: `src/WalmartApIs/Api/SeoRecomme
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateSeoRecommendations(UpdateSeoRecommendationsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ItemId`, `Decision`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `Accept`
+  - required: `ItemId`, `Decision`, `WmQosCorrelationId`, `WmSvcName`, `Accept`
 - **Returns**: `V3SeoRecommendationUpdateItemsResponse`
 - **Error**: `ApiException<UpdateSeoRecommendationsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV3SeoRecommendationUpdateItems400Error1(out V3SeoRecommendationUpdateItems400Error1)` [400] · `TryGetV3SeoRecommendationUpdateItems404Error1(out V3SeoRecommendationUpdateItems404Error1)` [404] · `TryGetV3SeoRecommendationUpdateItems500Error1(out V3SeoRecommendationUpdateItems500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]

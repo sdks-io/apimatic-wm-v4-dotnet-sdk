@@ -45,7 +45,6 @@ public sealed class ReportsApi
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -81,7 +80,6 @@ public sealed class ReportsApi
                 new Param("noOfRecords", request.NoOfRecords),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -113,7 +111,6 @@ public sealed class ReportsApi
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -145,7 +142,6 @@ public sealed class ReportsApi
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -177,7 +173,6 @@ public sealed class ReportsApi
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -209,7 +204,6 @@ public sealed class ReportsApi
             [],
             [new Param("reportDate", request.ReportDate)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
@@ -241,7 +235,6 @@ public sealed class ReportsApi
             [],
             [new Param("reportDate", request.ReportDate), new Param("reportVersion", request.ReportVersion)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),

@@ -10,7 +10,7 @@ Accessor: `client.OnRequestReport` · Source: `src/WalmartApIs/Api/OnRequestRepo
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GenerateReport(GenerateReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportType`, `ReportVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
+  - required: `ReportType`, `ReportVersion`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Accept`
 - **Query params (wire ← C#)**: `reportType` ← `ReportType`, `reportVersion` ← `ReportVersion`
 - **Returns**: `V3ReportsReportRequestsResponse1`
 - **Error**: `ApiException<GenerateReportError>` — **Case A (typed)**

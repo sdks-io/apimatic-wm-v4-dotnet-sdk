@@ -50,7 +50,6 @@ public sealed class ReportScheduler
             [
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("Idempotency-Key", Guid.NewGuid()),
             ],
             HttpMethod.Delete,
@@ -85,7 +84,6 @@ public sealed class ReportScheduler
             [
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
             ],
             HttpMethod.Get,
             EmptyBody.Instance,
@@ -119,7 +117,6 @@ public sealed class ReportScheduler
             [
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
             ],
             HttpMethod.Get,
             EmptyBody.Instance,
@@ -153,7 +150,6 @@ public sealed class ReportScheduler
             [
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("Idempotency-Key", Guid.NewGuid()),
             ],
             HttpMethod.Put,

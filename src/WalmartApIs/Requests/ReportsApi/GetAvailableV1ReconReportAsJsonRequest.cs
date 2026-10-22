@@ -21,11 +21,6 @@ public sealed record GetAvailableV1ReconReportAsJsonRequest
     public required int NoOfRecords { get; init; }
 
     /// <summary>
-    /// The access token retrieved in the Token API call
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and used to track and debug issues; use a random generated GUID for this ID
     /// </summary>
     public required string WmQosCorrelationId { get; init; }

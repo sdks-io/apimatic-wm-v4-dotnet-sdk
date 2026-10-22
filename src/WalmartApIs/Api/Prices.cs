@@ -45,7 +45,6 @@ public sealed class Prices
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -80,7 +79,6 @@ public sealed class Prices
             [new TemplateParam("strategyCollectionId", request.StrategyCollectionId)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -131,7 +129,6 @@ public sealed class Prices
                 new Param("incentiveType", request.IncentiveType),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -165,7 +162,6 @@ public sealed class Prices
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -200,7 +196,6 @@ public sealed class Prices
             [],
             [new Param("offset", request.Offset), new Param("limit", request.Limit)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -255,7 +250,6 @@ public sealed class Prices
             [],
             [new Param("feedType", request.FeedType)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -290,7 +284,6 @@ public sealed class Prices
             [],
             [new Param("feedType", request.FeedType)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -328,7 +321,6 @@ public sealed class Prices
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -363,7 +355,6 @@ public sealed class Prices
             [new TemplateParam("strategyCollectionId", request.StrategyCollectionId)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -404,7 +395,6 @@ public sealed class Prices
             [],
             [new Param("autoEnrollEnabled", request.AutoEnrollEnabled)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -442,7 +432,6 @@ public sealed class Prices
             [],
             [new Param("feedType", request.FeedType)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

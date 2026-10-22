@@ -18,11 +18,13 @@ public sealed class Authorization
 {
     private readonly RawClient _rawClient;
     private readonly Server _server;
+    private readonly AuthSchemes _auth;
 
-    internal Authorization(RawClient rawClient, Server server)
+    internal Authorization(RawClient rawClient, Server server, AuthSchemes auth)
     {
         _rawClient = rawClient;
         _server = server;
+        _auth = auth;
     }
 
     /// <summary>
@@ -80,7 +82,6 @@ public sealed class Authorization
             [],
             [
                 new HeaderParam("WM_MARKET", request.WmMarket),
-                new HeaderParam("Authorization", request.Authorization),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_PARTNER.ID", request.WmPartnerId),
@@ -95,7 +96,7 @@ public sealed class Authorization
                 new Param("refresh_token", request.RefreshToken)),
             JsonResponse.Create<OAuthTokenModel>(),
             TokenApiError.Response,
-            [],
+            [_auth.BasicAuth],
             requestOptions,
             cancellationToken);
 }

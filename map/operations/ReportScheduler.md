@@ -10,7 +10,7 @@ Accessor: `client.ReportScheduler` · Source: `src/WalmartApIs/Api/ReportSchedul
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DeleteReportSchedule(DeleteReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`, `WmSecAccessToken`
+  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `RejectRecommendationsResponsePayload`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -23,7 +23,7 @@ Accessor: `client.ReportScheduler` · Source: `src/WalmartApIs/Api/ReportSchedul
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAllReportSchedules(GetAllReportSchedulesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportType`, `WmSvcName`, `WmQosCorrelationId`, `WmSecAccessToken`
+  - required: `ReportType`, `WmSvcName`, `WmQosCorrelationId`
 - **Query params (wire ← C#)**: `reportType` ← `ReportType`
 - **Returns**: `V3ReportsSchedulesResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -38,7 +38,7 @@ Accessor: `client.ReportScheduler` · Source: `src/WalmartApIs/Api/ReportSchedul
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetReportSchedule(GetReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`, `WmSecAccessToken`
+  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `V3ReportsSchedulesResponse1`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -51,7 +51,7 @@ Accessor: `client.ReportScheduler` · Source: `src/WalmartApIs/Api/ReportSchedul
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateReportSchedule(UpdateReportScheduleRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`, `WmSecAccessToken`
+  - required: `ScheduleId`, `WmSvcName`, `WmQosCorrelationId`
 - **Returns**: `V3ReportsSchedulesResponse1`
 - **Error**: `ApiException<RawError>` — **Case B**
 

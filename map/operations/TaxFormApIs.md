@@ -10,7 +10,7 @@ Accessor: `client.TaxFormApIs` · Source: `src/WalmartApIs/Api/TaxFormApIs.cs` �
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DownloadTaxForm(DownloadTaxFormRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `PayoutYear`, `TaxFormType`, `FormId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmGlobalVersion`, `WmMarket`, `WmPartnerId`, `WmTenantId`
+  - required: `PayoutYear`, `TaxFormType`, `FormId`, `WmQosCorrelationId`, `WmSvcName`, `WmGlobalVersion`, `WmMarket`, `WmPartnerId`, `WmTenantId`
 - **Query params (wire ← C#)**: `payoutYear` ← `PayoutYear`, `taxFormType` ← `TaxFormType`, `formId` ← `FormId`
 - **Returns**: `void` (Task)
 - **Error**: `ApiException<DownloadTaxFormError>` — **Case A (typed)**
@@ -30,7 +30,7 @@ Accessor: `client.TaxFormApIs` · Source: `src/WalmartApIs/Api/TaxFormApIs.cs` �
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetTaxForms(GetTaxFormsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmGlobalVersion`, `WmMarket`, `WmPartnerId`, `WmTenantId`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmGlobalVersion`, `WmMarket`, `WmPartnerId`, `WmTenantId`
 - **Returns**: `V1SettingsGettaxformprofileResponse`
 - **Error**: `ApiException<GetTaxFormsError>` — **Case A (typed)**
 - **Error accessors**: `TryGetV1SettingsGettaxformprofile400Error1(out V1SettingsGettaxformprofile400Error1)` [400] · `TryGetV1SettingsGettaxformprofile404Error1(out V1SettingsGettaxformprofile404Error1)` [404] · `TryGetV1SettingsGettaxformprofile500Error1(out V1SettingsGettaxformprofile500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]

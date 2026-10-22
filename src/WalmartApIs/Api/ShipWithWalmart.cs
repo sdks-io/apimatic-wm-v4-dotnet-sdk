@@ -52,7 +52,6 @@ public sealed class ShipWithWalmart
             [],
             [
                 new HeaderParam("Accept", request.Accept),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -90,7 +89,6 @@ public sealed class ShipWithWalmart
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -133,7 +131,6 @@ public sealed class ShipWithWalmart
             ],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -171,7 +168,6 @@ public sealed class ShipWithWalmart
             [new TemplateParam("carrierShortName", request.CarrierShortName)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -208,7 +204,6 @@ public sealed class ShipWithWalmart
             [],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -245,7 +240,6 @@ public sealed class ShipWithWalmart
             [new TemplateParam("purchaseOrderId", request.PurchaseOrderId)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -287,7 +281,6 @@ public sealed class ShipWithWalmart
             [],
             [
                 new HeaderParam("accept", request.Accept),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -368,7 +361,6 @@ public sealed class ShipWithWalmart
             [],
             [
                 new HeaderParam("Accept", request.Accept),
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

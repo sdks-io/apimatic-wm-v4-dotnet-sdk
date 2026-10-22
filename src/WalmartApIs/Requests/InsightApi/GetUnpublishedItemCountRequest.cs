@@ -18,11 +18,6 @@ public sealed record GetUnpublishedItemCountRequest
     public required WmGlobalVersion WmGlobalVersion { get; init; }
 
     /// <summary>
-    /// Access token obtained from the Token API. Required for authenticating requests to Walmart Marketplace APIs.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and used to track and debug issues; use a random generated GUID for this ID&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;
     /// </summary>
     public required string WmQosCorrelationId { get; init; }

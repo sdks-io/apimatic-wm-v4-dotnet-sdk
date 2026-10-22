@@ -97,7 +97,7 @@ public sealed class WalmartApIsClient
     public AssortmentRecommendations AssortmentRecommendations =>
         field ??= new AssortmentRecommendations(_rawClient, _server);
 
-    public Authorization Authorization => field ??= new Authorization(_rawClient, _server);
+    public Authorization Authorization => field ??= new Authorization(_rawClient, _server, _auth);
 
     public Disputes Disputes => field ??= new Disputes(_rawClient, _server);
 

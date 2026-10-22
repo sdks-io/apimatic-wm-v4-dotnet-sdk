@@ -64,7 +64,6 @@ public sealed class FeedsApi
                 new Param("limit", request.Limit),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -107,7 +106,6 @@ public sealed class FeedsApi
             [new TemplateParam("feedId", request.FeedId)],
             [new Param("feedType", request.FeedType)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),
@@ -146,7 +144,6 @@ public sealed class FeedsApi
                 new Param("limit", request.Limit),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

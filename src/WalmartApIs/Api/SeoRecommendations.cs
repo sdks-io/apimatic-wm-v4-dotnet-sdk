@@ -50,7 +50,6 @@ public sealed class SeoRecommendations
                 new Param("previous_cursor", request.PreviousCursor),
             ],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("Accept", request.Accept),
@@ -84,7 +83,6 @@ public sealed class SeoRecommendations
             [new TemplateParam("itemId", request.ItemId), new TemplateParam("decision", request.Decision)],
             [],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("Accept", request.Accept),

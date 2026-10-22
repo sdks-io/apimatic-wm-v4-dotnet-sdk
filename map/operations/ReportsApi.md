@@ -10,7 +10,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAvailableReconReportDates(GetAvailableReconReportDatesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `WmQosCorrelationId`, `WmSvcName`
 - **Returns**: `ReconReportDateResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -23,7 +23,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAvailableV1ReconReportAsJson(GetAvailableV1ReconReportAsJsonRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportDate`, `Offset`, `NoOfRecords`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `ReportDate`, `Offset`, `NoOfRecords`, `WmQosCorrelationId`, `WmSvcName`
 - **Query params (wire ← C#)**: `reportDate` ← `ReportDate`, `offset` ← `Offset`, `noOfRecords` ← `NoOfRecords`
 - **Returns**: `ReconReportV1AsJsonResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -37,7 +37,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAvailableV1ReconReportDates(GetAvailableV1ReconReportDatesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `WmQosCorrelationId`, `WmSvcName`
 - **Returns**: `ReconReportDateResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -50,7 +50,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetPartnerPerformance(GetPartnerPerformanceRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `WmQosCorrelationId`, `WmSvcName`
 - **Returns**: `PartnerProgramPerformanceRes`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -63,7 +63,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetPartnerStatement(GetPartnerStatementRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `WmQosCorrelationId`, `WmSvcName`
 - **Returns**: `PartnerProgramStatementRes`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -76,7 +76,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetReconReport(GetReconReportRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportDate`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `ReportDate`, `WmQosCorrelationId`, `WmSvcName`
 - **Query params (wire ← C#)**: `reportDate` ← `ReportDate`
 - **Returns**: `BinaryContent`
 - **Error**: `ApiException<GetReconReportError>` — **Case A (typed)**
@@ -91,7 +91,7 @@ Accessor: `client.ReportsApi` · Source: `src/WalmartApIs/Api/ReportsApi.cs` · 
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetReconReportV1(GetReconReportV1Request request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ReportDate`, `ReportVersion`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`
+  - required: `ReportDate`, `ReportVersion`, `WmQosCorrelationId`, `WmSvcName`
 - **Query params (wire ← C#)**: `reportDate` ← `ReportDate`, `reportVersion` ← `ReportVersion`
 - **Returns**: `BinaryContent`
 - **Error**: `ApiException<GetReconReportV1Error>` — **Case A (typed)**

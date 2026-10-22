@@ -9,14 +9,6 @@ namespace WalmartApIs.Requests.ShipWithWalmart;
 public sealed record CreateLabelMpsRequest
 {
     /// <summary>
-    /// Access token obtained from the Token API. This is required for authenticating requests to Walmart Marketplace APIs.
-    /// <para>
-    /// &lt;b style="color: green;"&gt;Market availability: Global&lt;/b&gt;
-    /// </para>
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and is used to track and debug issues. Use a randomly generated GUID for this ID.
     /// <para>
     /// &lt;b style="color: green;"&gt;Market availability: Global&lt;/b&gt;

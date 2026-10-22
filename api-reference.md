@@ -509,14 +509,13 @@ try
     var response = await client.Authorization.TokenApi(new TokenApiRequest
     {
         WmMarket = "us, mx, ca or cl",
-        Authorization = "Basic YzcyOTFjNmItNzI5MC00....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmPartnerId = "43423324",
         GrantType = GrantType1.ClientCredentials,
         Code = "65CA5DA313A549D49D15D3119D9AD85D",
         RedirectUri = "https://example-client-app.com",
-        RefreshToken = "APXcIoTpKMH9OQN…….",
+        RefreshToken = "APXcIoTpKMH9OQN.....",
     });
     // TODO: Handle 'response' of type OAuthTokenModel
 }
@@ -773,7 +772,6 @@ try
 {
     var response = await client.FeedsApi.GetAllFeedStatuses(new GetAllFeedStatusesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -855,7 +853,6 @@ try
     {
         FeedId = "some example string",
         FeedType = FeedType.FitmentAces,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -927,7 +924,6 @@ try
     var response = await client.FeedsApi.GetFeedItemStatus(new GetFeedItemStatusRequest
     {
         FeedId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1005,7 +1001,6 @@ try
     var response = await client.InsightApi.GetCategoriesList(new GetCategoriesListRequest
     {
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1078,7 +1073,6 @@ try
     var response = await client.InsightApi.GetListingQualityScore(new GetListingQualityScoreRequest
     {
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1151,7 +1145,6 @@ try
     var response = await client.InsightApi.GetProSellerBadgeInfo(new GetProSellerBadgeInfoRequest
     {
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1224,7 +1217,6 @@ try
     var response = await client.InsightApi.GetSellerIncentivesInfo(new GetSellerIncentivesInfoRequest
     {
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1298,7 +1290,6 @@ try
     {
         FromDate = "2020-09-23",
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1372,7 +1363,6 @@ try
     {
         FromDate = "2020-09-23",
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1445,7 +1435,6 @@ try
     var response = await client.InsightApi.ItemsDetailsForListing(new ItemsDetailsForListingRequest
     {
         WmGlobalVersion = WmGlobalVersion._31,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1527,7 +1516,6 @@ try
     var response = await client.InventoryApi.GetInventory(new GetInventoryRequest
     {
         Sku = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1602,7 +1590,6 @@ try
     var response = await client.InventoryApi.GetMultiNodeInventoryForAllSkuAndAllShipNodes(
         new GetMultiNodeInventoryForAllSkuAndAllShipNodesRequest
         {
-            WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
             WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
             WmSvcName = "Walmart Service Name",
             WmMarket = WmMarket1.Us,
@@ -1678,7 +1665,6 @@ try
         new GetMultiNodeInventoryForSkuAndAllShipnodesRequest
         {
             Sku = "some example string",
-            WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
             WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
             WmSvcName = "Walmart Service Name",
             WmMarket = WmMarket1.Us,
@@ -1752,7 +1738,6 @@ try
 {
     var response = await client.InventoryApi.GetWfsInventory(new GetWfsInventoryRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1841,7 +1826,6 @@ try
     var response = await client.InventoryApi.UpdateBulkInventory(new UpdateBulkInventoryRequest
     {
         FeedType = FeedType1.Inventory,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1914,7 +1898,6 @@ try
     var response = await client.InventoryApi.UpdateInventoryForAnItem(new UpdateInventoryForAnItemRequest
     {
         Sku = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -1995,7 +1978,6 @@ try
     var response = await client.InventoryApi.UpdateMultiNodeInventory(new UpdateMultiNodeInventoryRequest
     {
         Sku = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -2096,7 +2078,6 @@ try
     var response = await client.LagTimeApi.GetLagTime(new GetLagTimeRequest
     {
         Sku = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -2173,7 +2154,6 @@ try
     var response = await client.LagTimeApi.UpdateLagTimeBulk(new UpdateLagTimeBulkRequest
     {
         FeedType = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -2258,7 +2238,6 @@ try
 {
     var response = await client.Notifications.CreateSubscription(new CreateSubscriptionOperationRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2352,7 +2331,6 @@ try
     var response = await client.Notifications.DeleteSubscription(new DeleteSubscriptionRequest
     {
         SubscriptionId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2424,7 +2402,6 @@ try
 {
     var response = await client.Notifications.GetAllSubscriptions(new GetAllSubscriptionsRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2500,7 +2477,6 @@ try
 {
     var response = await client.Notifications.GetEventTypes(new GetEventTypesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2572,7 +2548,6 @@ try
 {
     var response = await client.Notifications.TestNotification(new TestNotificationOperationRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2660,7 +2635,6 @@ try
     var response = await client.Notifications.UpdateSubscription(new UpdateSubscriptionOperationRequest
     {
         SubscriptionId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Marketplace",
         WmMarket = WmMarket2.Us,
@@ -2753,7 +2727,6 @@ try
     {
         ReportType = ReportType4.Item,
         ReportVersion = "v1",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -2857,7 +2830,6 @@ try
     var response = await client.OnRequestReportApi.DownloadReport(new DownloadReportRequest
     {
         RequestId = "28fae71e-7f34-4493-ad5b-1edca6afebf7",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -2934,7 +2906,6 @@ try
         ReportType = ReportType4.Item,
         ReportVersion = "v1",
         RequestStatus = RequestStatus4.Ready,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3009,7 +2980,6 @@ try
     var response = await client.OnRequestReportApi.GetSingleRequestStatus(new GetSingleRequestStatusRequest
     {
         RequestId = "28fae71e-7f34-4493-ad5b-1edca6afebf7",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3084,7 +3054,6 @@ try
 {
     var response = await client.Prices.CreateStrategy(new CreateStrategyRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3159,7 +3128,6 @@ try
     var response = await client.Prices.DeleteStrategy(new DeleteStrategyRequest
     {
         StrategyCollectionId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3239,7 +3207,6 @@ try
     var response = await client.Prices.GetAllIncentives(new GetAllIncentivesRequest
     {
         IncentiveStatus = IncentiveStatus.Eligible,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3312,7 +3279,6 @@ try
 {
     var response = await client.Prices.GetRepricerFeed(new GetRepricerFeedRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3386,7 +3352,6 @@ try
 {
     var response = await client.Prices.GetStrategies(new GetStrategiesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3474,7 +3439,6 @@ try
     var response = await client.Prices.PriceAndPromotionBulkUploads(new PriceAndPromotionBulkUploadsRequest
     {
         FeedType = FeedType21.PriceAndPromotion,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3550,7 +3514,6 @@ try
         new ReducedReferralFeeIncentivesEnrollmentRequest
         {
             FeedType = FeedType11.IncentiveEnrollment,
-            WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
             WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
             WmSvcName = "Walmart Service Name",
             WmMarket = WmMarket1.Us,
@@ -3626,7 +3589,6 @@ try
 {
     var response = await client.Prices.UpdatePrice(new UpdatePriceRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3701,7 +3663,6 @@ try
     var response = await client.Prices.UpdateStrategy(new UpdateStrategyRequest
     {
         StrategyCollectionId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -3781,7 +3742,6 @@ try
         new UpdateWalmartFundedIncentivesEnrollmentStatusRequest
         {
             AutoEnrollEnabled = true,
-            WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
             WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
             WmSvcName = "Walmart Service Name",
             WmMarket = WmMarket1.Us,
@@ -3857,7 +3817,6 @@ try
     var response = await client.Prices.WalmartFundedIncentivesEnrollment(new WalmartFundedIncentivesEnrollmentRequest
     {
         FeedType = FeedType2.WalmartFundedIncentivesEnrollment,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -4522,7 +4481,6 @@ try
         ScheduleId = "some example string",
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
     });
     // TODO: Handle 'response' of type RejectRecommendationsResponsePayload
 }
@@ -4593,7 +4551,6 @@ try
         ReportType = ReportType10.Item,
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
     });
     // TODO: Handle 'response' of type V3ReportsSchedulesResponse
 }
@@ -4664,7 +4621,6 @@ try
         ScheduleId = "some example string",
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
     });
     // TODO: Handle 'response' of type V3ReportsSchedulesResponse1
 }
@@ -4735,7 +4691,6 @@ try
         ScheduleId = "some example string",
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
     });
     // TODO: Handle 'response' of type V3ReportsSchedulesResponse1
 }
@@ -4805,7 +4760,6 @@ try
 {
     var response = await client.ReportsApi.GetAvailableReconReportDates(new GetAvailableReconReportDatesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -4876,7 +4830,6 @@ try
         ReportDate = "some example string",
         Offset = 1L,
         NoOfRecords = 1,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -4944,7 +4897,6 @@ try
 {
     var response = await client.ReportsApi.GetAvailableV1ReconReportDates(new GetAvailableV1ReconReportDatesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -5012,7 +4964,6 @@ try
 {
     var response = await client.ReportsApi.GetPartnerPerformance(new GetPartnerPerformanceRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -5080,7 +5031,6 @@ try
 {
     var response = await client.ReportsApi.GetPartnerStatement(new GetPartnerStatementRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -5149,7 +5099,6 @@ try
     var response = await client.ReportsApi.GetReconReport(new GetReconReportRequest
     {
         ReportDate = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -5222,7 +5171,6 @@ try
     {
         ReportDate = "some example string",
         ReportVersion = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
     });
@@ -6224,7 +6172,6 @@ try
     var response = await client.SemCampaignManagement.SearchCampaignRecommendations(
         new SearchCampaignRecommendationsRequest
         {
-            WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
             WmSvcName = "Walmart Marketplace",
             WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
             WmGlobalVersion = WmGlobalVersion._31,
@@ -6641,7 +6588,6 @@ try
 {
     var response = await client.SemItemDiagnostics.GetIssueTypes(new GetIssueTypesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmGlobalVersion = WmGlobalVersion._31,
@@ -6753,7 +6699,6 @@ try
 {
     var response = await client.SemItemDiagnostics.SearchItemIssues(new SearchItemIssuesRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmSvcName = "Walmart Marketplace",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmGlobalVersion = WmGlobalVersion._31,
@@ -7053,7 +6998,6 @@ try
         Limit = "200",
         NextCursor = "*",
         PreviousCursor = "1374004777531007833",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         Accept = "application/json",
@@ -7127,7 +7071,6 @@ try
     {
         ItemId = "some example string",
         Decision = Decision.Approved,
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         Accept = "application/json",
@@ -7208,7 +7151,6 @@ try
     var response = await client.ShipWithWalmart.CreateLabel(new CreateLabelRequest
     {
         Accept = "application/json",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket1.Us,
@@ -7314,7 +7256,6 @@ try
 {
     var response = await client.ShipWithWalmart.CreateLabelMps(new CreateLabelMpsRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -7456,7 +7397,6 @@ try
     {
         CarrierShortName = "some example string",
         TrackingNo = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket6.Mx,
@@ -7532,7 +7472,6 @@ try
     var response = await client.ShipWithWalmart.GetCarrierPackageTypes(new GetCarrierPackageTypesRequest
     {
         CarrierShortName = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -7604,7 +7543,6 @@ try
 {
     var response = await client.ShipWithWalmart.GetCarriers(new GetCarriersRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -7677,7 +7615,6 @@ try
     var response = await client.ShipWithWalmart.GetLabel(new GetLabelRequest
     {
         PurchaseOrderId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -7753,7 +7690,6 @@ try
         CarrierShortName = "some example string",
         TrackingNo = "some example string",
         Accept = "application/pdf",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -7902,7 +7838,6 @@ try
     var response = await client.ShipWithWalmart.GetShippingEstimate(new GetShippingEstimateRequest
     {
         Accept = "application/json",
-        WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmMarket = WmMarket11.Mx,
@@ -8996,7 +8931,6 @@ try
         PayoutYear = "some example string",
         TaxFormType = "some example string",
         FormId = "some example string",
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmGlobalVersion = WmGlobalVersion._31,
@@ -9072,7 +9006,6 @@ try
 {
     var response = await client.TaxFormApIs.GetTaxForms(new GetTaxFormsRequest
     {
-        WmSecAccessToken = "eyJraWQiOiIxNWNhNGIyYi0yODVjLTQ0ZDUtYmExNC05ZDk1NTlkZmUwNjgiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0....",
         WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
         WmSvcName = "Walmart Service Name",
         WmGlobalVersion = WmGlobalVersion._31,

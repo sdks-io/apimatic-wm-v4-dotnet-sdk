@@ -16,14 +16,6 @@ public sealed record DownloadReportRequest
     public required string RequestId { get; init; }
 
     /// <summary>
-    /// Access token obtained from the Token API. Required for authenticating requests to Walmart Marketplace APIs.
-    /// <para>
-    /// &lt;strong style="color: green;"&gt;Market availability: Global&lt;/strong&gt;
-    /// </para>
-    /// </summary>
-    public required string WmSecAccessToken { get; init; }
-
-    /// <summary>
     /// A unique ID which identifies each API call and used to track and debug issues; use a random generated GUID for this ID.
     /// <para>
     /// &lt;strong style="color: green;"&gt;Market availability: Global&lt;/strong&gt;

@@ -52,7 +52,6 @@ public sealed class OnRequestReport
             [],
             [new Param("reportType", request.ReportType), new Param("reportVersion", request.ReportVersion)],
             [
-                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
                 new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
                 new HeaderParam("WM_SVC.NAME", request.WmSvcName),
                 new HeaderParam("WM_MARKET", request.WmMarket),

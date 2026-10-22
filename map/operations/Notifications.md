@@ -10,7 +10,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `CreateSubscription(CreateSubscriptionOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3WebhooksSubscriptionsResponse1`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -26,7 +26,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `DeleteSubscription(DeleteSubscriptionRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `SubscriptionId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `SubscriptionId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3WebhooksSubscriptionsResponse2`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -41,7 +41,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetAllSubscriptions(GetAllSubscriptionsRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Query params (wire ← C#)**: `subscriptionId` ← `SubscriptionId`, `eventType` ← `EventType`, `resourceName` ← `ResourceName`, `status` ← `Status`
 - **Returns**: `V3WebhooksSubscriptionsResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
@@ -57,7 +57,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `GetEventTypes(GetEventTypesRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`
 - **Returns**: `V3WebhooksEventTypesResponse`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -72,7 +72,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `TestNotification(TestNotificationOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `RejectRecommendationsResponsePayload`
 - **Error**: `ApiException<RawError>` — **Case B**
 
@@ -88,7 +88,7 @@ Accessor: `client.Notifications` · Source: `src/WalmartApIs/Api/Notifications.c
 
 - **Auth**: `options.AccessToken`
 - **Signature**: `UpdateSubscription(UpdateSubscriptionOperationRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `SubscriptionId`, `WmSecAccessToken`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
+  - required: `SubscriptionId`, `WmQosCorrelationId`, `WmSvcName`, `WmMarket`, `WmGlobalVersion`, `Body`
 - **Returns**: `V3WebhooksSubscriptionsResponse3`
 - **Error**: `ApiException<RawError>` — **Case B**
 

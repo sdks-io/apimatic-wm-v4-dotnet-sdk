@@ -198,7 +198,7 @@ Each links to a sub-page with one row per operation: signature, the request reco
 
 | Group | Count | Directory (file = `<TypeName>.cs`) |
 | --- | --- | --- |
-| Records (plain `record` data models) | 959 | `src/WalmartApIs/Models/` |
+| Records (plain `record` data models) | 960 | `src/WalmartApIs/Models/` |
 | Unions (`OneOf`) — variant factories + `TryGet…` | 1 | `src/WalmartApIs/Models/OneOf/` |
 | Unions (`AnyOf`) — variant factories + `TryGet…` | 7 | `src/WalmartApIs/Models/AnyOf/` |
 | Enums (`OpenStringEnum<T>` / `OpenIntEnum<T>`) — C# member names + wire values | 188 | `src/WalmartApIs/Models/Enums/` |
@@ -254,12 +254,12 @@ A credential you never set is skipped rather than throwing, and the request is s
 
 | Environment | Value | Hosting |
 | --- | --- | --- |
-| `ServerEnvironment.Production` *(default)* | `production` | Production URL, Specifies the production URL., Specifies the production URL., Production URL, Specifies the production URL., Specifies the production URL., Refers to the URL used for accessing the production server., Specifies the production URL., Refers to the URL used for accessing the production server., Production URL, Production URL, Production server for all APIs., Production URL, Production URL, Production URL, Base URL for production requests., Production URL, Production URL, Production URL, Refers to the URL used for accessing the production server. |
-| `ServerEnvironment.Environment2` | `environment2` | Sandbox URL, Specifies the sandbox URL., Specifies the sandbox URL., Sandbox URL, Specifies the sandbox URL., Specifies the sandbox URL., Refers to the URL used for accessing the sandbox server., Specifies the sandbox URL., Refers to the URL used for accessing the sandbox server., Sandbox URL, Sandbox URL, Sandbox URL, Sandbox URL, Sandbox URL, Base URL for sandbox requests., Sandbox URL, Sandbox URL, Sandbox URL, Refers to the URL used for accessing the sandbox server. |
+| `ServerEnvironment.Production` *(default)* | `production` | — |
+| `ServerEnvironment.Sandbox` | `sandbox` | — |
 
 **1 server group.** Base-URL templates and override points (`options.Server.…`):
 
-| Group | `Production` base URL | `Environment2` base URL | Override point |
+| Group | `Production` base URL | `Sandbox` base URL | Override point |
 | --- | --- | --- | --- |
 | `Default` | `https://marketplace.walmartapis.com` | `https://sandbox.walmartapis.com` | `options.Server.Default.Production.BaseUrl` (and the other environments) |
 
