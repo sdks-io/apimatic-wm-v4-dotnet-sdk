@@ -2,59 +2,37 @@
 
 # Authorization — operations
 
-Accessor: `client.Authorization` · Source: `src/WalmartApIs/Api/Authorization.cs` · 3 operations
+Accessor: `client.Authorization` · Source: `src/WalmartApIs/Api/Authorization.cs` · 2 operations
 
 **Type sources**: the file declaring each type an operation names (`RawError` excluded — see sdk-map.md).
 
-### Authorize
+### GetTokenDetail
 
-- **Signature**: `Authorize(AuthorizeRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `ResponseType`, `ClientId`, `RedirectUri`, `Scope`, `State`, `CodeChallenge`, `CodeChallengeMethod`
-- **Query params (wire ← C#)**: `response_type` ← `ResponseType`, `client_id` ← `ClientId`, `redirect_uri` ← `RedirectUri`, `scope` ← `Scope`, `state` ← `State`, `code_challenge` ← `CodeChallenge`, `code_challenge_method` ← `CodeChallengeMethod`
-- **Returns**: `void` (Task)
-- **Error**: `ApiException<AuthorizeApiError>` — **Case A (typed)**
-- **Error accessors**: `TryGetAuthorizeError(out AuthorizeError)` [400] · `TryGetOAuthError(out OAuthError)` [429, 500] · `TryGetRawError(out RawError)` [fallback]
+- **Signature**: `GetTokenDetail(GetTokenDetailRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `WmSecAccessToken`, `WmMarket`, `ContentType`, `WmQosCorrelationId`, `WmSvcName`
+- **Returns**: `TokenDetailResponse`
+- **Error**: `ApiException<RawError>` — **Case B**
 
 | Type | Source |
 | --- | --- |
-| `AuthorizeRequest` | `src/WalmartApIs/Requests/Authorization/AuthorizeRequest.cs` |
-| `ResponseType1` | `src/WalmartApIs/Models/Enums/ResponseType1.cs` |
-| `CodeChallengeMethod` | `src/WalmartApIs/Models/Enums/CodeChallengeMethod.cs` |
-| `AuthorizeApiError` | `src/WalmartApIs/Errors/AuthorizeApiError.cs` |
-| `AuthorizeError` | `src/WalmartApIs/Models/AuthorizeError.cs` |
-| `OAuthError` | `src/WalmartApIs/Models/OAuthError.cs` |
+| `GetTokenDetailRequest` | `src/WalmartApIs/Requests/Authorization/GetTokenDetailRequest.cs` |
+| `TokenDetailResponse` | `src/WalmartApIs/Models/TokenDetailResponse.cs` |
 
-### CreateToken
+### TokenApi
 
-- **Auth**: `options.BasicClientAuth`
-- **Signature**: `CreateToken(CreateTokenRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `GrantType`
-- **Returns**: `TokenResponse`
-- **Error**: `ApiException<CreateTokenError>` — **Case A (typed)**
-- **Error accessors**: `TryGetOAuthError(out OAuthError)` [400, 401, 429, 500] · `TryGetRawError(out RawError)` [fallback]
+- **Signature**: `TokenApi(TokenApiRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
+  - required: `WmMarket`, `Authorization`, `WmQosCorrelationId`, `WmSvcName`
+- **Returns**: `OAuthTokenModel`
+- **Error**: `ApiException<TokenApiError>` — **Case A (typed)**
+- **Error accessors**: `TryGetV3Token400Error1(out V3Token400Error1)` [400] · `TryGetV3Token401Error1(out V3Token401Error1)` [401] · `TryGetV3Token500Error1(out V3Token500Error1)` [500] · `TryGetRawError(out RawError)` [fallback]
 
 | Type | Source |
 | --- | --- |
-| `CreateTokenRequest` | `src/WalmartApIs/Requests/Authorization/CreateTokenRequest.cs` |
-| `GrantType` | `src/WalmartApIs/Models/Enums/GrantType.cs` |
-| `TokenResponse` | `src/WalmartApIs/Models/TokenResponse.cs` |
-| `CreateTokenError` | `src/WalmartApIs/Errors/CreateTokenError.cs` |
-| `OAuthError` | `src/WalmartApIs/Models/OAuthError.cs` |
-
-### RegisterClient
-
-- **Signature**: `RegisterClient(RegisterClientRequest request, RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)`
-  - required: `Body`
-- **Returns**: `ClientRegistrationResponse`
-- **Error**: `ApiException<RegisterClientError>` — **Case A (typed)**
-- **Error accessors**: `TryGetRegistrationError(out RegistrationError)` [400, 401] · `TryGetOAuthError(out OAuthError)` [429, 500] · `TryGetRawError(out RawError)` [fallback]
-
-| Type | Source |
-| --- | --- |
-| `RegisterClientRequest` | `src/WalmartApIs/Requests/Authorization/RegisterClientRequest.cs` |
-| `ClientRegistrationRequest` | `src/WalmartApIs/Models/ClientRegistrationRequest.cs` |
-| `ClientRegistrationResponse` | `src/WalmartApIs/Models/ClientRegistrationResponse.cs` |
-| `RegisterClientError` | `src/WalmartApIs/Errors/RegisterClientError.cs` |
-| `RegistrationError` | `src/WalmartApIs/Models/RegistrationError.cs` |
-| `OAuthError` | `src/WalmartApIs/Models/OAuthError.cs` |
+| `TokenApiRequest` | `src/WalmartApIs/Requests/Authorization/TokenApiRequest.cs` |
+| `GrantType1` | `src/WalmartApIs/Models/Enums/GrantType1.cs` |
+| `OAuthTokenModel` | `src/WalmartApIs/Models/OAuthTokenModel.cs` |
+| `TokenApiError` | `src/WalmartApIs/Errors/TokenApiError.cs` |
+| `V3Token400Error1` | `src/WalmartApIs/Models/V3Token400Error1.cs` |
+| `V3Token401Error1` | `src/WalmartApIs/Models/V3Token401Error1.cs` |
+| `V3Token500Error1` | `src/WalmartApIs/Models/V3Token500Error1.cs` |
 

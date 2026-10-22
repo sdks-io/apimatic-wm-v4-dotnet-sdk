@@ -1,30 +1,24 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using WalmartApIs.Core.Models;
-using WalmartApIs.Models.Enums;
 
 namespace WalmartApIs.Models;
 
 public record Label
 {
+    /// <summary>
+    /// Url to get the return label.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("customTextForLabel")]
-    public string? CustomTextForLabel { get; init; }
+    [JsonPropertyName("labelImageURL")]
+    public string? LabelImageUrl { get; init; }
 
+    /// <summary>
+    /// Carrier information for the return.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("dimensions")]
-    public LabelDimensions? Dimensions { get; init; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("fileContents")]
-    public FileContents? FileContents { get; init; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("labelFormat")]
-    public LabelFormat? LabelFormat { get; init; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("standardIdForLabel")]
-    public StandardIdForLabel? StandardIdForLabel { get; init; }
+    [JsonPropertyName("carrierInfoList")]
+    public IReadOnlyList<CarrierInfoList>? CarrierInfoList { get; init; }
 
     [JsonExtensionData]
     public AdditionalProperties AdditionalProperties { get; init; } = [];

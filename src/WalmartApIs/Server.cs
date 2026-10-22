@@ -15,5 +15,4 @@ public class Server
     }
 
     internal UrlTemplate Default(string path) => _options.Default.Resolve(_environment, path);
-    internal UrlTemplate Default1(string path) => _options.Default1.Resolve(_environment, path);
 }

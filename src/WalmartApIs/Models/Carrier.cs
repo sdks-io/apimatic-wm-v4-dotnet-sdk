@@ -3,19 +3,31 @@ using WalmartApIs.Core.Models;
 
 namespace WalmartApIs.Models;
 
+/// <summary>
+/// carriers
+/// </summary>
 public record Carrier
 {
-    [JsonPropertyName("id")]
-    public required string Id { get; init; }
+    /// <summary>
+    /// The carrier ID. A unique identifier for the carrier.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("carrierId")]
+    public string? CarrierId { get; init; }
 
     /// <summary>
-    /// Carrier display name. Walmart-specific enum-widening for
-    /// internally-fulfilled carriers (e.g. WALMART_GROUND) is
-    /// captured by leaving this as a free string rather than a
-    /// closed enum.
+    /// The carrier short name.
     /// </summary>
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("shortName")]
+    public string? ShortName { get; init; }
+
+    /// <summary>
+    /// The carrier name.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("carrierName")]
+    public string? CarrierName { get; init; }
 
     [JsonExtensionData]
     public AdditionalProperties AdditionalProperties { get; init; } = [];

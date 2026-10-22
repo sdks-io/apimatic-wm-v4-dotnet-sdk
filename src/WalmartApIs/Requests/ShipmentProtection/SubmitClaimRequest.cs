@@ -1,0 +1,46 @@
+using System.Collections.Generic;
+using WalmartApIs.Core.Models;
+using WalmartApIs.Models;
+
+namespace WalmartApIs.Requests.ShipmentProtection;
+
+/// <summary>
+/// The inputs of the SubmitClaim operation.
+/// </summary>
+public sealed record SubmitClaimRequest
+{
+    /// <summary>
+    /// The access token retrieved in the Token API call.
+    /// </summary>
+    public required string WmSecAccessToken { get; init; }
+
+    /// <summary>
+    /// A unique ID which identifies each API call and is used to track and debug issues; use a randomly generated GUID for this ID.
+    /// </summary>
+    public required string WmQosCorrelationId { get; init; }
+
+    /// <summary>
+    /// Walmart service name—for Marketplace APIs simply use <c>Walmart Service Name</c> or the service identifier provided by Walmart.
+    /// </summary>
+    public required string WmSvcName { get; init; }
+
+    /// <summary>
+    /// A unique ID to track the consumer request by channel. Use the Consumer Channel Type received during onboarding.
+    /// </summary>
+    public string? WmConsumerChannelType { get; init; }
+
+    /// <summary>
+    /// Supporting file (image, PDF, etc.).
+    /// </summary>
+    public required BinaryContent Files { get; init; }
+
+    /// <summary>
+    /// Maps each uploaded file to its document category.
+    /// </summary>
+    public required IReadOnlyList<DocumentType> DocumentTypes { get; init; }
+
+    /// <summary>
+    /// Claim details.
+    /// </summary>
+    public required Payload Payload { get; init; }
+}

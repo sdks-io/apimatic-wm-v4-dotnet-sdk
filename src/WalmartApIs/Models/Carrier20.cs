@@ -1,0 +1,29 @@
+using System.Text.Json.Serialization;
+using WalmartApIs.Core.Models;
+
+namespace WalmartApIs.Models;
+
+/// <summary>
+/// Defines the carrier configurations used for shipping, like carrier name and carrier service.
+/// </summary>
+public record Carrier20
+{
+    /// <summary>
+    /// Name of the carrier to use for shipping.
+    /// &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/span&gt;&lt;/b&gt;
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("carrierName")]
+    public string? CarrierName { get; init; }
+
+    /// <summary>
+    /// Defines the carrier configurations used for shipping, like carrier name and carrier service.
+    /// &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/span&gt;&lt;/b&gt;
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("carrierService")]
+    public string? CarrierService { get; init; }
+
+    [JsonExtensionData]
+    public AdditionalProperties AdditionalProperties { get; init; } = [];
+}

@@ -1,33 +1,25 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using WalmartApIs.Core.Models;
 using WalmartApIs.Models.Enums;
 
 namespace WalmartApIs.Models;
 
+/// <summary>
+/// Issue affecting an item. Contains the issue type identifier only.
+/// <para>
+/// The <c>issueType</c> serves as a lookup key into the issue metadata returned by the
+/// <c>GET /item-issues/issue-types</c> reference endpoint. All static metadata (name, description,
+/// category, fixability, help links) lives in that endpoint's response.
+/// </para>
+/// </summary>
 public record Issue
 {
     /// <summary>
-    /// Machine-readable issue code
-    /// </summary>
-    [JsonPropertyName("code")]
-    public required string Code { get; init; }
-
-    /// <summary>
-    /// Human-readable issue message (locale-aware)
-    /// </summary>
-    [JsonPropertyName("message")]
-    public required string Message { get; init; }
-
-    [JsonPropertyName("severity")]
-    public required Severity Severity { get; init; }
-
-    /// <summary>
-    /// Affected attribute names
+    /// Lookup key into the issue metadata returned by the <c>GET /item-issues/issue-types</c> endpoint. Maps to one of the supported issue type enum values.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("attributeNames")]
-    public IReadOnlyList<string>? AttributeNames { get; init; }
+    [JsonPropertyName("issueType")]
+    public IssueType? IssueType { get; init; }
 
     [JsonExtensionData]
     public AdditionalProperties AdditionalProperties { get; init; } = [];

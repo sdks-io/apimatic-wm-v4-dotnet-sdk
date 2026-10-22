@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WalmartApIs.Core;
+using WalmartApIs.Core.ErrorResponse;
 using WalmartApIs.Core.Exceptions;
 using WalmartApIs.Core.Models;
 using WalmartApIs.Core.Request;
@@ -13,192 +14,87 @@ using WalmartApIs.Requests.Authorization;
 
 namespace WalmartApIs.Api;
 
-/// <summary>
-/// OAuth 2.0 / 2.1 token issuance, delegated consent, and client registration.
-/// </summary>
 public sealed class Authorization
 {
     private readonly RawClient _rawClient;
     private readonly Server _server;
-    private readonly AuthSchemes _auth;
 
-    internal Authorization(RawClient rawClient, Server server, AuthSchemes auth)
+    internal Authorization(RawClient rawClient, Server server)
     {
         _rawClient = rawClient;
         _server = server;
-        _auth = auth;
     }
 
     /// <summary>
-    /// Authorization endpoint (delegated consent)
+    /// Token Detail
     /// </summary>
     /// <param name="request">The operation's inputs</param>
     /// <param name="requestOptions">Per-request options, such as an overriding log level for this call</param>
     /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>A <see cref="Task"/> instance.</returns>
-    /// <exception cref="ApiException{TError}"> of <see cref="AuthorizeApiError"/> when the server returns an error response.</exception>
+    /// <returns>A <see cref="Task{TResult}"/> of <see cref="TokenDetailResponse"/> instance.</returns>
+    /// <exception cref="ApiException{TError}"> of <see cref="RawError"/> when the server returns an error response.</exception>
     /// <remarks>
-    /// Browser endpoint for the authorization-code grant (RFC 6749 §3.1). The
-    /// Solution Provider redirects the seller here; the seller authenticates and
-    /// consents at Walmart IAM, and the response redirects to <c>redirect_uri</c> with a
-    /// single-use <c>code</c>.
-    /// <para>
-    /// - <b>PKCE required</b> — <c>code_challenge</c> + <c>code_challenge_method=S256</c>
-    ///   (RFC 7636). <c>plain</c> is not accepted.
-    /// - <b>Exact</b> <c>redirect_uri</c> match against a value registered for the client.
-    /// - <c>state</c> required; echoed back verbatim (CSRF).
-    /// - The success and error redirects (performed by IAM) carry <c>iss</c> (RFC 9207);
-    ///   clients MUST validate it.
-    /// </para>
-    /// <para>
-    /// <b>Error handling.</b> For a valid request, this endpoint <c>302</c>-redirects to the
-    /// Walmart IAM consent URL; IAM then drives consent and performs the RFC 6749
-    /// §4.1.2.1 redirect back to the client's <c>redirect_uri</c> (success or error),
-    /// because IAM is the party that can verify the <c>redirect_uri</c> is registered.
-    /// For request-level errors that <c>the Authorization API</c> itself detects
-    /// (missing/invalid <c>client_id</c>/<c>redirect_uri</c>, <c>response_type</c> != <c>code</c>,
-    /// <c>code_challenge_method</c> != <c>S256</c>), it returns a JSON <c>400</c> (<c>AuthorizeError</c>).
-    /// It deliberately does <b>not</b> redirect these errors to the supplied
-    /// <c>redirect_uri</c>: the proxy has no client registry, so self-redirecting to an
-    /// unverified URI would be an open redirect.
-    /// </para>
-    /// <para>
-    /// &gt; <b>Upstream status (, pending):</b> <c>iss</c> emission, exact-redirect
-    /// &gt; enforcement, and server-side rejection of <c>code_challenge_method=plain</c> are
-    /// &gt; IAM / app-store responsibilities not yet fully in place. the Authorization API
-    /// &gt; enforces the request-side invariants it can and redirects valid requests to
-    /// &gt; IAM; the full guarantee lands when those upstream changes ship.
-    /// </para>
+    /// This process retrieves the access permissions granted by sellers to applications in the context of OAuth 2.0. The scope encompasses various API categories, each with its respective access levels, for example Reports: View Only, Item: Full Access, etc.
+    /// &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;
     /// </remarks>
-    public Task Authorize(AuthorizeRequest request,
+    public Task<TokenDetailResponse> GetTokenDetail(GetTokenDetailRequest request,
         RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default) =>
         _rawClient.Execute(
-            _server.Default("/auth/v4/authorize"),
+            _server.Default("/v3/token/detail"),
+            [],
             [],
             [
-                new Param("response_type", request.ResponseType),
-                new Param("client_id", request.ClientId),
-                new Param("redirect_uri", request.RedirectUri),
-                new Param("scope", request.Scope),
-                new Param("state", request.State),
-                new Param("code_challenge", request.CodeChallenge),
-                new Param("code_challenge_method", request.CodeChallengeMethod),
+                new HeaderParam("WM_SEC.ACCESS_TOKEN", request.WmSecAccessToken),
+                new HeaderParam("WM_MARKET", request.WmMarket),
+                new HeaderParam("Content-Type", request.ContentType),
+                new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
+                new HeaderParam("WM_SVC.NAME", request.WmSvcName),
+                new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
             ],
-            [],
             HttpMethod.Get,
             EmptyBody.Instance,
-            VoidResponse.Instance,
-            AuthorizeApiError.Response,
+            JsonResponse.Create<TokenDetailResponse>(),
+            RawErrorResponse.Instance,
             [],
             requestOptions,
             cancellationToken);
 
     /// <summary>
-    /// Issue an access token (client_credentials, authorization_code, or refresh_token)
+    /// Token API
     /// </summary>
     /// <param name="request">The operation's inputs</param>
     /// <param name="requestOptions">Per-request options, such as an overriding log level for this call</param>
     /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>A <see cref="Task{TResult}"/> of <see cref="TokenResponse"/> instance.</returns>
-    /// <exception cref="ApiException{TError}"> of <see cref="CreateTokenError"/> when the server returns an error response.</exception>
+    /// <returns>A <see cref="Task{TResult}"/> of <see cref="OAuthTokenModel"/> instance.</returns>
+    /// <exception cref="ApiException{TError}"> of <see cref="TokenApiError"/> when the server returns an error response.</exception>
     /// <remarks>
-    /// Exchanges a grant for an OAuth access token. Supported <c>grant_type</c> values:
-    /// <para>
-    /// | grant_type | Flow | Required (besides grant_type) |
-    /// |----------------------|------------------|---------------------------------|
-    /// | <c>client_credentials</c> | seller-direct | client auth (see below) |
-    /// | <c>authorization_code</c> | delegated | <c>code</c>, <c>code_verifier</c> (PKCE) |
-    /// | <c>refresh_token</c> | delegated | <c>refresh_token</c> |
-    /// </para>
-    /// <para>
-    /// <b>Client authentication:</b> credentials in the form body (<c>client_secret_post</c>)
-    /// — <c>client_id</c> + <c>client_secret</c>. HTTP Basic is also accepted. **Public
-    /// clients** (Solution-Provider apps registered <c>token_endpoint_auth_method: none</c>)
-    /// send no secret on the delegated grants; PKCE protects the code.
-    /// </para>
-    /// <para>
-    /// <b><c>client_credentials</c>:</b> issues <b>no</b> refresh token (re-mint on expiry).
-    /// <b><c>scope</c> is decorative here</b> — accepted for compatibility but <b>not honored</b>;
-    /// access is governed by the scopes provisioned per client in IAM ; there
-    /// is no down-scoping and the response does not echo <c>scope</c>. (Verified: <c>/v3/token</c>
-    /// ignores any <c>scope=</c> value.)
-    /// </para>
-    /// <para>
-    /// <b><c>authorization_code</c>:</b> <c>redirect_uri</c> is accepted for OAuth 2.0 back-compat
-    /// but not required in 2.1 (PKCE covers injection).
-    /// </para>
-    /// <para>
-    /// <b><c>refresh_token</c>:</b> the response includes a <b>rotated</b> <c>refresh_token</c> — the
-    /// presented token is invalidated (OAuth 2.1 §4.3.1; IAM rotates today, ~1-year
-    /// TTL). A requested <c>scope</c> MUST NOT exceed the originally granted scope.
-    /// </para>
-    /// <para>
-    /// <b>Token:</b> <c>Bearer</c> (RFC 6750), sent downstream as `Authorization: Bearer
-    /// &lt;token&gt;<c> — <b>not</b> </c>WM_SEC.ACCESS_TOKEN`.
-    /// </para>
-    /// <para>
-    /// <b>Implemented by <c>the Authorization API</c> as a stateless proxy to Walmart IAM .</b>
-    /// </para>
+    /// &lt;p&gt;This endpoint issues access tokens required for authenticating API requests. It supports multiple OAuth 2.0 grant types to accommodate various integration scenarios.&lt;/p&gt; &lt;b style='color:green;'&gt;Market availability: Global&lt;/b&gt;&lt;br/&gt;&lt;h3&gt;Supported Grant Types&lt;/h3&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Grant Type&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;th&gt;How to get the credentials&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;authorization_code&lt;/td&gt;&lt;td&gt;Exchanges an authorization code for an access token.&lt;/td&gt;&lt;td&gt;Used in app integration only via the OAuth consent screen. This is applicable to the &lt;strong&gt;US market only&lt;/strong&gt;. Refer to &lt;a href=/global-marketplace/docs/oauth-20-authorization&gt;OAuth 2.0 authorization&lt;/a&gt; for more details.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;client_credentials&lt;/td&gt;&lt;td&gt;Issues a token using client ID and secret.&lt;/td&gt;&lt;td&gt;For &lt;strong&gt;sellers&lt;/strong&gt;: Obtain client_id and client_secret from the &lt;strong&gt;Developer Portal&lt;/strong&gt;.&lt;br/&gt;For &lt;strong&gt;solution providers&lt;/strong&gt;: Obtain credentials from sellers via &lt;a href=/global-marketplace/docs/delegated-access-auth&gt;Delegated Access authorization&lt;/a&gt;.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;refresh_token&lt;/td&gt;&lt;td&gt;Issues a new access token using a refresh token.&lt;/td&gt;&lt;td&gt;Provided during the authorization_code flow. This is applicable to the &lt;strong&gt;US market only&lt;/strong&gt;. Refer to &lt;a href=/global-marketplace/docs/oauth-20-authorization&gt;OAuth 2.0 authorization&lt;/a&gt; for more details.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;b&gt;Note:&lt;br/&gt;&lt;/b&gt; Use authorization_code and refresh_token &lt;b&gt;only for app-based integrations.&lt;/b&gt; These grant types are currently &lt;b&gt;supported only in the US market&lt;/b&gt;.&lt;br/&gt;&lt;br/&gt;&lt;h3&gt;Token Lifetimes&lt;/h3&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Token Type&lt;/th&gt;&lt;th&gt;Duration&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Access Token&lt;/td&gt;&lt;td&gt;15 minutes &lt;i&gt;(900 seconds)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Refresh Token&lt;/td&gt;&lt;td&gt;1 year &lt;i&gt;(365 days)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
     /// </remarks>
-    public Task<TokenResponse> CreateToken(CreateTokenRequest request,
+    public Task<OAuthTokenModel> TokenApi(TokenApiRequest request,
         RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default) =>
         _rawClient.Execute(
-            _server.Default("/auth/v4/token"),
+            _server.Default("/v3/token"),
             [],
             [],
-            [new HeaderParam("Idempotency-Key", Guid.NewGuid())],
+            [
+                new HeaderParam("WM_MARKET", request.WmMarket),
+                new HeaderParam("Authorization", request.Authorization),
+                new HeaderParam("WM_QOS.CORRELATION_ID", request.WmQosCorrelationId),
+                new HeaderParam("WM_SVC.NAME", request.WmSvcName),
+                new HeaderParam("WM_PARTNER.ID", request.WmPartnerId),
+                new HeaderParam("WM_CONSUMER.CHANNEL.TYPE", request.WmConsumerChannelType),
+                new HeaderParam("Idempotency-Key", Guid.NewGuid()),
+            ],
             HttpMethod.Post,
             FormUrlEncodedRequest.Create(
                 new Param("grant_type", request.GrantType),
-                new Param("client_id", request.ClientId),
-                new Param("client_secret", request.ClientSecret),
                 new Param("code", request.Code),
-                new Param("code_verifier", request.CodeVerifier),
-                new Param("refresh_token", request.RefreshToken),
                 new Param("redirect_uri", request.RedirectUri),
-                new Param("scope", request.Scope)),
-            JsonResponse.Create<TokenResponse>(),
-            CreateTokenError.Response,
-            [_auth.BasicClientAuth],
-            requestOptions,
-            cancellationToken);
-
-    /// <summary>
-    /// Dynamic Client Registration (RFC 7591)
-    /// </summary>
-    /// <param name="request">The operation's inputs</param>
-    /// <param name="requestOptions">Per-request options, such as an overriding log level for this call</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>A <see cref="Task{TResult}"/> of <see cref="ClientRegistrationResponse"/> instance.</returns>
-    /// <exception cref="ApiException{TError}"> of <see cref="RegisterClientError"/> when the server returns an error response.</exception>
-    /// <remarks>
-    /// Registers a Solution Provider client and returns its <c>client_id</c> (RFC
-    /// 7591). Lets Solution Providers onboard without manual registration.
-    /// <para>
-    /// Public clients set <c>token_endpoint_auth_method: none</c> (no secret; PKCE
-    /// required). Confidential clients receive a <c>client_secret</c>. <c>redirect_uris</c>
-    /// are validated and later enforced by exact match at <c>/auth/v4/authorize</c>.
-    /// </para>
-    /// <para>
-    /// Proxied to Walmart IAM's registration endpoint (/). RFC 7592
-    /// registration management (read/update/delete via a
-    /// <c>registration_access_token</c>) is not offered in this version.
-    /// </para>
-    /// </remarks>
-    public Task<ClientRegistrationResponse> RegisterClient(RegisterClientRequest request,
-        RequestOptions? requestOptions = null,
-        CancellationToken cancellationToken = default) =>
-        _rawClient.Execute(
-            _server.Default("/auth/v4/register"),
-            [],
-            [],
-            [new HeaderParam("Idempotency-Key", Guid.NewGuid())],
-            HttpMethod.Post,
-            JsonRequest.Create(request.Body),
-            JsonResponse.Create<ClientRegistrationResponse>(),
-            RegisterClientError.Response,
+                new Param("refresh_token", request.RefreshToken)),
+            JsonResponse.Create<OAuthTokenModel>(),
+            TokenApiError.Response,
             [],
             requestOptions,
             cancellationToken);

@@ -11,29 +11,29 @@ public sealed record Status2 : OpenStringEnum<Status2>
     {
     }
 
-    public static readonly Status2 Open = new("Open");
+    public static readonly Status2 Rejected = new("REJECTED");
 
-    public static readonly Status2 Closed = new("Closed");
+    public static readonly Status2 Approved = new("APPROVED");
 
-    public static readonly Status2 Transferred = new("Transferred");
+    public static readonly Status2 NewItems = new("NEW_ITEMS");
 
-    public TResult Match<TResult>(Func<TResult> onOpen,
-        Func<TResult> onClosed,
-        Func<TResult> onTransferred,
+    public TResult Match<TResult>(Func<TResult> onRejected,
+        Func<TResult> onApproved,
+        Func<TResult> onNewItems,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Open => onOpen(),
-            _ when this == Closed => onClosed(),
-            _ when this == Transferred => onTransferred(),
+            _ when this == Rejected => onRejected(),
+            _ when this == Approved => onApproved(),
+            _ when this == NewItems => onNewItems(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onOpen, Action onClosed, Action onTransferred, Action<string> otherwise)
+    public void Match(Action onRejected, Action onApproved, Action onNewItems, Action<string> otherwise)
     {
-        if (this == Open) onOpen();
-        else if (this == Closed) onClosed();
-        else if (this == Transferred) onTransferred();
+        if (this == Rejected) onRejected();
+        else if (this == Approved) onApproved();
+        else if (this == NewItems) onNewItems();
         else otherwise(Value);
     }
 }

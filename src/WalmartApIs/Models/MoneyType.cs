@@ -3,23 +3,18 @@ using WalmartApIs.Core.Models;
 
 namespace WalmartApIs.Models;
 
-/// <summary>
-/// Currency type and monetary value.
-/// </summary>
 public record MoneyType
 {
-    /// <summary>
-    /// The currency code in ISO 4217 format.
-    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("CurrencyCode")]
-    public string? CurrencyCode { get; init; } = "USD";
+    [JsonPropertyName("value")]
+    public string? Value { get; init; }
 
-    /// <summary>
-    /// The monetary value.
-    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("Amount")]
+    [JsonPropertyName("currency")]
+    public string? Currency { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("amount")]
     public double? Amount { get; init; }
 
     [JsonExtensionData]

@@ -11,29 +11,29 @@ public sealed record Severity : OpenStringEnum<Severity>
     {
     }
 
-    public static readonly Severity Error = new("ERROR");
-
-    public static readonly Severity Warning = new("WARNING");
-
     public static readonly Severity Info = new("INFO");
 
-    public TResult Match<TResult>(Func<TResult> onError,
-        Func<TResult> onWarning,
-        Func<TResult> onInfo,
+    public static readonly Severity Warn = new("WARN");
+
+    public static readonly Severity Error = new("ERROR");
+
+    public TResult Match<TResult>(Func<TResult> onInfo,
+        Func<TResult> onWarn,
+        Func<TResult> onError,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Error => onError(),
-            _ when this == Warning => onWarning(),
             _ when this == Info => onInfo(),
+            _ when this == Warn => onWarn(),
+            _ when this == Error => onError(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onError, Action onWarning, Action onInfo, Action<string> otherwise)
+    public void Match(Action onInfo, Action onWarn, Action onError, Action<string> otherwise)
     {
-        if (this == Error) onError();
-        else if (this == Warning) onWarning();
-        else if (this == Info) onInfo();
+        if (this == Info) onInfo();
+        else if (this == Warn) onWarn();
+        else if (this == Error) onError();
         else otherwise(Value);
     }
 }

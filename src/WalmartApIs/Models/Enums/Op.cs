@@ -4,9 +4,6 @@ using WalmartApIs.Core.Enum;
 
 namespace WalmartApIs.Models.Enums;
 
-/// <summary>
-/// Patch operation type (JSON Patch)
-/// </summary>
 [JsonConverter(typeof(StringEnumConverter<Op>))]
 public sealed record Op : OpenStringEnum<Op>
 {
@@ -14,29 +11,24 @@ public sealed record Op : OpenStringEnum<Op>
     {
     }
 
-    public static readonly Op Add = new("add");
+    public static readonly Op EqualsMember = new("equals");
 
-    public static readonly Op Replace = new("replace");
+    public static readonly Op Between = new("between");
 
-    public static readonly Op Delete = new("delete");
-
-    public TResult Match<TResult>(Func<TResult> onAdd,
-        Func<TResult> onReplace,
-        Func<TResult> onDelete,
+    public TResult Match<TResult>(Func<TResult> onEqualsMember,
+        Func<TResult> onBetween,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Add => onAdd(),
-            _ when this == Replace => onReplace(),
-            _ when this == Delete => onDelete(),
+            _ when this == EqualsMember => onEqualsMember(),
+            _ when this == Between => onBetween(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onAdd, Action onReplace, Action onDelete, Action<string> otherwise)
+    public void Match(Action onEqualsMember, Action onBetween, Action<string> otherwise)
     {
-        if (this == Add) onAdd();
-        else if (this == Replace) onReplace();
-        else if (this == Delete) onDelete();
+        if (this == EqualsMember) onEqualsMember();
+        else if (this == Between) onBetween();
         else otherwise(Value);
     }
 }

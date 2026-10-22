@@ -4,6 +4,9 @@ using WalmartApIs.Core.Enum;
 
 namespace WalmartApIs.Models.Enums;
 
+/// <summary>
+/// Document category.
+/// </summary>
 [JsonConverter(typeof(StringEnumConverter<Type1>))]
 public sealed record Type1 : OpenStringEnum<Type1>
 {
@@ -11,38 +14,38 @@ public sealed record Type1 : OpenStringEnum<Type1>
     {
     }
 
-    public static readonly Type1 Label = new("LABEL");
+    public static readonly Type1 ProofOfDamagedItem = new("PROOF_OF_DAMAGED_ITEM");
 
-    public static readonly Type1 Receipt = new("RECEIPT");
+    public static readonly Type1 Invoice = new("INVOICE");
 
-    public static readonly Type1 CustomsForm = new("CUSTOMS_FORM");
+    public static readonly Type1 Other = new("OTHER");
 
-    public static readonly Type1 CommercialInvoice = new("COMMERCIAL_INVOICE");
+    public static readonly Type1 Ppod = new("PPOD");
 
-    public TResult Match<TResult>(Func<TResult> onLabel,
-        Func<TResult> onReceipt,
-        Func<TResult> onCustomsForm,
-        Func<TResult> onCommercialInvoice,
+    public TResult Match<TResult>(Func<TResult> onProofOfDamagedItem,
+        Func<TResult> onInvoice,
+        Func<TResult> onOther,
+        Func<TResult> onPpod,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Label => onLabel(),
-            _ when this == Receipt => onReceipt(),
-            _ when this == CustomsForm => onCustomsForm(),
-            _ when this == CommercialInvoice => onCommercialInvoice(),
+            _ when this == ProofOfDamagedItem => onProofOfDamagedItem(),
+            _ when this == Invoice => onInvoice(),
+            _ when this == Other => onOther(),
+            _ when this == Ppod => onPpod(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onLabel,
-        Action onReceipt,
-        Action onCustomsForm,
-        Action onCommercialInvoice,
+    public void Match(Action onProofOfDamagedItem,
+        Action onInvoice,
+        Action onOther,
+        Action onPpod,
         Action<string> otherwise)
     {
-        if (this == Label) onLabel();
-        else if (this == Receipt) onReceipt();
-        else if (this == CustomsForm) onCustomsForm();
-        else if (this == CommercialInvoice) onCommercialInvoice();
+        if (this == ProofOfDamagedItem) onProofOfDamagedItem();
+        else if (this == Invoice) onInvoice();
+        else if (this == Other) onOther();
+        else if (this == Ppod) onPpod();
         else otherwise(Value);
     }
 }

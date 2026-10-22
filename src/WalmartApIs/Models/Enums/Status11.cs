@@ -4,6 +4,13 @@ using WalmartApIs.Core.Enum;
 
 namespace WalmartApIs.Models.Enums;
 
+/// <summary>
+/// | Attribute | Description | Data Type |
+/// | --- | ----------- | ------- |
+/// | ENROLL | To enroll items into the program | string |
+/// | DISENROLL | To opt out items from the program | string |
+/// &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US only&lt;/b&gt;
+/// </summary>
 [JsonConverter(typeof(StringEnumConverter<Status11>))]
 public sealed record Status11 : OpenStringEnum<Status11>
 {
@@ -11,44 +18,22 @@ public sealed record Status11 : OpenStringEnum<Status11>
     {
     }
 
-    public static readonly Status11 Pending = new("Pending");
+    public static readonly Status11 Enroll = new("ENROLL");
 
-    public static readonly Status11 Processing = new("Processing");
+    public static readonly Status11 Disenroll = new("DISENROLL");
 
-    public static readonly Status11 Completed = new("Completed");
-
-    public static readonly Status11 Failed = new("Failed");
-
-    public static readonly Status11 OnHold = new("OnHold");
-
-    public TResult Match<TResult>(Func<TResult> onPending,
-        Func<TResult> onProcessing,
-        Func<TResult> onCompleted,
-        Func<TResult> onFailed,
-        Func<TResult> onOnHold,
-        Func<string, TResult> otherwise) =>
+    public TResult Match<TResult>(Func<TResult> onEnroll, Func<TResult> onDisenroll, Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Pending => onPending(),
-            _ when this == Processing => onProcessing(),
-            _ when this == Completed => onCompleted(),
-            _ when this == Failed => onFailed(),
-            _ when this == OnHold => onOnHold(),
+            _ when this == Enroll => onEnroll(),
+            _ when this == Disenroll => onDisenroll(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onPending,
-        Action onProcessing,
-        Action onCompleted,
-        Action onFailed,
-        Action onOnHold,
-        Action<string> otherwise)
+    public void Match(Action onEnroll, Action onDisenroll, Action<string> otherwise)
     {
-        if (this == Pending) onPending();
-        else if (this == Processing) onProcessing();
-        else if (this == Completed) onCompleted();
-        else if (this == Failed) onFailed();
-        else if (this == OnHold) onOnHold();
+        if (this == Enroll) onEnroll();
+        else if (this == Disenroll) onDisenroll();
         else otherwise(Value);
     }
 }

@@ -5,7 +5,7 @@ using WalmartApIs.Core.Enum;
 namespace WalmartApIs.Models.Enums;
 
 /// <summary>
-/// The OAuth grant type.
+/// Type of grant requested. &lt;br /&gt; <b>Available grant types:</b> authorization_code, refresh_token and client_credentials
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter<GrantType>))]
 public sealed record GrantType : OpenStringEnum<GrantType>
@@ -14,32 +14,32 @@ public sealed record GrantType : OpenStringEnum<GrantType>
     {
     }
 
-    public static readonly GrantType ClientCredentials = new("client_credentials");
-
     public static readonly GrantType AuthorizationCode = new("authorization_code");
 
     public static readonly GrantType RefreshToken = new("refresh_token");
 
-    public TResult Match<TResult>(Func<TResult> onClientCredentials,
-        Func<TResult> onAuthorizationCode,
+    public static readonly GrantType ClientCredentials = new("client_credentials");
+
+    public TResult Match<TResult>(Func<TResult> onAuthorizationCode,
         Func<TResult> onRefreshToken,
+        Func<TResult> onClientCredentials,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == ClientCredentials => onClientCredentials(),
             _ when this == AuthorizationCode => onAuthorizationCode(),
             _ when this == RefreshToken => onRefreshToken(),
+            _ when this == ClientCredentials => onClientCredentials(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onClientCredentials,
-        Action onAuthorizationCode,
+    public void Match(Action onAuthorizationCode,
         Action onRefreshToken,
+        Action onClientCredentials,
         Action<string> otherwise)
     {
-        if (this == ClientCredentials) onClientCredentials();
-        else if (this == AuthorizationCode) onAuthorizationCode();
+        if (this == AuthorizationCode) onAuthorizationCode();
         else if (this == RefreshToken) onRefreshToken();
+        else if (this == ClientCredentials) onClientCredentials();
         else otherwise(Value);
     }
 }

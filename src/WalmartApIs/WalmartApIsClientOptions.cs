@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using WalmartApIs.Core.Authentication.Basic;
-using WalmartApIs.Core.Authentication.OAuth2;
-using WalmartApIs.Core.Authentication.OAuth2.AuthorizationCode;
-using WalmartApIs.Core.Authentication.OAuth2.ClientCredentials;
 using WalmartApIs.Core.Configuration;
 using WalmartApIs.Core.Hooks;
 using WalmartApIs.Servers;
@@ -24,14 +21,32 @@ public class WalmartApIsClientOptions
     /// </summary>
     public TimeSpan? StreamReadTimeout { get; set; } = TimeSpan.FromSeconds(60);
     public IReadOnlyList<SdkHook> Hooks { get; set; } = [];
-    public OAuth2AuthorizationCodeCredentials? SellerAuthAuthorizationCode { get; set; }
-    public IOAuth2RefreshableTokenStrategy<OAuth2AuthorizationCodeCredentials>? SellerAuthAuthorizationCodeTokenStrategy { get; set; }
-    public OAuth2ClientCredentials? SellerAuthClientCredentials { get; set; }
-    public IOAuth2TokenStrategy<OAuth2ClientCredentials>? SellerAuthClientCredentialsTokenStrategy { get; set; }
+    public BasicAuthCredentials? BasicAuth { get; set; }
     /// <summary>
-    /// HTTP Basic with base64(client_id:client_secret). client_secret_post (body) also accepted; public clients send no secret.
+    /// Use the access token obtained from the Token API.
+    /// Include it in the WM_SEC.ACCESS_TOKEN header.
     /// </summary>
-    public BasicAuthCredentials? BasicClientAuth { get; set; }
-    public OAuth2ClientCredentials? WalletAuth { get; set; }
-    public IOAuth2TokenStrategy<OAuth2ClientCredentials>? WalletAuthTokenStrategy { get; set; }
+    public string? BearerAuth { get; set; }
+    /// <summary>
+    /// Access token required for authenticating API requests.
+    /// <para>
+    /// To obtain a token, call <c>POST https://marketplace.walmartapis.com/v3/token</c> with your client ID and client secret using the client credentials grant type. Refer to the <see href="https://developer.walmart.com/us-marketplace/docs/get-an-access-token">Token API documentation</see> for details.
+    /// </para>
+    /// <para>
+    /// Pass the resulting token in the <c>WM_SEC.ACCESS_TOKEN</c> header with every API request., Access token required for authenticating API requests.
+    /// </para>
+    /// <para>
+    /// To obtain a token, call <c>POST https://marketplace.walmartapis.com/v3/token</c> with your client ID and client secret using the OAuth 2.0 client credentials grant type. Refer to the <see href="https://developer.walmart.com/us-marketplace/docs/get-an-access-token">Token API documentation</see> for details.
+    /// </para>
+    /// <para>
+    /// Pass the resulting token in the <c>WM_SEC.ACCESS_TOKEN</c> header with every API request., Access token obtained from the Token API. This is required for authenticating requests to Walmart Marketplace APIs., Access token required for authenticating API requests.
+    /// </para>
+    /// <para>
+    /// To obtain a token, call <c>POST https://marketplace.walmartapis.com/v3/token</c> with your client ID and client secret using the client credentials grant type. Refer to the <see href="https://developer.walmart.com/us-marketplace/docs/get-an-access-token">Token API documentation</see> for details.
+    /// </para>
+    /// <para>
+    /// Pass the resulting token in the <c>WM_SEC.ACCESS_TOKEN</c> header with every API request., Access token from POST /v3/token (client_credentials grant).
+    /// </para>
+    /// </summary>
+    public string? AccessToken { get; set; }
 }

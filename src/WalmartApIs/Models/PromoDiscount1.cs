@@ -1,0 +1,43 @@
+using System.Text.Json.Serialization;
+using WalmartApIs.Core.Models;
+
+namespace WalmartApIs.Models;
+
+/// <summary>
+/// The field ‘Promo&amp;Discount’ is for the US market. &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+/// </summary>
+public record PromoDiscount1
+{
+    /// <summary>
+    /// The SKU of the item for which the promotion is being updated.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+    /// </summary>
+    [JsonPropertyName("sku")]
+    public required string Sku { get; init; }
+
+    /// <summary>
+    /// The current selling price of the item on Walmart.com.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+    /// </summary>
+    [JsonPropertyName("price")]
+    public required double Price { get; init; }
+
+    /// <summary>
+    /// The manufacturer's suggested retail price (MSRP) for the item.&lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US&lt;/b&gt;
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("msrp")]
+    public double? Msrp { get; init; }
+
+    /// <summary>
+    /// Promotion ID is required to update the existing promotion information. &lt;br&gt;&lt;b style='color:green;'&gt;Market availability: US
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("promoid")]
+    public string? Promoid { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("promotionInformation")]
+    public PromotionInformation1? PromotionInformation { get; init; }
+
+    [JsonExtensionData]
+    public AdditionalProperties AdditionalProperties { get; init; } = [];
+}

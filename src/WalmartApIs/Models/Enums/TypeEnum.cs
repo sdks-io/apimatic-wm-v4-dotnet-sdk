@@ -4,6 +4,13 @@ using WalmartApIs.Core.Enum;
 
 namespace WalmartApIs.Models.Enums;
 
+/// <summary>
+/// Recommendation category.
+/// <list type="bullet">
+///   <item><description><b>BUDGET</b>: Recommended budget adjustment (daily or total)</description></item>
+///   <item><description><b>BIDDING_STRATEGY</b>: Recommended change to bidding strategy</description></item>
+/// </list>
+/// </summary>
 [JsonConverter(typeof(StringEnumConverter<TypeEnum>))]
 public sealed record TypeEnum : OpenStringEnum<TypeEnum>
 {
@@ -11,29 +18,24 @@ public sealed record TypeEnum : OpenStringEnum<TypeEnum>
     {
     }
 
-    public static readonly TypeEnum Variation = new("VARIATION");
+    public static readonly TypeEnum Budget = new("BUDGET");
 
-    public static readonly TypeEnum Accessory = new("ACCESSORY");
+    public static readonly TypeEnum BiddingStrategy = new("BIDDING_STRATEGY");
 
-    public static readonly TypeEnum BundleComponent = new("BUNDLE_COMPONENT");
-
-    public TResult Match<TResult>(Func<TResult> onVariation,
-        Func<TResult> onAccessory,
-        Func<TResult> onBundleComponent,
+    public TResult Match<TResult>(Func<TResult> onBudget,
+        Func<TResult> onBiddingStrategy,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Variation => onVariation(),
-            _ when this == Accessory => onAccessory(),
-            _ when this == BundleComponent => onBundleComponent(),
+            _ when this == Budget => onBudget(),
+            _ when this == BiddingStrategy => onBiddingStrategy(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onVariation, Action onAccessory, Action onBundleComponent, Action<string> otherwise)
+    public void Match(Action onBudget, Action onBiddingStrategy, Action<string> otherwise)
     {
-        if (this == Variation) onVariation();
-        else if (this == Accessory) onAccessory();
-        else if (this == BundleComponent) onBundleComponent();
+        if (this == Budget) onBudget();
+        else if (this == BiddingStrategy) onBiddingStrategy();
         else otherwise(Value);
     }
 }

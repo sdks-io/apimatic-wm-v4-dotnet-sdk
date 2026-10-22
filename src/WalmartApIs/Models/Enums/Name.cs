@@ -5,7 +5,7 @@ using WalmartApIs.Core.Enum;
 namespace WalmartApIs.Models.Enums;
 
 /// <summary>
-/// Duration category of the investigation.
+/// Name of the AddOn type.
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter<Name>))]
 public sealed record Name : OpenStringEnum<Name>
@@ -14,32 +14,24 @@ public sealed record Name : OpenStringEnum<Name>
     {
     }
 
-    public static readonly Name ResearchingQuantityInShortTerm = new("researchingQuantityInShortTerm");
+    public static readonly Name Signature = new("SIGNATURE");
 
-    public static readonly Name ResearchingQuantityInMidTerm = new("researchingQuantityInMidTerm");
+    public static readonly Name Insurance = new("INSURANCE");
 
-    public static readonly Name ResearchingQuantityInLongTerm = new("researchingQuantityInLongTerm");
-
-    public TResult Match<TResult>(Func<TResult> onResearchingQuantityInShortTerm,
-        Func<TResult> onResearchingQuantityInMidTerm,
-        Func<TResult> onResearchingQuantityInLongTerm,
+    public TResult Match<TResult>(Func<TResult> onSignature,
+        Func<TResult> onInsurance,
         Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == ResearchingQuantityInShortTerm => onResearchingQuantityInShortTerm(),
-            _ when this == ResearchingQuantityInMidTerm => onResearchingQuantityInMidTerm(),
-            _ when this == ResearchingQuantityInLongTerm => onResearchingQuantityInLongTerm(),
+            _ when this == Signature => onSignature(),
+            _ when this == Insurance => onInsurance(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onResearchingQuantityInShortTerm,
-        Action onResearchingQuantityInMidTerm,
-        Action onResearchingQuantityInLongTerm,
-        Action<string> otherwise)
+    public void Match(Action onSignature, Action onInsurance, Action<string> otherwise)
     {
-        if (this == ResearchingQuantityInShortTerm) onResearchingQuantityInShortTerm();
-        else if (this == ResearchingQuantityInMidTerm) onResearchingQuantityInMidTerm();
-        else if (this == ResearchingQuantityInLongTerm) onResearchingQuantityInLongTerm();
+        if (this == Signature) onSignature();
+        else if (this == Insurance) onInsurance();
         else otherwise(Value);
     }
 }

@@ -1,22 +1,42 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using WalmartApIs.Core.Models;
+using WalmartApIs.Models.AnyOf;
 
 namespace WalmartApIs.Models;
 
+/// <summary>
+/// Request Payload
+/// </summary>
 public record Payload12
 {
+    /// <summary>
+    /// Row Level filters
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("shipmentId")]
-    public string? ShipmentId { get; init; }
+    [JsonPropertyName("rowFilters")]
+    public IReadOnlyList<RowFilter1>? RowFilters { get; init; }
 
+    /// <summary>
+    /// Columns to exclude from report
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("packageDocumentDetails")]
-    public IReadOnlyList<PackageDocumentDetail>? PackageDocumentDetails { get; init; }
+    [JsonPropertyName("excludeColumns")]
+    public IReadOnlyList<string>? ExcludeColumns { get; init; }
 
+    /// <summary>
+    /// Start timestamp of the report date range
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    [JsonPropertyName("promise")]
-    public Promise? Promise { get; init; }
+    [JsonPropertyName("dataStartTime")]
+    public string? DataStartTime { get; init; }
+
+    /// <summary>
+    /// End timestamp of the report date range
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("dataEndTime")]
+    public string? DataEndTime { get; init; }
 
     [JsonExtensionData]
     public AdditionalProperties AdditionalProperties { get; init; } = [];

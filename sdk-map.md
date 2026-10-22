@@ -9,7 +9,7 @@
 | SDK display name | Walmart APIs |
 | Root namespace | `WalmartApIs` |
 | Target framework | `netstandard2.0` (C# `LangVersion 14`, `Nullable enable`) |
-| API spec version | `v4` |
+| API spec version | `1.0` |
 | Generator | APIMatic |
 
 Staleness check: the API spec version above changes when the SDK is regenerated from a new spec. If a lookup here fails to compile, trust the compiler and re-read the source file named in the row.
@@ -25,19 +25,9 @@ var httpClient = new HttpClient();
 // TODO: configure more client options here
 var options = new WalmartApIsClientOptions
 {
-    BasicClientAuth = new BasicAuthCredentials { Username = "YOUR_USERNAME", Password = "YOUR_PASSWORD" },
-    SellerAuthClientCredentials = new OAuth2ClientCredentials
-    {
-        ClientId = "YOUR_CLIENT_ID",
-        ClientSecret = "YOUR_CLIENT_SECRET",
-    },
-    WalletAuth = new OAuth2ClientCredentials { ClientId = "YOUR_CLIENT_ID", ClientSecret = "YOUR_CLIENT_SECRET" },
-    SellerAuthAuthorizationCode = new OAuth2AuthorizationCodeCredentials
-    {
-        ClientId = "YOUR_CLIENT_ID",
-        RedirectUri = "YOUR_REDIRECT_URI",
-        PromptForAuthorizationCode = (authUrl, ct) => Task.FromResult(""),
-    },
+    BasicAuth = new BasicAuthCredentials { Username = "YOUR_USERNAME", Password = "YOUR_PASSWORD" },
+    AccessToken = "YOUR_API_KEY",
+    BearerAuth = "YOUR_BEARER_TOKEN",
     Environment = ServerEnvironment.Production,
 };
 var client = new WalmartApIsClient(httpClient, options);
@@ -48,24 +38,15 @@ DI alternative (`services.AddWalmartApIsClient`):
 ```csharp
 services.AddWalmartApIsClient(options =>
 {
-    options.BasicClientAuth = new BasicAuthCredentials { Username = "YOUR_USERNAME", Password = "YOUR_PASSWORD" };
-    options.SellerAuthClientCredentials =
-        new OAuth2ClientCredentials { ClientId = "YOUR_CLIENT_ID", ClientSecret = "YOUR_CLIENT_SECRET" };
-    options.WalletAuth =
-        new OAuth2ClientCredentials { ClientId = "YOUR_CLIENT_ID", ClientSecret = "YOUR_CLIENT_SECRET" };
-    options.SellerAuthAuthorizationCode =
-        new OAuth2AuthorizationCodeCredentials
-        {
-            ClientId = "YOUR_CLIENT_ID",
-            RedirectUri = "YOUR_REDIRECT_URI",
-            PromptForAuthorizationCode = (authUrl, ct) => Task.FromResult(""),
-        };
+    options.BasicAuth = new BasicAuthCredentials { Username = "YOUR_USERNAME", Password = "YOUR_PASSWORD" };
+    options.AccessToken = "YOUR_API_KEY";
+    options.BearerAuth = "YOUR_BEARER_TOKEN";
     options.Environment = ServerEnvironment.Production;
     // TODO: configure more client options here
 });
 ```
 
-Every API group is a property on the client (e.g. `client.Authorization`). Source: `src/WalmartApIs/WalmartApIsClient.cs`. The only constructor is `WalmartApIsClient(HttpClient httpClient, WalmartApIsClientOptions options)`.
+Every API group is a property on the client (e.g. `client.AssortmentRecommendations`). Source: `src/WalmartApIs/WalmartApIsClient.cs`. The only constructor is `WalmartApIsClient(HttpClient httpClient, WalmartApIsClientOptions options)`.
 
 All `WalmartApIsClientOptions` properties (source: `src/WalmartApIs/WalmartApIsClientOptions.cs`):
 
@@ -78,17 +59,11 @@ All `WalmartApIsClientOptions` properties (source: `src/WalmartApIs/WalmartApIsC
 | `Server` | `ServerOptions` |
 | `StreamReadTimeout` | `TimeSpan?` |
 | `Hooks` | `IReadOnlyList<SdkHook>` |
-| `SellerAuthAuthorizationCode` | `OAuth2AuthorizationCodeCredentials?` |
-| `SellerAuthAuthorizationCodeTokenStrategy` | `IOAuth2RefreshableTokenStrategy<OAuth2AuthorizationCodeCredentials>?` |
-| `SellerAuthClientCredentials` | `OAuth2ClientCredentials?` |
-| `SellerAuthClientCredentialsTokenStrategy` | `IOAuth2TokenStrategy<OAuth2ClientCredentials>?` |
-| `BasicClientAuth` | `BasicAuthCredentials?` |
-| `WalletAuth` | `OAuth2ClientCredentials?` |
-| `WalletAuthTokenStrategy` | `IOAuth2TokenStrategy<OAuth2ClientCredentials>?` |
+| `BasicAuth` | `BasicAuthCredentials?` |
+| `BearerAuth` | `string?` |
+| `AccessToken` | `string?` |
 
 `ServerEnvironment` (source: `src/WalmartApIs/Servers/ServerEnvironment.cs`, namespace `WalmartApIs.Servers`)
-`OAuth2AuthorizationCodeCredentials` (source: `src/WalmartApIs/Core/Authentication/OAuth2/AuthorizationCode/OAuth2AuthorizationCodeCredentials.cs`, namespace `WalmartApIs.Core.Authentication.OAuth2.AuthorizationCode`)
-`OAuth2ClientCredentials` (source: `src/WalmartApIs/Core/Authentication/OAuth2/ClientCredentials/OAuth2ClientCredentials.cs`, namespace `WalmartApIs.Core.Authentication.OAuth2.ClientCredentials`)
 `BasicAuthCredentials` (source: `src/WalmartApIs/Core/Authentication/Basic/BasicAuthCredentials.cs`, namespace `WalmartApIs.Core.Authentication.Basic`)
 
 `RetryOptions` members (namespace `WalmartApIs.Core.Configuration` — add `using WalmartApIs.Core.Configuration;`; source: `src/WalmartApIs/Core/Configuration/RetryOptions.cs`; all members are `required`, so build a full instance or start from `RetryOptions.Default()`):
@@ -122,7 +97,7 @@ Core error types (`src/WalmartApIs/Core/ErrorResponse/`) — public members with
 
 | Type | Public members | Source |
 | --- | --- | --- |
-| `ApiError` — abstract base of the 174 typed error classes in `src/WalmartApIs/Errors/` | `TryGetRawError(out RawError error): bool` | `src/WalmartApIs/Core/ErrorResponse/ApiError.cs` |
+| `ApiError` — abstract base of the 85 typed error classes in `src/WalmartApIs/Errors/` | `TryGetRawError(out RawError error): bool` | `src/WalmartApIs/Core/ErrorResponse/ApiError.cs` |
 | `RawError` | `StatusCode: HttpStatusCode` · `ReadAsBytes(): ReadOnlyMemory<byte>` · `ReadAsString(): string` · `ReadAsJson<T>(): T?` | `src/WalmartApIs/Core/ErrorResponse/RawError.cs` |
 
 Typed-error payload shapes (the `out` types in each operation page's error-accessor cells) are ordinary records/unions — no special handling. The operation's **Type sources** table gives the file that declares each one; read field names, declared types, and JSON wire names there, as for any other model.
@@ -130,23 +105,24 @@ Typed-error payload shapes (the `out` types in each operation page's error-acces
 ```csharp
 try
 {
-    await client.Authorization.Authorize(new AuthorizeRequest
-    {
-        ResponseType = ResponseType1.Code,
-        ClientId = "some example string",
-        RedirectUri = "https://example.com",
-        Scope = "some example string",
-        State = "some example string",
-        CodeChallenge = "some example string",
-        CodeChallengeMethod = CodeChallengeMethod.S256,
-    });
+    var response = await client.AssortmentRecommendations.GetAssortmentRecommendationTrends(
+        new GetAssortmentRecommendationTrendsRequest
+        {
+            RecommendationUniqueId = "some example string",
+            TrendTypes = "PRICE_TRENDS,DEMAND_TRENDS",
+            WmGlobalVersion = WmGlobalVersion._31,
+            WmSecAccessToken = "eyJraWQiOiIzZjVhYTFmNS1hYWE5LTQzM.....",
+            WmQosCorrelationId = "b3261d2d-028a-4ef7-8602-633c23200af6",
+            WmSvcName = "Walmart Service Name",
+            WmMarket = WmMarket1.Us,
+        });
 }
-catch (ApiException<AuthorizeApiError> ex)
+catch (ApiException<GetAssortmentRecommendationTrendsError> ex)
 {
     // Case A — typed error
-    if (ex.Error.TryGetAuthorizeError(out var error))
+    if (ex.Error.TryGetErrorResponse1(out var error))
     {
-        // Handle 400
+        // Handle 400, 500
     }
     else if (ex.Error.TryGetRawError(out var raw))
     {
@@ -160,11 +136,11 @@ catch (ApiException<RawError> ex)
 }
 ```
 
-**No-throw (`…Result`) variants: absent across this SDK** — every operation is throw-only. Of **174 operations**, **174 are Case A (typed)** and **0 are Case B (raw)**.
+**No-throw (`…Result`) variants: absent across this SDK** — every operation is throw-only. Of **117 operations**, **85 are Case A (typed)** and **32 are Case B (raw)**.
 
 ---
 
-## Operations — by controller (30 groups, 174 operations)
+## Operations — by controller (29 groups, 117 operations)
 
 Each links to a sub-page with one row per operation: signature, the request record's required members, query-param wire names, return type, error Case A/B, and Case A's typed accessors with their statuses. Each operation also carries a **Type sources** table — every type it names, with the file that declares it — so resolving a body, return, or error payload to its source is a lookup, never a search. `RawError` is excluded there (its members and path are above); an operation with no table names nothing but primitives and `RawError`.
 
@@ -184,36 +160,35 @@ Each links to a sub-page with one row per operation: signature, the request reco
 
 | Controller (`client.X`) | Ops | Page |
 | --- | --- | --- |
-| `Authorization` | 3 | [map/operations/Authorization.md](map/operations/Authorization.md) |
-| `Catalog` | 2 | [map/operations/Catalog.md](map/operations/Catalog.md) |
-| `DataKiosk` | 5 | [map/operations/DataKiosk.md](map/operations/DataKiosk.md) |
-| `Disputes` | 1 | [map/operations/Disputes.md](map/operations/Disputes.md) |
-| `Feeds` | 5 | [map/operations/Feeds.md](map/operations/Feeds.md) |
-| `FinalPayout` | 2 | [map/operations/FinalPayout.md](map/operations/FinalPayout.md) |
-| `Finances` | 4 | [map/operations/Finances.md](map/operations/Finances.md) |
-| `FulfillmentOutbound` | 7 | [map/operations/FulfillmentOutbound.md](map/operations/FulfillmentOutbound.md) |
-| `Inventory` | 4 | [map/operations/Inventory.md](map/operations/Inventory.md) |
-| `ListingsItems` | 5 | [map/operations/ListingsItems.md](map/operations/ListingsItems.md) |
-| `ListingsRestrictions` | 1 | [map/operations/ListingsRestrictions.md](map/operations/ListingsRestrictions.md) |
-| `MerchantFulfillment` | 5 | [map/operations/MerchantFulfillment.md](map/operations/MerchantFulfillment.md) |
-| `Orders` | 14 | [map/operations/Orders.md](map/operations/Orders.md) |
-| `Payouts` | 5 | [map/operations/Payouts.md](map/operations/Payouts.md) |
-| `ProductTypeDefinitions` | 2 | [map/operations/ProductTypeDefinitions.md](map/operations/ProductTypeDefinitions.md) |
-| `Reconciliation` | 3 | [map/operations/Reconciliation.md](map/operations/Reconciliation.md) |
-| `ReportSchedules` | 4 | [map/operations/ReportSchedules.md](map/operations/ReportSchedules.md) |
-| `Reports` | 7 | [map/operations/Reports.md](map/operations/Reports.md) |
-| `Sellers` | 2 | [map/operations/Sellers.md](map/operations/Sellers.md) |
-| `Settlement` | 3 | [map/operations/Settlement.md](map/operations/Settlement.md) |
-| `Uploads` | 1 | [map/operations/Uploads.md](map/operations/Uploads.md) |
-| `WfsInventory` | 1 | [map/operations/WfsInventory.md](map/operations/WfsInventory.md) |
-| `Messaging` | 11 | [map/operations/Messaging.md](map/operations/Messaging.md) |
-| `Notifications` | 9 | [map/operations/Notifications.md](map/operations/Notifications.md) |
-| `ProductFees` | 3 | [map/operations/ProductFees.md](map/operations/ProductFees.md) |
-| `ProductPricing` | 8 | [map/operations/ProductPricing.md](map/operations/ProductPricing.md) |
-| `Sales` | 1 | [map/operations/Sales.md](map/operations/Sales.md) |
-| `Shipping` | 9 | [map/operations/Shipping.md](map/operations/Shipping.md) |
-| `Solicitations` | 2 | [map/operations/Solicitations.md](map/operations/Solicitations.md) |
-| `WfsInbound` | 45 | [map/operations/WfsInbound.md](map/operations/WfsInbound.md) |
+| `AssortmentRecommendations` | 5 | [map/operations/AssortmentRecommendations.md](map/operations/AssortmentRecommendations.md) |
+| `Authorization` | 2 | [map/operations/Authorization.md](map/operations/Authorization.md) |
+| `Disputes` | 2 | [map/operations/Disputes.md](map/operations/Disputes.md) |
+| `FeedsApi` | 3 | [map/operations/FeedsApi.md](map/operations/FeedsApi.md) |
+| `InsightApi` | 7 | [map/operations/InsightApi.md](map/operations/InsightApi.md) |
+| `InventoryApi` | 7 | [map/operations/InventoryApi.md](map/operations/InventoryApi.md) |
+| `LagTimeApi` | 2 | [map/operations/LagTimeApi.md](map/operations/LagTimeApi.md) |
+| `Notifications` | 6 | [map/operations/Notifications.md](map/operations/Notifications.md) |
+| `OnRequestReport` | 1 | [map/operations/OnRequestReport.md](map/operations/OnRequestReport.md) |
+| `OnRequestReportApi` | 3 | [map/operations/OnRequestReportApi.md](map/operations/OnRequestReportApi.md) |
+| `Prices` | 11 | [map/operations/Prices.md](map/operations/Prices.md) |
+| `Promotions` | 3 | [map/operations/Promotions.md](map/operations/Promotions.md) |
+| `RecommendationsApi` | 4 | [map/operations/RecommendationsApi.md](map/operations/RecommendationsApi.md) |
+| `ReportScheduler` | 4 | [map/operations/ReportScheduler.md](map/operations/ReportScheduler.md) |
+| `ReportsApi` | 7 | [map/operations/ReportsApi.md](map/operations/ReportsApi.md) |
+| `ReturnsRefund` | 3 | [map/operations/ReturnsRefund.md](map/operations/ReturnsRefund.md) |
+| `Reviews` | 3 | [map/operations/Reviews.md](map/operations/Reviews.md) |
+| `RichMedia` | 2 | [map/operations/RichMedia.md](map/operations/RichMedia.md) |
+| `SemCampaignManagement` | 6 | [map/operations/SemCampaignManagement.md](map/operations/SemCampaignManagement.md) |
+| `SemCatalog` | 2 | [map/operations/SemCatalog.md](map/operations/SemCatalog.md) |
+| `SemItemDiagnostics` | 2 | [map/operations/SemItemDiagnostics.md](map/operations/SemItemDiagnostics.md) |
+| `SemReporting` | 3 | [map/operations/SemReporting.md](map/operations/SemReporting.md) |
+| `SeoRecommendations` | 2 | [map/operations/SeoRecommendations.md](map/operations/SeoRecommendations.md) |
+| `ShipWithWalmart` | 10 | [map/operations/ShipWithWalmart.md](map/operations/ShipWithWalmart.md) |
+| `ShipmentProtection` | 6 | [map/operations/ShipmentProtection.md](map/operations/ShipmentProtection.md) |
+| `SimplifiedShippingSettings` | 5 | [map/operations/SimplifiedShippingSettings.md](map/operations/SimplifiedShippingSettings.md) |
+| `TaxFormApIs` | 2 | [map/operations/TaxFormApIs.md](map/operations/TaxFormApIs.md) |
+| `WsrAttributionReports` | 3 | [map/operations/WsrAttributionReports.md](map/operations/WsrAttributionReports.md) |
+| `WalmartSellerFulfilled` | 1 | [map/operations/WalmartSellerFulfilled.md](map/operations/WalmartSellerFulfilled.md) |
 
 ---
 
@@ -223,10 +198,12 @@ Each links to a sub-page with one row per operation: signature, the request reco
 
 | Group | Count | Directory (file = `<TypeName>.cs`) |
 | --- | --- | --- |
-| Records (plain `record` data models) | 410 | `src/WalmartApIs/Models/` |
-| Enums (`OpenStringEnum<T>` / `OpenIntEnum<T>`) — C# member names + wire values | 119 | `src/WalmartApIs/Models/Enums/` |
-| Typed error classes (`: ApiError`, one per Case A operation) | 174 | `src/WalmartApIs/Errors/` |
-| Request records (one per operation that takes input; never serialized) | 165 | `src/WalmartApIs/Requests/` — a controller's records sit in a folder named after it (an operation with several tags is filed under the first tag it declares) |
+| Records (plain `record` data models) | 959 | `src/WalmartApIs/Models/` |
+| Unions (`OneOf`) — variant factories + `TryGet…` | 1 | `src/WalmartApIs/Models/OneOf/` |
+| Unions (`AnyOf`) — variant factories + `TryGet…` | 7 | `src/WalmartApIs/Models/AnyOf/` |
+| Enums (`OpenStringEnum<T>` / `OpenIntEnum<T>`) — C# member names + wire values | 188 | `src/WalmartApIs/Models/Enums/` |
+| Typed error classes (`: ApiError`, one per Case A operation) | 85 | `src/WalmartApIs/Errors/` |
+| Request records (one per operation that takes input; never serialized) | 117 | `src/WalmartApIs/Requests/` — a controller's records sit in a folder named after it (an operation with several tags is filed under the first tag it declares) |
 
 Conventions: records are immutable, `init`-only; `required` properties must be set in the object initializer; `T?` is optional. A field's wire name is its `[JsonPropertyName]` and often differs from the C# name (`AmountInCents` ↔ `amount_in_cents`) — read it off the property, don't derive it. `OneOf`/`AnyOf` unions wrap `Optional<T>` variants — build via static factory or implicit conversion, read via `TryGet…(out …)`; `AllOf` compositions are not unions — every constituent is a `required` property, so set them all, and those constituent properties carry no `[JsonPropertyName]` and have no wire name of their own, because the generated converter flattens each constituent's own fields directly into the one parent JSON object. Enums are **not** C# enums — use the static members, whose names are PascalCase even when the wire value isn't (`CollectionMethod.Invoice`, not `.invoice`); there is no public factory, so resolve a raw value with `TryGetKnownValue` and branch with the generated `Match`, whose `otherwise` arm receives any value the SDK does not declare.
 
@@ -238,6 +215,8 @@ Namespaces by content type (add `using` accordingly):
 | Operation controllers (`src/WalmartApIs/Api/`) | `WalmartApIs.Api` |
 | Records (`src/WalmartApIs/Models/`) | `WalmartApIs.Models` |
 | Enums (`src/WalmartApIs/Models/Enums/`) | `WalmartApIs.Models.Enums` |
+| OneOf unions (`src/WalmartApIs/Models/OneOf/`) | `WalmartApIs.Models.OneOf` |
+| AnyOf unions (`src/WalmartApIs/Models/AnyOf/`) | `WalmartApIs.Models.AnyOf` |
 | Error classes (`src/WalmartApIs/Errors/`) | `WalmartApIs.Errors` |
 | Request records (`src/WalmartApIs/Requests/`) | `WalmartApIs.Requests` — plus `.<Controller>` for a controller's records (an operation with several tags is filed under the first tag it declares) |
 
@@ -245,13 +224,24 @@ Namespaces by content type (add `using` accordingly):
 
 ## Servers & auth
 
-**OAuth2 (authorization code).** Set `options.SellerAuthAuthorizationCode` with client id, redirect URI and a `PromptForAuthorizationCode` callback; authorization at `https://marketplace.walmart.com/seller/auth/v4/authorize`, tokens from `https://marketplace.walmart.com/seller/auth/v4/token`. `options.SellerAuthAuthorizationCodeTokenStrategy` overrides how tokens are acquired and cached; leave it unset for the SDK's own handling.
+**Basic auth.** Set `options.BasicAuth = new BasicAuthCredentials { Username = …, Password = … }`.
 
-**OAuth2 (client credentials).** Set `options.SellerAuthClientCredentials` with your client id and secret; tokens are fetched from `https://marketplace.walmart.com/seller/auth/v4/token`. `options.SellerAuthClientCredentialsTokenStrategy` overrides how tokens are acquired and cached; leave it unset for the SDK's own handling.
+**Bearer token.** Set `options.BearerAuth = "<token>"`. Use the access token obtained from the Token API.
+Include it in the WM_SEC.ACCESS_TOKEN header.
 
-**Basic auth.** Set `options.BasicClientAuth = new BasicAuthCredentials { Username = …, Password = … }`. HTTP Basic with base64(client_id:client_secret). client_secret_post (body) also accepted; public clients send no secret.
+**API key (header `WM_SEC.ACCESS_TOKEN`).** Set `options.AccessToken = "<api_key>"`; sent as the `WM_SEC.ACCESS_TOKEN` request header. Access token required for authenticating API requests.
 
-**OAuth2 (client credentials).** Set `options.WalletAuth` with your client id and secret; tokens are fetched from `https://marketplace.walmart.com/seller/v1/auth/token`. `options.WalletAuthTokenStrategy` overrides how tokens are acquired and cached; leave it unset for the SDK's own handling.
+To obtain a token, call `POST https://marketplace.walmartapis.com/v3/token` with your client ID and client secret using the client credentials grant type. Refer to the [Token API documentation](https://developer.walmart.com/us-marketplace/docs/get-an-access-token) for details.
+
+Pass the resulting token in the `WM_SEC.ACCESS_TOKEN` header with every API request., Access token required for authenticating API requests.
+
+To obtain a token, call `POST https://marketplace.walmartapis.com/v3/token` with your client ID and client secret using the OAuth 2.0 client credentials grant type. Refer to the [Token API documentation](https://developer.walmart.com/us-marketplace/docs/get-an-access-token) for details.
+
+Pass the resulting token in the `WM_SEC.ACCESS_TOKEN` header with every API request., Access token obtained from the Token API. This is required for authenticating requests to Walmart Marketplace APIs., Access token required for authenticating API requests.
+
+To obtain a token, call `POST https://marketplace.walmartapis.com/v3/token` with your client ID and client secret using the client credentials grant type. Refer to the [Token API documentation](https://developer.walmart.com/us-marketplace/docs/get-an-access-token) for details.
+
+Pass the resulting token in the `WM_SEC.ACCESS_TOKEN` header with every API request., Access token from POST /v3/token (client_credentials grant).
 
 Operation blocks name their credential in an **Auth** bullet; an operation whose spec declares no scheme carries no such bullet.
 
@@ -264,16 +254,14 @@ A credential you never set is skipped rather than throwing, and the request is s
 
 | Environment | Value | Hosting |
 | --- | --- | --- |
-| `ServerEnvironment.Production` *(default)* | `production` | Production |
-| `ServerEnvironment.Environment2` | `environment2` | Sandbox |
-| `ServerEnvironment.Environment3` | `environment3` | mock |
+| `ServerEnvironment.Production` *(default)* | `production` | Production URL, Specifies the production URL., Specifies the production URL., Production URL, Specifies the production URL., Specifies the production URL., Refers to the URL used for accessing the production server., Specifies the production URL., Refers to the URL used for accessing the production server., Production URL, Production URL, Production server for all APIs., Production URL, Production URL, Production URL, Base URL for production requests., Production URL, Production URL, Production URL, Refers to the URL used for accessing the production server. |
+| `ServerEnvironment.Environment2` | `environment2` | Sandbox URL, Specifies the sandbox URL., Specifies the sandbox URL., Sandbox URL, Specifies the sandbox URL., Specifies the sandbox URL., Refers to the URL used for accessing the sandbox server., Specifies the sandbox URL., Refers to the URL used for accessing the sandbox server., Sandbox URL, Sandbox URL, Sandbox URL, Sandbox URL, Sandbox URL, Base URL for sandbox requests., Sandbox URL, Sandbox URL, Sandbox URL, Refers to the URL used for accessing the sandbox server. |
 
-**2 server groups.** Base-URL templates and override points (`options.Server.…`):
+**1 server group.** Base-URL templates and override points (`options.Server.…`):
 
-| Group | `Production` base URL | `Environment2` base URL | `Environment3` base URL | Override point |
-| --- | --- | --- | --- | --- |
-| `Default` | `https://marketplace.walmart.com/seller` | `https://sandbox.marketplace.walmart.com/seller` | `https://walmart-apis-mock-server.onrender.com/seller` | `options.Server.Default.Production.BaseUrl` (and the other environments) |
-| `Default1` | `https://marketplace.walmart.com/seller/v1` | `https://sandbox.marketplace.walmart.com/seller/v1` | `https://walmart-apis-mock-server.onrender.com/seller/v1` | `options.Server.Default1.Production.BaseUrl` (and the other environments) |
+| Group | `Production` base URL | `Environment2` base URL | Override point |
+| --- | --- | --- | --- |
+| `Default` | `https://marketplace.walmartapis.com` | `https://sandbox.walmartapis.com` | `options.Server.Default.Production.BaseUrl` (and the other environments) |
 
 Retry/resilience is configurable via `options.Retry` (`RetryOptions`, backed by Polly).
 

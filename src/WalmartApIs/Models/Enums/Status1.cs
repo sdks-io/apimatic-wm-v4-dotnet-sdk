@@ -4,6 +4,12 @@ using WalmartApIs.Core.Enum;
 
 namespace WalmartApIs.Models.Enums;
 
+/// <summary>
+/// | Attribute | Description | Data Type |
+/// | --- | ----------- | ------- |
+/// | ENROLL | To enroll items into the program | string |
+/// | DISENROLL | To opt out items from the program | string |
+/// </summary>
 [JsonConverter(typeof(StringEnumConverter<Status1>))]
 public sealed record Status1 : OpenStringEnum<Status1>
 {
@@ -11,22 +17,22 @@ public sealed record Status1 : OpenStringEnum<Status1>
     {
     }
 
-    public static readonly Status1 Accepted = new("ACCEPTED");
+    public static readonly Status1 Enroll = new("ENROLL");
 
-    public static readonly Status1 Invalid = new("INVALID");
+    public static readonly Status1 Disenroll = new("DISENROLL");
 
-    public TResult Match<TResult>(Func<TResult> onAccepted, Func<TResult> onInvalid, Func<string, TResult> otherwise) =>
+    public TResult Match<TResult>(Func<TResult> onEnroll, Func<TResult> onDisenroll, Func<string, TResult> otherwise) =>
         this switch
         {
-            _ when this == Accepted => onAccepted(),
-            _ when this == Invalid => onInvalid(),
+            _ when this == Enroll => onEnroll(),
+            _ when this == Disenroll => onDisenroll(),
             _ => otherwise(Value)
         };
 
-    public void Match(Action onAccepted, Action onInvalid, Action<string> otherwise)
+    public void Match(Action onEnroll, Action onDisenroll, Action<string> otherwise)
     {
-        if (this == Accepted) onAccepted();
-        else if (this == Invalid) onInvalid();
+        if (this == Enroll) onEnroll();
+        else if (this == Disenroll) onDisenroll();
         else otherwise(Value);
     }
 }
